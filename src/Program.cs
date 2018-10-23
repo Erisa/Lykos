@@ -13,6 +13,9 @@ namespace Lykos {
         static DiscordClient discord;
         static CommandsNextModule commands;
         static Random rnd = new Random();
+
+        public static ConfigJson cfgjson;
+
         static void Main(string[] args)
         {
             MainAsync(args).ConfigureAwait(false).GetAwaiter().GetResult();
@@ -25,7 +28,7 @@ namespace Lykos {
             using (var sr = new StreamReader(fs, new UTF8Encoding(false)))
                 json = await sr.ReadToEndAsync();
 
-            var cfgjson = JsonConvert.DeserializeObject<ConfigJson>(json);
+            cfgjson = JsonConvert.DeserializeObject<ConfigJson>(json);
             discord = new DiscordClient(new DiscordConfiguration
             {
                 Token = cfgjson.Token,
@@ -84,6 +87,10 @@ namespace Lykos {
                             Console.WriteLine($"Deleted '{currentRaw}' because it was not 1 higher than `{previousRaw}`");
                         }
                     }
+                }
+                if (e.Message.Content.ToLower() == "what prefix <@279811031805591555>" || e.Message.Content.ToLower() == "what prefix <@!279811031805591555>")
+                {
+                    await e.Channel.SendMessageAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(cfgjson.Prefixes)}```");
                 }
             };
 

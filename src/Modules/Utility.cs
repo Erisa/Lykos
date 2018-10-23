@@ -7,6 +7,7 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using Newtonsoft.Json;
 
 namespace Lykos.Modules
 {
@@ -61,6 +62,13 @@ namespace Lykos.Modules
             var list = await ctx.Channel.GetMessagesAsync(1, ctx.Message.Id);
             await ctx.RespondAsync(list[0].Content);
             // await ctx.RespondAsync("gay");
+        }
+
+        [Command("prefix")]
+        [Aliases("prefixes", "px")]
+        public async Task Prefix(CommandContext ctx)
+        {
+            await ctx.RespondAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(Program.cfgjson.Prefixes)}```");
         }
     }
 }
