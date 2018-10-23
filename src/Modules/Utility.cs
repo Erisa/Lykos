@@ -43,7 +43,7 @@ namespace Lykos.Modules
             .WithColor(new DiscordColor(0xC63B68))
             .WithTimestamp(DateTime.UtcNow)
             .WithFooter(
-                $"Called by {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Mention})",
+                $"Called by {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})",
                 ctx.User.AvatarUrl
             )
             .WithImageUrl(avatarUrl)
