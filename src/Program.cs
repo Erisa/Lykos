@@ -43,7 +43,7 @@ namespace Lykos {
 
             discord.MessageCreated += async e =>
             {
-                if (e.Message.Content.ToLower() == $"what prefix <@{e.Client.Id}>" || e.Message.Content.ToLower() == $"what prefix <@!{e.Client.Id}>")
+                if (e.Message.Content.ToLower() == $"what prefix <@{e.Client.CurrentUser.Id}>" || e.Message.Content.ToLower() == $"what prefix <@!{e.Client.CurrentUser.Id}>")
                 {
                     await e.Channel.SendMessageAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(cfgjson.Prefixes)}```");
                 }
