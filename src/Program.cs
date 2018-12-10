@@ -43,50 +43,6 @@ namespace Lykos {
 
             discord.MessageCreated += async e =>
             {
-                if (e.Channel.Id == 504055549965631488)
-                {
-                    var currentRaw = e.Message.Content;
-                    var previousList = await e.Channel.GetMessagesAsync(1, e.Message.Id);
-                    var previousRaw = previousList[0].Content;
-
-                    bool currentValid = int.TryParse(currentRaw, out int currentInt);
-                    bool previousValid = int.TryParse(previousRaw, out int previousInt);
-
-                    if (e.Message.Author.Id == previousList[0].Author.Id)
-                    {
-                        await e.Message.DeleteAsync();
-                        var msg = await e.Channel.SendMessageAsync($"❌ | {e.Author.Mention}, you wrote the last message, let someone else have a go.");
-                        await Task.Delay(2000);
-                        await msg.DeleteAsync();
-                        Console.WriteLine($"Deleted '{currentRaw}' because of a double post.");
-                    }
-
-                    if (e.Message.Content.StartsWith("0")) {
-                        await e.Message.DeleteAsync();
-                        var msg = await e.Channel.SendMessageAsync($"❌ | {e.Author.Mention}, leading zeroes are gay.");
-                        await Task.Delay(2000);
-                        await msg.DeleteAsync();
-                        Console.WriteLine($"Deleted '{currentRaw}' because of leading zeroes.");
-                    }
-
-                    if (!currentValid || !previousValid)
-                    {
-                        await e.Message.DeleteAsync();
-                        var msg = await e.Channel.SendMessageAsync($"❌ | {e.Author.Mention}, that wasn't a number!");
-                        await Task.Delay(2000);
-                        await msg.DeleteAsync();
-                        Console.WriteLine($"Deleted '{currentRaw}' because it was not valid or the previous was not valid.");
-                    } else
-                    {
-                        if (currentInt != (previousInt + 1)) {
-                            await e.Message.DeleteAsync();
-                            var msg = await e.Channel.SendMessageAsync($"❌ | {e.Author.Mention}, `{currentRaw}` is not one step higher than `{previousRaw}`!");
-                            await Task.Delay(2000);
-                            await msg.DeleteAsync();
-                            Console.WriteLine($"Deleted '{currentRaw}' because it was not 1 higher than `{previousRaw}`");
-                        }
-                    }
-                }
                 if (e.Message.Content.ToLower() == "what prefix <@279811031805591555>" || e.Message.Content.ToLower() == "what prefix <@!279811031805591555>")
                 {
                     await e.Channel.SendMessageAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(cfgjson.Prefixes)}```");
