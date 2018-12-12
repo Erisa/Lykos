@@ -12,7 +12,7 @@ namespace Lykos {
     class Program {
         static DiscordClient discord;
         static CommandsNextModule commands;
-        static Random rnd = new Random();
+        public static Random rnd = new Random();
         public static ConfigJson cfgjson;
 
         static void Main(string[] args)
