@@ -71,6 +71,7 @@ namespace Lykos.Modules
             await ctx.RespondAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(Program.cfgjson.Prefixes)}```");
         }
 
+        [Command("ping")]
         public async Task Ping(CommandContext ctx)
         {
             DSharpPlus.Entities.DiscordMessage return_message = await ctx.Message.RespondAsync("Pinging...");
