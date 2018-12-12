@@ -70,16 +70,16 @@ namespace Lykos.Modules
         {
             await ctx.RespondAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(Program.cfgjson.Prefixes)}```");
         }
-    }
 
-    public async Task Ping(CommandContext ctx)
-    {
-        DSharpPlus.Entities.DiscordMessage return_message = await ctx.Message.RespondAsync("Pinging...");
-        ulong ping = (return_message.Id - ctx.Message.Id) >> 22;
-        Char[] choices = new Char[] { 'a', 'e', 'o', 'u', 'i', 'y' };
-        Char letter = choices[Program.rnd.Next(0, choices.Length)];
-        await return_message.ModifyAsync($"P{letter}ng! 🏓\n" +
-            $"• It took me `{ping}ms` to reply to your message!\n" +
-            $"• Last Websocket Heartbeat took `{ctx.Client.Ping}ms`!");
+        public async Task Ping(CommandContext ctx)
+        {
+            DSharpPlus.Entities.DiscordMessage return_message = await ctx.Message.RespondAsync("Pinging...");
+            ulong ping = (return_message.Id - ctx.Message.Id) >> 22;
+            Char[] choices = new Char[] { 'a', 'e', 'o', 'u', 'i', 'y' };
+            Char letter = choices[Program.rnd.Next(0, choices.Length)];
+            await return_message.ModifyAsync($"P{letter}ng! 🏓\n" +
+                $"• It took me `{ping}ms` to reply to your message!\n" +
+                $"• Last Websocket Heartbeat took `{ctx.Client.Ping}ms`!");
+        }
     }
 }
