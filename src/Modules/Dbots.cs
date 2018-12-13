@@ -16,10 +16,16 @@ namespace Lykos.Modules
 
         public class DbotsMod : CheckBaseAttribute
         {
-            public override Task<bool> CanExecute(CommandContext ctx, bool help)
+            public override Task<bool> CanExecute(CommandContext ctx, bool help = false)
             {
+                // Ugly workaround because I can't be bothered working out semantics of 
+                if (ctx.Command.Name == "help")
+                {
+                    return Task.FromResult(true);
+                }
                 if (ctx.Guild.Id == 110373943822540800)
                 {
+                    ctx.RespondAsync($"[DEBUG] Currently executing command {ctx.Command.Name} for some reason.");
                     var ModsRole = ctx.Guild.GetRole(113379036524212224);
                     var FakeMod = ctx.Guild.GetRole(366668416058130432);
                     if (ctx.Member.Roles.Contains(ModsRole) || ctx.Member.Roles.Contains(FakeMod))
@@ -37,6 +43,18 @@ namespace Lykos.Modules
                     return Task.FromResult(false);
                 }
             }
+        }
+
+        [Command("dbotsowner")]
+        public async Task dbotsOwner(CommandContext ctx)
+        {
+            await ctx.RespondAsync($"Everyone knows the secret owner of **Discord Bots** is **{ctx.User.Username}#{ctx.User.Discriminator}**.");
+        }
+
+        [Command("ban")]
+        public async Task BanCmd(CommandContext ctx)
+        {
+            await ctx.RespondAsync("no.");
         }
 
         ulong BotDevID = 110375768374136832;
