@@ -12,7 +12,7 @@ namespace Lykos {
     class Program {
         static DiscordClient discord;
         static CommandsNextModule commands;
-        static Random rnd = new Random();
+        public static Random rnd = new Random();
         public static ConfigJson cfgjson;
 
         static void Main(string[] args)
@@ -78,8 +78,11 @@ namespace Lykos {
 
             commands.RegisterCommands<Dbots>();
             commands.RegisterCommands<Utility>();
+            commands.RegisterCommands<Mod>();
+            commands.RegisterCommands<Owner>();
 
             await discord.ConnectAsync();
+            // var msg = discord.GetChannelAsync(132632676225122304).GetMessageAsync(1);
             await Task.Delay(-1);
         }
     }

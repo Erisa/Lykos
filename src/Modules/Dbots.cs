@@ -18,7 +18,7 @@ namespace Lykos.Modules
         {
             public override Task<bool> CanExecute(CommandContext ctx, bool help = false)
             {
-                // Ugly workaround because I can't be bothered working out semantics of 
+                // Ugly workaround because I can't be bothered working out semantics of how it works.
                 if (ctx.Command.Name == "help")
                 {
                     return Task.FromResult(true);
@@ -49,12 +49,6 @@ namespace Lykos.Modules
         public async Task dbotsOwner(CommandContext ctx)
         {
             await ctx.RespondAsync($"Everyone knows the secret owner of **Discord Bots** is **{ctx.User.Username}#{ctx.User.Discriminator}**.");
-        }
-
-        [Command("ban")]
-        public async Task BanCmd(CommandContext ctx)
-        {
-            await ctx.RespondAsync("no.");
         }
 
         ulong BotDevID = 110375768374136832;

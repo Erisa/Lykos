@@ -15,6 +15,7 @@ namespace Lykos.Modules
     {
 
         string[] validExts = { "gif", "png", "jpg", "webp" };
+
         [Command("avatar")]
         [Description("Shows the avatar of a user.")]
         public async Task Avatar(CommandContext ctx, [Description("The user whose avatar will be shown.")] DiscordMember target = null, [Description("The format of the resulting image (jpg, png, gif, webp). Defaults to png or gif.")] string format = null)
@@ -54,21 +55,23 @@ namespace Lykos.Modules
             await ctx.RespondAsync(null, false, embed);
         }
 
-        [Command("test")]
-        [RequireOwner]
-        public async Task Test(CommandContext ctx)
-        {
-            // await ctx.RespondAsync("ur mom");
-            var list = await ctx.Channel.GetMessagesAsync(1, ctx.Message.Id);
-            await ctx.RespondAsync(list[0].Content);
-            // await ctx.RespondAsync("gay");
-        }
-
         [Command("prefix")]
-        [Aliases("prefixes", "px")]
+        [Aliases("prefixes", "px", "h")]
         public async Task Prefix(CommandContext ctx)
         {
             await ctx.RespondAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(Program.cfgjson.Prefixes)}```");
+        }
+
+        [Command("ping")]
+        public async Task Ping(CommandContext ctx)
+        {
+            DSharpPlus.Entities.DiscordMessage return_message = await ctx.Message.RespondAsync("Pinging...");
+            ulong ping = (return_message.Id - ctx.Message.Id) >> 22;
+            Char[] choices = new Char[] { 'a', 'e', 'o', 'u', 'i', 'y' };
+            Char letter = choices[Program.rnd.Next(0, choices.Length)];
+            await return_message.ModifyAsync($"P{letter}ng! 🏓\n" +
+                $"• It took me `{ping}ms` to reply to your message!\n" +
+                $"• Last Websocket Heartbeat took `{ctx.Client.Ping}ms`!");
         }
     }
 }
