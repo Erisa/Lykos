@@ -5,6 +5,9 @@ Lykos is a private (Can't be added to servers without owners consent) Discord bo
 ### Can I add Lykos to my server?
 No.
 
+### What's the invite link for this bot?
+Refer to question 1
+
 ### Can I host a public version?
 No.
 
