@@ -24,6 +24,7 @@ namespace Lykos.Modules
             {
                 await ctx.Guild.BanMemberAsync(target.Id, 0, $"[Ban by {ctx.User.Username}#{ctx.User.Discriminator}] ${reason}");
                 await ctx.RespondAsync($"🔨 Succesfully bent **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
+                return;
             }
             else
             {
@@ -33,17 +34,19 @@ namespace Lykos.Modules
                     if (AllowedToMod(await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id), member))
                     {
                         await ctx.RespondAsync($":x: I don't have permission to ban **{target.Username}#{target.Discriminator}**!");
-
+                        return;
                     }
                     else
                     {
                         await member.BanAsync(0, $"[Ban by {ctx.User.Username}#{ctx.User.Discriminator}] ${reason}");
                         await ctx.RespondAsync($"🔨 Succesfully bent **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
+                        return;
                     }
                 }
                 else
                 {
                     await ctx.RespondAsync($":x: You aren't allowed to ban **{target.Username}#{target.Discriminator}**!");
+                    return;
                 }
             }
         }

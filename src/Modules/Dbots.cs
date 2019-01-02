@@ -25,7 +25,6 @@ namespace Lykos.Modules
                 }
                 if (ctx.Guild.Id == 110373943822540800)
                 {
-                    ctx.RespondAsync($"[DEBUG] Currently executing command {ctx.Command.Name} for some reason.");
                     var ModsRole = ctx.Guild.GetRole(113379036524212224);
                     var FakeMod = ctx.Guild.GetRole(366668416058130432);
                     if (ctx.Member.Roles.Contains(ModsRole) || ctx.Member.Roles.Contains(FakeMod))
@@ -100,6 +99,17 @@ namespace Lykos.Modules
                 await ctx.RespondAsync($"<:check:314349398811475968> Bot Developer given to **{target.Username}#{target.Discriminator}**!");
             }
 
+        }
+
+        public async Task Ping(CommandContext ctx)
+        {
+            DSharpPlus.Entities.DiscordMessage return_message = await ctx.Message.RespondAsync("Pinging...");
+            ulong ping = (return_message.Id - ctx.Message.Id) >> 22;
+            Char[] choices = new Char[] { 'a', 'e', 'o', 'u', 'i', 'y' };
+            Char letter = choices[Program.rnd.Next(0, choices.Length)];
+            await return_message.ModifyAsync($"P{letter}ng! 🏓\n" +
+                $"• It took me `{ping}ms` to reply to your message!\n" +
+                $"• Last Websocket Heartbeat took `{ctx.Client.Ping}ms`!");
         }
 
     }
