@@ -18,7 +18,7 @@ namespace Lykos.Modules
         [Description("Ban a user. If you can. Do it, I dare you.")]
         [RequirePermissions(Permissions.BanMembers)]
         public async Task Ban(CommandContext ctx, [Description("The user to ban. Must be below both you and the bot in role hierachy.")] DiscordUser target, [Description("The reason for banning the user.\n")] string reason = "No reason provided.")
-        {
+        { 
 
             if (ctx.Guild.GetMemberAsync(target.Id) == null)
             {
