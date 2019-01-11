@@ -50,8 +50,8 @@ namespace Lykos.Modules
             await ctx.RespondAsync($"Everyone knows the secret owner of **Discord Bots** is **{ctx.User.Username}#{ctx.User.Discriminator}**.");
         }
 
-        [Command("dbotsowner")]
-        public async Task dbotsOwner(CommandContext ctx)
+        [Command("cotd")]
+        public async Task cotd(CommandContext ctx)
         {
             var scat = await ctx.Client.GetUserAsync(103347843934212096);
             await ctx.RespondAsync($"Todays cat of the day is **{scat.Username}#{scat.Discriminator}**!");
