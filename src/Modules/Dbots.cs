@@ -58,7 +58,7 @@ namespace Lykos.Modules
         }
 
         [Command("zotd")]
-        public async Task cotd(CommandContext ctx)
+        public async Task zotd(CommandContext ctx)
         {
             var zeta = await ctx.Client.GetUserAsync(94129005791281152);
             await ctx.RespondAsync($"Todays Zeta of the day is **{zeta.Username}#{zeta.Discriminator}**!");
