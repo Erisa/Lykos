@@ -57,6 +57,13 @@ namespace Lykos.Modules
             await ctx.RespondAsync($"Todays cat of the day is **{scat.Username}#{scat.Discriminator}**!");
         }
 
+        [Command("zotd")]
+        public async Task cotd(CommandContext ctx)
+        {
+            var zeta = await ctx.Client.GetUserAsync(94129005791281152);
+            await ctx.RespondAsync($"Todays Zeta of the day is **{zeta.Username}#{zeta.Discriminator}**!");
+        }
+
 
         ulong BotDevID = 110375768374136832;
 
