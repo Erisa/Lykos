@@ -7,6 +7,7 @@ using DSharpPlus.CommandsNext;
 using Lykos.Modules;
 using Newtonsoft.Json;
 using System.Linq;
+using Google.Cloud.Storage.V1;
 
 namespace Lykos {
     class Program {
@@ -14,6 +15,9 @@ namespace Lykos {
         static CommandsNextModule commands;
         public static Random rnd = new Random();
         public static ConfigJson cfgjson;
+        public static string googleProjectId = "erisas-stuff";
+        public static StorageClient storageClient = StorageClient.Create();
+        public static string bucketName = "cdn.erisa.moe";
 
         static void Main(string[] args)
         {
