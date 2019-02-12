@@ -11,11 +11,28 @@ using Newtonsoft.Json;
 using Google.Cloud.Storage.V1;
 using System.Net;
 using System.IO;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Lykos.Modules
 {
+
     class Owner
     {
+        public static OSPlatform GetOSPlatform()
+        {
+            OSPlatform osPlatform = OSPlatform.Create("Other Platform");
+            // Check if it's windows 
+            bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            osPlatform = isWindows ? OSPlatform.Windows : osPlatform;
+            // Check if it's osx 
+            bool isOSX = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+            osPlatform = isOSX ? OSPlatform.OSX : osPlatform;
+            // Check if it's Linux 
+            bool isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+            osPlatform = isLinux ? OSPlatform.Linux : osPlatform;
+            return osPlatform;
+        }
 
         [Group("system")]
         [Aliases("s", "sys")]
@@ -44,6 +61,45 @@ namespace Lykos.Modules
                 watch.Stop();
                 await msg.ModifyAsync($"Disconnected from websocket!\n- This took `{watch.ElapsedMilliseconds}ms` to complete!\nNow exiting main process. Goodbye!");
                 Environment.Exit(0);
+            }
+
+            [Command("sh")]
+            public async Task Shell(CommandContext ctx, [RemainingText] string command)
+            {
+                var msg = await ctx.RespondAsync("executing..");
+                string fileName;
+                string arguments;
+
+                string escapedArgs = command.Replace("\"", "\\\"");
+                if (GetOSPlatform() == OSPlatform.Windows)
+                {
+                    fileName = "C:/Windows/system32/cmd.exe";
+                    arguments = $"/C {escapedArgs} 2>&1";
+                } else
+                {
+                    // if you dont have bash i apologise
+                    fileName = "/bin/bash";
+                    arguments = $"-c \"{escapedArgs} 2>&1\"";
+                }
+
+
+                var proc = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = fileName,
+                        Arguments = arguments,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        RedirectStandardInput = true
+                    }
+                };
+
+                proc.Start();
+                string result = proc.StandardOutput.ReadToEnd();
+                proc.WaitForExit();
+                await msg.ModifyAsync($"Done, output: ```\n{result}```Process exited with code `{proc.ExitCode}`.");
             }
 
         }
