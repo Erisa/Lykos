@@ -36,8 +36,10 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="IF EXIST &quot;config.json&quot; (COPY /Y &quot;config.json&quot; &quot;$(OutDir)&quot;)" />
-  </Target>
+  <ItemGroup>
+    <None Update="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>
