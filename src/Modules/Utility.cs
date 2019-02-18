@@ -49,7 +49,8 @@ namespace Lykos.Modules
             )
             .WithImageUrl(avatarUrl)
             .WithAuthor(
-                $"Avatar for {target.Username}"
+                $"Avatar for {target.Username} (Click to open in browser)",
+                avatarUrl
             );
 
             await ctx.RespondAsync(null, false, embed);
