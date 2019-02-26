@@ -73,6 +73,8 @@ namespace Lykos.Modules
                 string escapedArgs = command.Replace("\"", "\\\"");
                 if (GetOSPlatform() == OSPlatform.Windows)
                 {
+                    // doesnt function correctly
+                    // TODO: make it function correctly
                     fileName = "C:/Windows/system32/cmd.exe";
                     arguments = $"/C {escapedArgs} 2>&1";
                 } else
@@ -99,7 +101,21 @@ namespace Lykos.Modules
                 proc.Start();
                 string result = proc.StandardOutput.ReadToEnd();
                 proc.WaitForExit();
-                await msg.ModifyAsync($"Done, output: ```\n{result}```Process exited with code `{proc.ExitCode}`.");
+                result = result.Replace(Program.cfgjson.Token, "[Prod Token]");
+                if (result.Length > 1947)
+                {
+                    HasteBinResult hasteURL = await Program.hasteUploader.Post(result);
+                    if (hasteURL.IsSuccess)
+                    {
+                        await msg.ModifyAsync($"Done, but output exceeded character limit! (`{result.Length}`/`1947`)\nFull output can be viewed here: https://paste.erisa.moe/raw/{hasteURL.Key}\nProcess exited with code `{proc.ExitCode}`.");
+                    } else
+                    {
+                        await msg.ModifyAsync("Error occured during upload to hastebin. Action was executed regardless, exit code was `{proc.ExitCode}`");
+                    }
+                } else
+                {
+                    await msg.ModifyAsync($"Done, output: ```\n{result}```Process exited with code `{proc.ExitCode}`.");
+                }
             }
 
         }
