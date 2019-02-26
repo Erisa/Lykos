@@ -18,6 +18,7 @@ namespace Lykos {
         public static string googleProjectId = "erisas-stuff";
         public static StorageClient storageClient = StorageClient.Create();
         public static string bucketName = "cdn.erisa.moe";
+        public static HasteBinClient hasteUploader = new HasteBinClient("https://paste.erisa.moe");
 
         static void Main(string[] args)
         {
@@ -70,7 +71,7 @@ namespace Lykos {
             commands.CommandErrored += async e =>
             {
                 var ctx = e.Context;
-                if (e.Command.Name == "avatar" && e.Exception is System.ArgumentException)
+                if (e.Command != null  && e.Command.Name == "avatar" && e.Exception is System.ArgumentException)
                 {
                     await ctx.RespondAsync("<:xmark:314349398824058880> User not found! Only mentions, IDs and Usernames are accepted.\nNote: It is no longer needed to specify `byid`, simply use the ID directly.");
                 }
@@ -84,6 +85,7 @@ namespace Lykos {
             commands.RegisterCommands<Utility>();
             commands.RegisterCommands<Mod>();
             commands.RegisterCommands<Owner>();
+            commands.RegisterCommands<Fun>();
 
             await discord.ConnectAsync();
             // var msg = discord.GetChannelAsync(132632676225122304).GetMessageAsync(1);
