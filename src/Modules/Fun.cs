@@ -12,18 +12,18 @@ namespace Lykos.Modules
 {
     class Fun
     {
+        List<String> flips = new List<string>(new string[] {
+            "( ﾉ⊙︵⊙）ﾉ︵┻━┻",
+            "(╯°□°）╯︵┻━┻",
+            "( ﾉ\\♉︵\\♉ ）ﾉ︵┻━┻",
+            "┬─┬﻿ ノ( ゜-゜ノ)",
+            "┬─┬﻿ ノ( °□°  ノ)"
+        });
+
         [Command("tableflip")]
         public async Task Tableflip(CommandContext ctx)
         {
-            List<String> flippers = new List<string>(new string[] { "( ﾉ⊙︵⊙）ﾉ", "(╯°□°）╯", "( ﾉ\\♉︵\\♉ ）ﾉ"});
-            int choice = Program.rnd.Next(0, 4);
-            if (choice == 3)
-            {
-                await ctx.RespondAsync("┬─┬﻿ ノ( ゜-゜ノ)");
-            } else
-            {
-                await ctx.RespondAsync($"{flippers[choice]}︵┻━┻");
-            }
+            await ctx.RespondAsync(flips[Program.rnd.Next(0, flips.Count + 1)]);
         }
     }
 }
