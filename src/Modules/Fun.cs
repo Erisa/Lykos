@@ -23,7 +23,7 @@ namespace Lykos.Modules
         [Command("tableflip")]
         public async Task Tableflip(CommandContext ctx)
         {
-            await ctx.RespondAsync(flips[Program.rnd.Next(0, flips.Count + 1)]);
+            await ctx.RespondAsync(flips[Program.rnd.Next(0, flips.Count)]);
         }
     }
 }
