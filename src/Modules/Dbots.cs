@@ -44,6 +44,35 @@ namespace Lykos.Modules
             }
         }
 
+        public class DbotsHelper : CheckBaseAttribute
+        {
+            public override Task<bool> CanExecute(CommandContext ctx, bool help = false)
+            {
+                // Ugly workaround because I can't be bothered working out semantics of how it works.
+                if (ctx.Command.Name == "help")
+                {
+                    return Task.FromResult(true);
+                }
+                if (ctx.Guild.Id == 110373943822540800)
+                {
+                    var helperRole = ctx.Guild.GetRole(407326634819977217);
+                    if (ctx.Member.Roles.Contains(helperRole) || ctx.Member.Roles.Contains(helperRole))
+                    {
+                        return Task.FromResult(true);
+                    }
+                    else
+                    {
+                        ctx.RespondAsync("<:xmark:314349398824058880> You're not a Verification Helper on **Discord Bots**!");
+                        return Task.FromResult(false);
+                    }
+                }
+                else
+                {
+                    return Task.FromResult(false);
+                }
+            }
+        }
+
         [Command("dbotsowner")]
         public async Task dbotsOwner(CommandContext ctx)
         {
@@ -66,6 +95,7 @@ namespace Lykos.Modules
 
 
         ulong BotDevID = 110375768374136832;
+        ulong unlistedID = 479762844720824320;
 
         [Command("undev")]
         [DbotsMod]
@@ -112,6 +142,55 @@ namespace Lykos.Modules
             {
                 await target.GrantRoleAsync(role, streason);
                 await ctx.RespondAsync($"<:check:314349398811475968> Bot Developer given to **{target.Username}#{target.Discriminator}**!");
+            }
+
+        }
+
+        [Command("list")]
+        [DbotsHelper]
+        [Aliases("listed", "takeunlisted")]
+        [Description("Removes Bot Developer from a user. Only usable in Discord Bots.")]
+        public async Task List(CommandContext ctx, [Description("The user to remove a botdev role from.")] DiscordMember target, [Description("The reason for removing the role.")] params string[] reason)
+        {
+            String streason;
+            if (reason.Length == 0)
+                streason = "No reason specified.";
+            else
+                streason = $"[List by {ctx.User.Username}#{ctx.User.Discriminator}] " + String.Join(" ", reason);
+
+            var role = ctx.Guild.GetRole(unlistedID);
+            if (target.Roles.Contains(role))
+            {
+                await target.RevokeRoleAsync(role, streason);
+                await ctx.RespondAsync($"<:check:314349398811475968> Unlisted taken from **{target.Username}#{target.Discriminator}**!");
+            } 
+            else
+            {
+                await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** doesn't have **Unlisted** role!");
+            }
+
+        }
+
+        [Command("unlist")]
+        [DbotsHelper]
+        [Description("Gives Bot Developer to a user. Only usable in Discord Bots.")]
+        public async Task Unlist(CommandContext ctx, [Description("The user to give a botdev role to.")] DiscordMember target, [Description("The reason for adding the role.")] params string[] reason)
+        {
+            String streason;
+            if (reason.Length == 0)
+                streason = "No reason specified.";
+            else
+                streason = $"[Unlist by {ctx.User.Username}#{ctx.User.Discriminator}] " + String.Join(" ", reason);
+
+            var role = ctx.Guild.GetRole(unlistedID);
+            if (target.Roles.Contains(role))
+            {
+                await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** already has **Unlisted** role!");
+            }
+            else
+            {
+                await target.GrantRoleAsync(role, streason);
+                await ctx.RespondAsync($"<:check:314349398811475968> Unlisted given to **{target.Username}#{target.Discriminator}**!");
             }
 
         }
