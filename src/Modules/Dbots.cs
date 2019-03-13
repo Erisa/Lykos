@@ -159,7 +159,10 @@ namespace Lykos.Modules
                 streason = $"[List by {ctx.User.Username}#{ctx.User.Discriminator}] " + String.Join(" ", reason);
 
             var role = ctx.Guild.GetRole(unlistedID);
-            if (target.Roles.Contains(role))
+            if (!target.IsBot)
+            {
+                await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** is not a bot!");
+            } else if (target.Roles.Contains(role))
             {
                 await target.RevokeRoleAsync(role, streason);
                 await ctx.RespondAsync($"<:check:314349398811475968> Unlisted taken from **{target.Username}#{target.Discriminator}**!");
@@ -183,7 +186,11 @@ namespace Lykos.Modules
                 streason = $"[Unlist by {ctx.User.Username}#{ctx.User.Discriminator}] " + String.Join(" ", reason);
 
             var role = ctx.Guild.GetRole(unlistedID);
-            if (target.Roles.Contains(role))
+
+            if (!target.IsBot)
+            {
+                await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** is not a bot!");
+            } else if (target.Roles.Contains(role))
             {
                 await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** already has **Unlisted** role!");
             }
