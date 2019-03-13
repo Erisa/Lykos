@@ -111,7 +111,7 @@ namespace Lykos.Modules
         {
             String streason;
             if (reason.Length == 0)
-                streason = "No reason specified.";
+                streason = $"[Undev by {ctx.User.Username}#{ctx.User.Discriminator}] No reason specified.";
             else
                 streason = $"[Undev by {ctx.User.Username}#{ctx.User.Discriminator}] " + String.Join(" ", reason);
 
@@ -135,7 +135,7 @@ namespace Lykos.Modules
         {
             String streason;
             if (reason.Length == 0)
-                streason = "No reason specified.";
+                streason = $"[Givedev by {ctx.User.Username}#{ctx.User.Discriminator}] No reason specified.";
             else
                 streason = $"[Givedev by {ctx.User.Username}#{ctx.User.Discriminator}] " + String.Join(" ", reason);
 
@@ -160,7 +160,7 @@ namespace Lykos.Modules
         {
             String streason;
             if (reason.Length == 0)
-                streason = "No reason specified.";
+                streason = $"[List by {ctx.User.Username}#{ctx.User.Discriminator}] No reason specified.";
             else
                 streason = $"[List by {ctx.User.Username}#{ctx.User.Discriminator}] " + String.Join(" ", reason);
 
@@ -187,7 +187,7 @@ namespace Lykos.Modules
         {
             String streason;
             if (reason.Length == 0)
-                streason = "No reason specified.";
+                streason = $"[Unlist by {ctx.User.Username}#{ctx.User.Discriminator}] No reason specified.";
             else
                 streason = $"[Unlist by {ctx.User.Username}#{ctx.User.Discriminator}] " + String.Join(" ", reason);
 
