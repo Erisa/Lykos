@@ -60,7 +60,7 @@ namespace Lykos.Modules
         [Aliases("prefixes", "px", "h")]
         public async Task Prefix(CommandContext ctx)
         {
-            await ctx.RespondAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(Program.cfgjson.Prefixes)}```");
+            await ctx.RespondAsync($"My prefixes are: ```{string.Join(", ", Program.cfgjson.Prefixes)}```");
         }
 
         [Command("ping")]
