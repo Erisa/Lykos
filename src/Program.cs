@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,7 +50,7 @@ namespace Lykos {
             {
                 if (e.Message.Content.ToLower() == $"what prefix <@{e.Client.CurrentUser.Id}>" || e.Message.Content.ToLower() == $"what prefix <@!{e.Client.CurrentUser.Id}>")
                 {
-                    await e.Channel.SendMessageAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(cfgjson.Prefixes)}```");
+                    await e.Channel.SendMessageAsync($"My prefixes are: ```{string.Join(", " cfgjson.Prefixes)}```");
                 }
             };
 
