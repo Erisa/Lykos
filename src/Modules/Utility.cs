@@ -17,6 +17,7 @@ namespace Lykos.Modules
         string[] validExts = { "gif", "png", "jpg", "webp" };
 
         [Command("avatar")]
+        [Aliases("avy")]
         [Description("Shows the avatar of a user.")]
         public async Task Avatar(CommandContext ctx, [Description("The user whose avatar will be shown.")] DiscordMember target = null, [Description("The format of the resulting image (jpg, png, gif, webp). Defaults to png or gif.")] string format = null)
         {
