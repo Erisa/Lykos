@@ -118,6 +118,12 @@ namespace Lykos.Modules
                 }
             }
 
+            [Command("say")]
+            public async Task Say(CommandContext ctx, [RemainingText] string input)
+            {
+                await ctx.RespondAsync(input);
+            }
+
         }
 
         [Group("eri")]
