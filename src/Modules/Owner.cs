@@ -13,26 +13,13 @@ using System.Net;
 using System.IO;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using static Lykos.Modules.Helpers;
 
 namespace Lykos.Modules
 {
 
     class Owner
     {
-        public static OSPlatform GetOSPlatform()
-        {
-            OSPlatform osPlatform = OSPlatform.Create("Other Platform");
-            // Check if it's windows 
-            bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-            osPlatform = isWindows ? OSPlatform.Windows : osPlatform;
-            // Check if it's osx 
-            bool isOSX = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-            osPlatform = isOSX ? OSPlatform.OSX : osPlatform;
-            // Check if it's Linux 
-            bool isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-            osPlatform = isLinux ? OSPlatform.Linux : osPlatform;
-            return osPlatform;
-        }
 
         [Group("system")]
         [Aliases("s", "sys")]
@@ -40,8 +27,7 @@ namespace Lykos.Modules
         [Hidden]
         class SystemCmds
         {
-            [Command("reconnect")]
-            [Aliases("rc", "re")]
+            [Command("reconnect"), Aliases("rc", "re")]
             public async Task Reconnect(CommandContext ctx)
             {
                 var msg = await ctx.RespondAsync("Reconnecting to websocket...");
@@ -51,8 +37,7 @@ namespace Lykos.Modules
                 await msg.ModifyAsync($"Reconnected to websocket!\n- This took `{watch.ElapsedMilliseconds}ms` to complete!");
             }
 
-            [Command("shutdown")]
-            [Aliases("shut", "sd", "s", "kill", "die")]
+            [Command("shutdown"), Aliases("shut", "sd", "s", "kill")]
             public async Task Shutdown(CommandContext ctx)
             {
                 var msg = await ctx.RespondAsync("Disonnecting from websocket...");
@@ -63,62 +48,50 @@ namespace Lykos.Modules
                 Environment.Exit(0);
             }
 
+            [Command("die")]
+
+            public async Task Die(CommandContext ctx)
+            {
+                var msg = await ctx.RespondAsync("Disonnecting from websocket...");
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                await ctx.Client.DisconnectAsync();
+                watch.Stop();
+                await msg.ModifyAsync($"Disconnected from websocket!\n- This took `{watch.ElapsedMilliseconds}ms` to complete!\nNow stopping main service. If that doesn't work, I'll just end my process!");
+
+                ShellResult finishedShell = Helpers.runShellCommand("pm2 stop lykos");
+
+                if (finishedShell.proc.ExitCode != 0)
+                {
+                    Environment.Exit(1);
+                }
+
+            }
+
             [Command("sh")]
             public async Task Shell(CommandContext ctx, [RemainingText] string command)
             {
                 var msg = await ctx.RespondAsync("executing..");
-                string fileName;
-                string arguments;
 
-                string escapedArgs = command.Replace("\"", "\\\"");
-                if (GetOSPlatform() == OSPlatform.Windows)
-                {
-                    // doesnt function correctly
-                    // TODO: make it function correctly
-                    fileName = "C:/Windows/system32/cmd.exe";
-                    arguments = $"/C {escapedArgs} 2>&1";
-                } else
-                {
-                    // if you dont have bash i apologise
-                    fileName = "/bin/bash";
-                    arguments = $"-c \"{escapedArgs} 2>&1\"";
-                }
+                ShellResult finishedShell = Helpers.runShellCommand(command);
 
 
-                var proc = new Process
+                if (finishedShell.result.Length > 1947)
                 {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = fileName,
-                        Arguments = arguments,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        RedirectStandardInput = true
-                    }
-                };
-
-                proc.Start();
-                string result = proc.StandardOutput.ReadToEnd();
-                proc.WaitForExit();
-                result = result.Replace(Program.cfgjson.Token, "[Prod Token]");
-                if (result.Length > 1947)
-                {
-                    HasteBinResult hasteURL = await Program.hasteUploader.Post(result);
+                    HasteBinResult hasteURL = await Program.hasteUploader.Post(finishedShell.result);
                     if (hasteURL.IsSuccess)
                     {
-                        await msg.ModifyAsync($"Done, but output exceeded character limit! (`{result.Length}`/`1947`)\nFull output can be viewed here: https://paste.erisa.moe/raw/{hasteURL.Key}\nProcess exited with code `{proc.ExitCode}`.");
+                        await msg.ModifyAsync($"Done, but output exceeded character limit! (`{finishedShell.result.Length}`/`1947`)\nFull output can be viewed here: https://paste.erisa.moe/raw/{hasteURL.Key}\nProcess exited with code `{finishedShell.proc.ExitCode}`.");
                     } else
                     {
                         await msg.ModifyAsync("Error occured during upload to hastebin. Action was executed regardless, exit code was `{proc.ExitCode}`");
                     }
                 } else
                 {
-                    await msg.ModifyAsync($"Done, output: ```\n{result}```Process exited with code `{proc.ExitCode}`.");
+                    await msg.ModifyAsync($"Done, output: ```\n{finishedShell.result}```Process exited with code `{finishedShell.proc.ExitCode}`.");
                 }
             }
 
-            [Command("say")]
+            [Command("say"), Aliases("echo")]
             public async Task Say(CommandContext ctx, [RemainingText] string input)
             {
                 await ctx.RespondAsync(input);

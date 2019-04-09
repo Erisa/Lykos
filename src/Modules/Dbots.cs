@@ -7,6 +7,7 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using static Lykos.Modules.Helpers;
 
 namespace Lykos.Modules
 {
@@ -17,28 +18,28 @@ namespace Lykos.Modules
         public class DbotsMod : CheckBaseAttribute
         {
             public override Task<bool> CanExecute(CommandContext ctx, bool help = false)
-            {
+            { 
+                if (ctx.Guild.Id != 110373943822540800)
+                {
+                    return Task.FromResult(false);
+                }
+
                 // Ugly workaround because I can't be bothered working out semantics of how it works.
                 if (ctx.Command.Name == "help")
                 {
                     return Task.FromResult(true);
                 }
-                if (ctx.Guild.Id == 110373943822540800)
+
+                if (getDbotsPerm(ctx.Member) >= dbotsPermLevel.Mod)
                 {
-                    var ModsRole = ctx.Guild.GetRole(113379036524212224);
-                    var FakeMod = ctx.Guild.GetRole(366668416058130432);
-                    if (ctx.Member.Roles.Contains(ModsRole) || ctx.Member.Roles.Contains(FakeMod))
-                    {
-                        return Task.FromResult(true);
-                    }
-                    else
-                    {
-                        ctx.RespondAsync("<:xmark:314349398824058880> You're not a Moderator on **Discord Bots**!");
-                        return Task.FromResult(false);
-                    }
+                    return Task.FromResult(true);
                 }
                 else
                 {
+                    dbotsPermLevel level = getDbotsPerm(ctx.Member);
+                    ctx.RespondAsync($"<:xmark:314349398824058880> You're not a Verification Helper on **Discord Bots**! ```\n" +
+                        $"Required permission level:{dbotsPermLevel.Mod.ToString("d")} ({dbotsPermLevel.Mod.ToString().ToUpper()})" +
+                        $"Your permission level:    {level.ToString("d")} ({level.ToString().ToUpper()})\n```");
                     return Task.FromResult(false);
                 }
             }
@@ -48,26 +49,27 @@ namespace Lykos.Modules
         {
             public override Task<bool> CanExecute(CommandContext ctx, bool help = false)
             {
+                if (ctx.Guild.Id != 110373943822540800)
+                {
+                    return Task.FromResult(false);
+                }
+
                 // Ugly workaround because I can't be bothered working out semantics of how it works.
                 if (ctx.Command.Name == "help")
                 {
                     return Task.FromResult(true);
                 }
-                if (ctx.Guild.Id == 110373943822540800)
+
+                if (getDbotsPerm(ctx.Member) >= dbotsPermLevel.Helper)
                 {
-                    var helperRole = ctx.Guild.GetRole(407326634819977217);
-                    if (ctx.Member.Roles.Contains(helperRole) || ctx.Member.Roles.Contains(helperRole))
-                    {
-                        return Task.FromResult(true);
-                    }
-                    else
-                    {
-                        ctx.RespondAsync("<:xmark:314349398824058880> You're not a Verification Helper on **Discord Bots**!");
-                        return Task.FromResult(false);
-                    }
+                    return Task.FromResult(true);
                 }
                 else
                 {
+                    dbotsPermLevel level = getDbotsPerm(ctx.Member);
+                    ctx.RespondAsync($"<:xmark:314349398824058880> You're not a Verification Helper on **Discord Bots**! ```\n" +
+                        $"Required permission level:  {dbotsPermLevel.Helper.ToString("d")} ({dbotsPermLevel.Helper.ToString().ToUpper()})\n" +
+                        $"Your permission level:      {level.ToString("d")} ({level.ToString().ToUpper()})```");
                     return Task.FromResult(false);
                 }
             }
@@ -205,6 +207,54 @@ namespace Lykos.Modules
                 await target.GrantRoleAsync(role, streason);
                 await ctx.RespondAsync($"<:check:314349398811475968> Unlisted given to **{target.Username}#{target.Discriminator}**!");
             }
+
+        }
+
+        [Command("checkperms")]
+        public async Task Checkperms(CommandContext ctx, [RemainingText] DiscordMember target = null)
+        {
+            if (target == null)
+                target = ctx.Member;
+
+            dbotsPermLevel level = Helpers.getDbotsPerm(target);
+            String msg = $"The permission level of **{target.Username}#{target.Discriminator}** is `{level.ToString("d")}` (`{level.ToString().ToUpper()}`)";
+            if (level >= dbotsPermLevel.botDev)
+            {
+                msg = msg + "\n- <:check:314349398811475968> User is a Bot Developer or higher.";
+            } else
+            {
+                msg = msg + "\n- <:xmark:314349398824058880> User is not a Bot Developer.";
+            }
+
+            if (level >= dbotsPermLevel.Helper)
+            {
+                msg = msg + "\n- <:check:314349398811475968> User has access to Helper commands.";
+            }
+            else
+            {
+                msg = msg + "\n- <:xmark:314349398824058880> User does not have access to Helper commands.";
+            }
+
+            if (level >= dbotsPermLevel.Mod)
+            {
+                msg = msg + "\n- <:check:314349398811475968> User has access to Moderator commands.";
+            }
+            else
+            {
+                msg = msg + "\n- <:xmark:314349398824058880> User does not have access to Moderator commands.";
+            }
+
+            if (level >= dbotsPermLevel.Owner)
+            {
+                msg = msg + "\n- <:check:314349398811475968> User is the owner of Discord Bots.";
+            }
+            else
+            {
+                msg = msg + "\n- <:xmark:314349398824058880> User is not the owner of Discord Bots.";
+            }
+
+            await ctx.RespondAsync(msg);
+
 
         }
 
