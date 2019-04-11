@@ -23,73 +23,23 @@ namespace Lykos.Modules
 
         public override async Task<bool> CanExecute(CommandContext ctx, bool help)
         {
-            return getDbotsPerm(ctx.Member) >= this.TargetLvl;
+            var level = getDbotsPerm(ctx.Member);
+            if (level >= this.TargetLvl)
+            {
+                return true;
+            } else
+            {
+                await ctx.RespondAsync($"<:xmark:314349398824058880> You don't have permission to access this command! ```\n" +
+                        $"Required permission level:  {this.TargetLvl.ToString("d")} ({this.TargetLvl.ToString().ToUpper()})\n" +
+                        $"Your permission level:      {level.ToString("d")} ({level.ToString().ToUpper()})\n```");
+                return false;
+            }
         }
 
     }
 
     class Dbots
     {
-
-        public class DbotsMod : CheckBaseAttribute
-        {
-            public override Task<bool> CanExecute(CommandContext ctx, bool help = false)
-            {
-                if (ctx.Guild.Id != 110373943822540800)
-                {
-                    return Task.FromResult(false);
-                }
-
-                // Ugly workaround because I can't be bothered working out semantics of how it works.
-                if (ctx.Command.Name == "help")
-                {
-                    return Task.FromResult(true);
-                }
-
-                if (getDbotsPerm(ctx.Member) >= dbotsPermLevel.Mod)
-                {
-                    return Task.FromResult(true);
-                }
-                else
-                {
-                    dbotsPermLevel level = getDbotsPerm(ctx.Member);
-                    ctx.RespondAsync($"<:xmark:314349398824058880> You're not a Verification Helper on **Discord Bots**! ```\n" +
-                        $"Required permission level:{dbotsPermLevel.Mod.ToString("d")} ({dbotsPermLevel.Mod.ToString().ToUpper()})" +
-                        $"Your permission level:    {level.ToString("d")} ({level.ToString().ToUpper()})\n```");
-                    return Task.FromResult(false);
-                }
-            }
-        }
-
-        public class DbotsHelper : CheckBaseAttribute
-        {
-            public override Task<bool> CanExecute(CommandContext ctx, bool help = false)
-            {
-                if (ctx.Guild.Id != 110373943822540800)
-                {
-                    return Task.FromResult(false);
-                }
-
-                // Ugly workaround because I can't be bothered working out semantics of how it works.
-                if (ctx.Command.Name == "help")
-                {
-                    return Task.FromResult(true);
-                }
-
-                if (getDbotsPerm(ctx.Member) >= dbotsPermLevel.Helper)
-                {
-                    return Task.FromResult(true);
-                }
-                else
-                {
-                    dbotsPermLevel level = getDbotsPerm(ctx.Member);
-                    ctx.RespondAsync($"<:xmark:314349398824058880> You're not a Verification Helper on **Discord Bots**! ```\n" +
-                        $"Required permission level:  {dbotsPermLevel.Helper.ToString("d")} ({dbotsPermLevel.Helper.ToString().ToUpper()})\n" +
-                        $"Your permission level:      {level.ToString("d")} ({level.ToString().ToUpper()})```");
-                    return Task.FromResult(false);
-                }
-            }
-        }
 
         [Command("dbotsowner")]
         public async Task dbotsOwner(CommandContext ctx)
