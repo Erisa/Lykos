@@ -10,7 +10,7 @@ using DSharpPlus.Entities;
 
 namespace Lykos.Modules
 {
-    class Helpers
+    public class Helpers
     {
         static ulong dbotsGuildId = 110373943822540800;
 

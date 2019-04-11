@@ -11,6 +11,22 @@ using static Lykos.Modules.Helpers;
 
 namespace Lykos.Modules
 {
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    public class RequireDbotsPermAttribute : CheckBaseAttribute
+    {
+        public dbotsPermLevel TargetLvl { get; set; }
+
+        public RequireDbotsPermAttribute(dbotsPermLevel targetLvl )
+        {
+            this.TargetLvl = targetLvl;
+        }
+
+        public override async Task<bool> CanExecute(CommandContext ctx, bool help)
+        {
+            return getDbotsPerm(ctx.Member) >= this.TargetLvl;
+        }
+
+    }
 
     class Dbots
     {
@@ -18,7 +34,7 @@ namespace Lykos.Modules
         public class DbotsMod : CheckBaseAttribute
         {
             public override Task<bool> CanExecute(CommandContext ctx, bool help = false)
-            { 
+            {
                 if (ctx.Guild.Id != 110373943822540800)
                 {
                     return Task.FromResult(false);
@@ -105,10 +121,12 @@ namespace Lykos.Modules
         ulong BotDevID = 110375768374136832;
         ulong unlistedID = 479762844720824320;
 
-        [Command("undev")]
-        [DbotsMod]
-        [Aliases("takedev")]
-        [Description("Removes Bot Developer from a user. Only usable in Discord Bots.")]
+        [
+            Command("undev"),
+            Aliases("takedev"),
+            RequireDbotsPerm(dbotsPermLevel.Mod),
+            Description("Removes Bot Developer from a user. Only usable in Discord Bots.")
+        ]
         public async Task Undev(CommandContext ctx, [Description("The user to remove a botdev role from.")] DiscordMember target, [Description("The reason for removing the role.")] params string[] reason)
         {
             String streason;
@@ -122,7 +140,7 @@ namespace Lykos.Modules
             {
                 await target.RevokeRoleAsync(role, streason);
                 await ctx.RespondAsync($"<:check:314349398811475968> Bot Developer taken from **{target.Username}#{target.Discriminator}**!");
-            } 
+            }
             else
             {
                 await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** is not a Bot Developer!");
@@ -131,7 +149,7 @@ namespace Lykos.Modules
         }
 
         [Command("givedev")]
-        [DbotsMod]
+        [RequireDbotsPerm(dbotsPermLevel.Mod)]
         [Description("Gives Bot Developer to a user. Only usable in Discord Bots.")]
         public async Task Givedev(CommandContext ctx, [Description("The user to give a botdev role to.")] DiscordMember target, [Description("The reason for adding the role.")] params string[] reason)
         {
@@ -155,7 +173,7 @@ namespace Lykos.Modules
         }
 
         [Command("list")]
-        [DbotsHelper]
+        [RequireDbotsPerm(dbotsPermLevel.Helper)]
         [Aliases("listed", "takeunlisted")]
         [Description("Removes Bot Developer from a user. Only usable in Discord Bots.")]
         public async Task List(CommandContext ctx, [Description("The user to remove a botdev role from.")] DiscordMember target, [Description("The reason for removing the role.")] params string[] reason)
@@ -170,11 +188,12 @@ namespace Lykos.Modules
             if (!target.IsBot)
             {
                 await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** is not a bot!");
-            } else if (target.Roles.Contains(role))
+            }
+            else if (target.Roles.Contains(role))
             {
                 await target.RevokeRoleAsync(role, streason);
                 await ctx.RespondAsync($"<:check:314349398811475968> Unlisted taken from **{target.Username}#{target.Discriminator}**!");
-            } 
+            }
             else
             {
                 await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** doesn't have **Unlisted** role!");
@@ -183,7 +202,7 @@ namespace Lykos.Modules
         }
 
         [Command("unlist")]
-        [DbotsHelper]
+        [RequireDbotsPerm(dbotsPermLevel.Helper)]
         [Description("Gives Bot Developer to a user. Only usable in Discord Bots.")]
         public async Task Unlist(CommandContext ctx, [Description("The user to give a botdev role to.")] DiscordMember target, [Description("The reason for adding the role.")] params string[] reason)
         {
@@ -198,7 +217,8 @@ namespace Lykos.Modules
             if (!target.IsBot)
             {
                 await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** is not a bot!");
-            } else if (target.Roles.Contains(role))
+            }
+            else if (target.Roles.Contains(role))
             {
                 await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** already has **Unlisted** role!");
             }
@@ -221,7 +241,8 @@ namespace Lykos.Modules
             if (level >= dbotsPermLevel.botDev)
             {
                 msg = msg + "\n- <:check:314349398811475968> User is a Bot Developer or higher.";
-            } else
+            }
+            else
             {
                 msg = msg + "\n- <:xmark:314349398824058880> User is not a Bot Developer.";
             }
@@ -258,16 +279,7 @@ namespace Lykos.Modules
 
         }
 
-        public async Task Ping(CommandContext ctx)
-        {
-            DSharpPlus.Entities.DiscordMessage return_message = await ctx.Message.RespondAsync("Pinging...");
-            ulong ping = (return_message.Id - ctx.Message.Id) >> 22;
-            Char[] choices = new Char[] { 'a', 'e', 'o', 'u', 'i', 'y' };
-            Char letter = choices[Program.rnd.Next(0, choices.Length)];
-            await return_message.ModifyAsync($"P{letter}ng! 🏓\n" +
-                $"• It took me `{ping}ms` to reply to your message!\n" +
-                $"• Last Websocket Heartbeat took `{ctx.Client.Ping}ms`!");
-        }
+
 
     }
 }
