@@ -78,7 +78,7 @@ namespace Lykos {
 
                 // Console.WriteLine(e.Exception is System.ArgumentException);
                 //if (e.Exception is System.ArgumentException)
-               //     await ctx.CommandsNext.SudoAsync(ctx.User, ctx.Channel, $"help {ctx.Command.Name}");
+               //await ctx.CommandsNext.SudoAsync(ctx.User, ctx.Channel, $"help {ctx.Command.Name}");
             };
 
             commands.RegisterCommands<Dbots>();

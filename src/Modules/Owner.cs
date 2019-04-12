@@ -27,6 +27,13 @@ namespace Lykos.Modules
         [Hidden]
         class SystemCmds
         {
+
+            [Command("sudo")]
+            public async Task Sudo(CommandContext ctx, DiscordMember targetMem, [RemainingText] String command)
+            {
+                await ctx.CommandsNext.SudoAsync(targetMem, ctx.Channel, "lk " + command);
+            }
+
             [Command("reconnect"), Aliases("rc", "re")]
             public async Task Reconnect(CommandContext ctx)
             {
