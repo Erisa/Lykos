@@ -85,10 +85,11 @@ namespace Lykos.Modules
         }
 
         [Command("mute")]
-        [RequirePermissions(Permissions.ManageRoles)]
+        [RequireOwner]
         public async Task Mute(CommandContext ctx, DiscordMember target, string reason = "No reason provided.")
         {
-
+            await target.GrantRoleAsync(ctx.Guild.GetRole(132106771975110656), $"[Mute by {ctx.User.Username}#{ctx.User.Discriminator} {reason}");
+            await ctx.RespondAsync("successfully muted, i think");
         }
     }
 }
