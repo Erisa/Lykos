@@ -11,7 +11,8 @@ using static Lykos.Modules.Helpers;
 
 namespace Lykos.Modules
 {
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class RequireDbotsPermAttribute : CheckBaseAttribute
     {
         public dbotsPermLevel TargetLvl { get; set; }
@@ -23,6 +24,9 @@ namespace Lykos.Modules
 
         public override async Task<bool> CanExecute(CommandContext ctx, bool help)
         {
+            if (ctx.Command.Name == "help")
+                return false;
+
             var level = getDbotsPerm(ctx.Member);
             if (level >= this.TargetLvl)
             {
@@ -36,12 +40,29 @@ namespace Lykos.Modules
             }
         }
 
+
+    }
+
+    public class DbotsAttribute : CheckBaseAttribute
+    {
+        public override async Task<bool> CanExecute(CommandContext ctx, bool help)
+        {
+            if (ctx.Guild.Id == 110373943822540800)
+            {
+                return true;
+            } else
+            {
+                await ctx.RespondAsync("<:xmark:314349398824058880> This command only works in **Discord Bots**!");
+                return false;
+            }
+        }
     }
 
     class Dbots
     {
 
         [Command("dbotsowner")]
+        [Dbots]
         public async Task dbotsOwner(CommandContext ctx)
         {
             await ctx.RespondAsync($"Everyone knows the secret owner of **Discord Bots** is **{ctx.User.Username}#{ctx.User.Discriminator}**.");
@@ -74,6 +95,7 @@ namespace Lykos.Modules
         [
             Command("undev"),
             Aliases("takedev"),
+            Dbots,
             RequireDbotsPerm(dbotsPermLevel.Mod),
             Description("Removes Bot Developer from a user. Only usable in Discord Bots.")
         ]
@@ -99,6 +121,7 @@ namespace Lykos.Modules
         }
 
         [Command("givedev")]
+        [Dbots]
         [RequireDbotsPerm(dbotsPermLevel.Mod)]
         [Description("Gives Bot Developer to a user. Only usable in Discord Bots.")]
         public async Task Givedev(CommandContext ctx, [Description("The user to give a botdev role to.")] DiscordMember target, [Description("The reason for adding the role.")] params string[] reason)
@@ -123,6 +146,7 @@ namespace Lykos.Modules
         }
 
         [Command("list")]
+        [Dbots]
         [RequireDbotsPerm(dbotsPermLevel.Helper)]
         [Aliases("listed", "takeunlisted")]
         [Description("Removes Bot Developer from a user. Only usable in Discord Bots.")]
@@ -152,6 +176,7 @@ namespace Lykos.Modules
         }
 
         [Command("unlist")]
+        [Dbots]
         [RequireDbotsPerm(dbotsPermLevel.Helper)]
         [Description("Gives Bot Developer to a user. Only usable in Discord Bots.")]
         public async Task Unlist(CommandContext ctx, [Description("The user to give a botdev role to.")] DiscordMember target, [Description("The reason for adding the role.")] params string[] reason)
@@ -182,6 +207,7 @@ namespace Lykos.Modules
         }
 
         [Command("checkperms")]
+        [Dbots]
         public async Task Checkperms(CommandContext ctx, [RemainingText] DiscordMember target = null)
         {
             if (target == null)
