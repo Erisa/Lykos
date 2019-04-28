@@ -65,14 +65,34 @@ namespace Lykos.Modules
         [RequirePermissions(Permissions.BanMembers)]
         public async Task Kick(CommandContext ctx, DiscordMember target, string reason = "No reason provided.")
         {
-            if (AllowedToMod(ctx.Member, target))
+            if (ctx.Guild.GetMemberAsync(target.Id) == null)
             {
-                await target.RemoveAsync($"[Kick by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}");
+                await ctx.Guild.BanMemberAsync(target.Id, 0, $"[Kick by {ctx.User.Username}#{ctx.User.Discriminator}] ${reason}");
                 await ctx.RespondAsync($"🔨 Succesfully ejected **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
+                return;
             }
             else
             {
-                await ctx.RespondAsync($":x: You aren't allowed to kick **{target.Username}#{target.Discriminator}**!");
+                DiscordMember member = await ctx.Guild.GetMemberAsync(target.Id);
+                if (AllowedToMod(ctx.Member, member))
+                {
+                    if (AllowedToMod(await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id), member))
+                    {
+                        await ctx.RespondAsync($":x: I don't have permission to kick **{target.Username}#{target.Discriminator}**!");
+                        return;
+                    }
+                    else
+                    {
+                        await member.BanAsync(0, $"[Ban by {ctx.User.Username}#{ctx.User.Discriminator}] ${reason}");
+                        await ctx.RespondAsync($"🔨 Succesfully ejected **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
+                        return;
+                    }
+                }
+                else
+                {
+                    await ctx.RespondAsync($":x: You aren't allowed to kick **{target.Username}#{target.Discriminator}**!");
+                    return;
+                }
             }
         }
 
@@ -107,20 +127,39 @@ namespace Lykos.Modules
             var Muted = ctx.Guild.GetRole(132106637614776320);
             String fullReason = $"[Mute by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}";
 
-            if (target.Roles.Contains(NonTestingMute))
+            if (AllowedToMod(ctx.Member, target))
             {
-                await ctx.RespondAsync(":x: **{target.Username}#{target.Discriminator}** is already muted!");
+                if (AllowedToMod(await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id), target))
+                {
+                    if (target.Roles.Contains(NonTestingMute))
+                    {
+                        await ctx.RespondAsync($":x: **{target.Username}#{target.Discriminator}** is already muted!");
+                        return;
+                    }
+
+                    await target.GrantRoleAsync(ctx.Guild.GetRole(132106771975110656), fullReason);
+
+                    if (target.Roles.Contains(Muted))
+                    {
+                        await target.RevokeRoleAsync(Muted, fullReason);
+                    }
+
+                    await ctx.RespondAsync($"<:check:314349398811475968> Successfully muted **{target.Username}#{target.Discriminator}**!");
+                }
+                else
+                {
+                    await ctx.RespondAsync($":x: You aren't allowed to mute **{target.Username}#{target.Discriminator}**!");
+                    return;
+
+                }
+            }
+            else
+            {
+                await ctx.RespondAsync($":x: I don't have permission to mute **{target.Username}#{target.Discriminator}**!");
                 return;
             }
 
-            await target.GrantRoleAsync(ctx.Guild.GetRole(132106771975110656), fullReason);
 
-            if (target.Roles.Contains(Muted))
-            {
-                await target.RevokeRoleAsync(Muted, fullReason);
-            }
-
-            await ctx.RespondAsync($"<:check:314349398811475968> Successfully muted **{target.Username}#{target.Discriminator}**!");
         }
 
         [Command("supermute")]
@@ -144,22 +183,37 @@ namespace Lykos.Modules
             var Muted = ctx.Guild.GetRole(132106637614776320);
             String fullReason = $"[Supermute by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}";
 
-            if (target.Roles.Contains(Muted))
+            if (AllowedToMod(ctx.Member, target))
             {
-                await ctx.RespondAsync(":x: **{target.Username}#{target.Discriminator}** is already muted!");
-                return;
+                if (AllowedToMod(await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id), target))
+                {
+                    if (target.Roles.Contains(Muted))
+                    {
+                        await ctx.RespondAsync($":x: **{target.Username}#{target.Discriminator}** is already muted!");
+                        return;
+                    }
+
+                    await target.GrantRoleAsync(ctx.Guild.GetRole(132106637614776320), fullReason);
+
+                    if (target.Roles.Contains(NonTestingMute))
+                    {
+                        await target.RevokeRoleAsync(NonTestingMute, fullReason);
+                    }
+
+                    await ctx.RespondAsync($"<:check:314349398811475968> Successfully supermuted **{target.Username}#{target.Discriminator}**!");
+                }
+                else
+                {
+                    await ctx.RespondAsync($":x: You aren't allowed to supermute **{target.Username}#{target.Discriminator}**!");
+                    return;
+                }
             }
-
-            await target.GrantRoleAsync(ctx.Guild.GetRole(132106637614776320), fullReason);
-
-            if (target.Roles.Contains(NonTestingMute))
+            else
             {
-                await target.RevokeRoleAsync(NonTestingMute, fullReason);
+                await ctx.RespondAsync($":x: I don't have permission to supermute **{target.Username}#{target.Discriminator}**!");
             }
-
-            await ctx.RespondAsync($"<:check:314349398811475968> Successfully supermuted **{target.Username}#{target.Discriminator}**!");
-
         }
+
 
         [Command("unmute")]
         [Dbots, RequireDbotsPerm(Helpers.dbotsPermLevel.Helper)]
@@ -180,25 +234,43 @@ namespace Lykos.Modules
 
             var NonTestingMute = ctx.Guild.GetRole(132106771975110656);
             var Muted = ctx.Guild.GetRole(132106637614776320);
-            String fullReason = $"[Mute by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}";
+            String fullReason = $"[Unmute by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}";
 
-            if (target.Roles.Contains(NonTestingMute) || target.Roles.Contains(Muted))
+            if (AllowedToMod(ctx.Member, target))
             {
-                if (target.Roles.Contains(NonTestingMute))
+                if (AllowedToMod(await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id), target))
                 {
-                    await target.RevokeRoleAsync(NonTestingMute, fullReason);
+                    if (target.Roles.Contains(NonTestingMute) || target.Roles.Contains(Muted))
+                    {
+                        if (target.Roles.Contains(NonTestingMute))
+                        {
+                            await target.RevokeRoleAsync(NonTestingMute, fullReason);
+                        }
+                        if (target.Roles.Contains(Muted))
+                        {
+                            await target.RevokeRoleAsync(Muted, fullReason);
+                        }
+
+                        await ctx.RespondAsync($"<:check:314349398811475968> Successfully unmuted **{target.Username}#{target.Discriminator}**!");
+
+                    }
+                    else
+                    {
+                        await ctx.RespondAsync($":x: **{target.Username}#{target.Discriminator}** is not muted!");
+                    }
                 }
-                if (target.Roles.Contains(Muted))
+                else
                 {
-                    await target.RevokeRoleAsync(Muted, fullReason);
+                    await ctx.RespondAsync($":x: You aren't allowed to unmute **{target.Username}#{target.Discriminator}**!");
+                    return;
                 }
-
-                await ctx.RespondAsync($"<:check:314349398811475968> Successfully unmuted **{target.Username}#{target.Discriminator}**!");
-
-            } else
-            {
-                await ctx.RespondAsync($":x: **{target.Username}#{target.Discriminator}** is not muted!");
             }
+            else
+            {
+                await ctx.RespondAsync($":x: I don't have permission to unmute **{target.Username}#{target.Discriminator}**!");
+            }
+
+
 
         }
 
