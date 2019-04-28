@@ -18,7 +18,7 @@ namespace Lykos.Modules
         [Description("Ban a user. If you can. Do it, I dare you.")]
         [RequirePermissions(Permissions.BanMembers)]
         public async Task Ban(CommandContext ctx, [Description("The user to ban. Must be below both you and the bot in role hierachy.")] DiscordUser target, [Description("The reason for banning the user.\n")] string reason = "No reason provided.")
-        { 
+        {
 
             if (ctx.Guild.GetMemberAsync(target.Id) == null)
             {
@@ -84,23 +84,123 @@ namespace Lykos.Modules
             return invoker_hier > target_hier;
         }
 
+
         [Command("mute")]
-        [Dbots, RequireDbotsPerm(Helpers.dbotsPermLevel.Mod), RequirePermissions(Permissions.ManageRoles)]
+        [Dbots, RequireDbotsPerm(Helpers.dbotsPermLevel.Helper)]
         [Dbots]
         public async Task Mute(CommandContext ctx, DiscordMember target, [RemainingText] string reason = "No reason provided.")
         {
-            await target.GrantRoleAsync(ctx.Guild.GetRole(132106771975110656), $"[Mute by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}");
-            await ctx.RespondAsync($"<:check:314349398811475968> Successfully Muted **{target.Username}#{target.Discriminator}**!");
+            var botMember = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
+
+            if (!botMember.PermissionsIn(ctx.Channel).HasPermission(Permissions.ManageRoles))
+            {
+                return;
+            }
+
+            if (Helpers.getDbotsPerm(ctx.Member) == Helpers.dbotsPermLevel.Helper && !target.IsBot)
+            {
+                await ctx.RespondAsync($":x: **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only mute bots)");
+                return;
+            }
+
+            var NonTestingMute = ctx.Guild.GetRole(132106771975110656);
+            var Muted = ctx.Guild.GetRole(132106637614776320);
+            String fullReason = $"[Mute by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}";
+
+            if (target.Roles.Contains(NonTestingMute))
+            {
+                await ctx.RespondAsync(":x: **{target.Username}#{target.Discriminator}** is already muted!");
+                return;
+            }
+
+            await target.GrantRoleAsync(ctx.Guild.GetRole(132106771975110656), fullReason);
+
+            if (target.Roles.Contains(Muted))
+            {
+                await target.RevokeRoleAsync(Muted, fullReason);
+            }
+
+            await ctx.RespondAsync($"<:check:314349398811475968> Successfully muted **{target.Username}#{target.Discriminator}**!");
         }
 
         [Command("supermute")]
-        [Dbots, RequireDbotsPerm(Helpers.dbotsPermLevel.Mod), RequirePermissions(Permissions.ManageRoles)]
+        [Dbots, RequireDbotsPerm(Helpers.dbotsPermLevel.Helper)]
         public async Task SuperMute(CommandContext ctx, DiscordMember target, [RemainingText] string reason = "No reason provided.")
         {
-            await target.GrantRoleAsync(ctx.Guild.GetRole(132106637614776320), $"[Supermute by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}");
-            await ctx.RespondAsync($"<:check:314349398811475968> Successfully Supermuted **{target.Username}#{target.Discriminator}**!");
+            var botMember = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
+
+            if (!botMember.PermissionsIn(ctx.Channel).HasPermission(Permissions.ManageRoles))
+            {
+                return;
+            }
+
+            if (Helpers.getDbotsPerm(ctx.Member) == Helpers.dbotsPermLevel.Helper && !target.IsBot)
+            {
+                await ctx.RespondAsync($":x: **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only mute bots)");
+                return;
+            }
+
+            var NonTestingMute = ctx.Guild.GetRole(132106771975110656);
+            var Muted = ctx.Guild.GetRole(132106637614776320);
+            String fullReason = $"[Supermute by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}";
+
+            if (target.Roles.Contains(Muted))
+            {
+                await ctx.RespondAsync(":x: **{target.Username}#{target.Discriminator}** is already muted!");
+                return;
+            }
+
+            await target.GrantRoleAsync(ctx.Guild.GetRole(132106637614776320), fullReason);
+
+            if (target.Roles.Contains(NonTestingMute))
+            {
+                await target.RevokeRoleAsync(NonTestingMute, fullReason);
+            }
+
+            await ctx.RespondAsync($"<:check:314349398811475968> Successfully supermuted **{target.Username}#{target.Discriminator}**!");
+
         }
 
+        [Command("unmute")]
+        [Dbots, RequireDbotsPerm(Helpers.dbotsPermLevel.Helper)]
+        public async Task Unmute(CommandContext ctx, DiscordMember target, [RemainingText] String reason = "No reason provided.")
+        {
+            var botMember = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
+
+            if (!botMember.PermissionsIn(ctx.Channel).HasPermission(Permissions.ManageRoles))
+            {
+                return;
+            }
+
+            if (Helpers.getDbotsPerm(ctx.Member) == Helpers.dbotsPermLevel.Helper && !target.IsBot)
+            {
+                await ctx.RespondAsync($":x: **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only unmute bots)");
+                return;
+            }
+
+            var NonTestingMute = ctx.Guild.GetRole(132106771975110656);
+            var Muted = ctx.Guild.GetRole(132106637614776320);
+            String fullReason = $"[Mute by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}";
+
+            if (target.Roles.Contains(NonTestingMute) || target.Roles.Contains(Muted))
+            {
+                if (target.Roles.Contains(NonTestingMute))
+                {
+                    await target.RevokeRoleAsync(NonTestingMute, fullReason);
+                }
+                if (target.Roles.Contains(Muted))
+                {
+                    await target.RevokeRoleAsync(Muted, fullReason);
+                }
+
+                await ctx.RespondAsync($"<:check:314349398811475968> Successfully unmuted **{target.Username}#{target.Discriminator}**!");
+
+            } else
+            {
+                await ctx.RespondAsync($":x: **{target.Username}#{target.Discriminator}** is not muted!");
+            }
+
+        }
 
     }
 }
