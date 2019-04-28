@@ -65,34 +65,26 @@ namespace Lykos.Modules
         [RequirePermissions(Permissions.BanMembers)]
         public async Task Kick(CommandContext ctx, DiscordMember target, string reason = "No reason provided.")
         {
-            if (ctx.Guild.GetMemberAsync(target.Id) == null)
+            DiscordMember member = await ctx.Guild.GetMemberAsync(target.Id);
+
+            if (AllowedToMod(ctx.Member, member))
             {
-                await ctx.Guild.BanMemberAsync(target.Id, 0, $"[Kick by {ctx.User.Username}#{ctx.User.Discriminator}] ${reason}");
-                await ctx.RespondAsync($"🔨 Succesfully ejected **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
-                return;
-            }
-            else
-            {
-                DiscordMember member = await ctx.Guild.GetMemberAsync(target.Id);
-                if (AllowedToMod(ctx.Member, member))
+                if (AllowedToMod(await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id), member))
                 {
-                    if (AllowedToMod(await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id), member))
-                    {
-                        await ctx.RespondAsync($":x: I don't have permission to kick **{target.Username}#{target.Discriminator}**!");
-                        return;
-                    }
-                    else
-                    {
-                        await member.RemoveAsync(0, $"[Kick by {ctx.User.Username}#{ctx.User.Discriminator}] ${reason}");
-                        await ctx.RespondAsync($"🔨 Succesfully ejected **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
-                        return;
-                    }
+                    await ctx.RespondAsync($":x: I don't have permission to kick **{target.Username}#{target.Discriminator}**!");
+                    return;
                 }
                 else
                 {
-                    await ctx.RespondAsync($":x: You aren't allowed to kick **{target.Username}#{target.Discriminator}**!");
+                    await member.RemoveAsync($"[Kick by {ctx.User.Username}#{ctx.User.Discriminator}] ${reason}");
+                    await ctx.RespondAsync($"🔨 Succesfully ejected **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
                     return;
                 }
+            }
+            else
+            {
+                await ctx.RespondAsync($":x: You aren't allowed to kick **{target.Username}#{target.Discriminator}**!");
+                return;
             }
         }
 
