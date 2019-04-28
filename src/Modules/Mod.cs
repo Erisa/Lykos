@@ -83,7 +83,7 @@ namespace Lykos.Modules
                     }
                     else
                     {
-                        await member.BanAsync(0, $"[Ban by {ctx.User.Username}#{ctx.User.Discriminator}] ${reason}");
+                        await member.RemoveAsync(0, $"[Kick by {ctx.User.Username}#{ctx.User.Discriminator}] ${reason}");
                         await ctx.RespondAsync($"🔨 Succesfully ejected **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
                         return;
                     }
