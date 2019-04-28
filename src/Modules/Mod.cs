@@ -85,11 +85,22 @@ namespace Lykos.Modules
         }
 
         [Command("mute")]
-        [RequireOwner]
-        public async Task Mute(CommandContext ctx, DiscordMember target, string reason = "No reason provided.")
+        [Dbots, RequireDbotsPerm(Helpers.dbotsPermLevel.Mod), RequirePermissions(Permissions.ManageRoles)]
+        [Dbots]
+        public async Task Mute(CommandContext ctx, DiscordMember target, [RemainingText] string reason = "No reason provided.")
         {
-            await target.GrantRoleAsync(ctx.Guild.GetRole(132106771975110656), $"[Mute by {ctx.User.Username}#{ctx.User.Discriminator} {reason}");
-            await ctx.RespondAsync("successfully muted, i think");
+            await target.GrantRoleAsync(ctx.Guild.GetRole(132106771975110656), $"[Mute by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}");
+            await ctx.RespondAsync($"<:check:314349398811475968> Successfully Muted **{target.Username}#{target.Discriminator}**!");
         }
+
+        [Command("supermute")]
+        [Dbots, RequireDbotsPerm(Helpers.dbotsPermLevel.Mod), RequirePermissions(Permissions.ManageRoles)]
+        public async Task SuperMute(CommandContext ctx, DiscordMember target, [RemainingText] string reason = "No reason provided.")
+        {
+            await target.GrantRoleAsync(ctx.Guild.GetRole(132106637614776320), $"[Supermute by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}");
+            await ctx.RespondAsync($"<:check:314349398811475968> Successfully Supermuted **{target.Username}#{target.Discriminator}**!");
+        }
+
+
     }
 }
