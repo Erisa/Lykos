@@ -111,11 +111,11 @@ namespace Lykos {
                //await ctx.CommandsNext.SudoAsync(ctx.User, ctx.Channel, $"help {ctx.Command.Name}");
             };
 
-            //commands.RegisterCommands<Dbots>();
-            //commands.RegisterCommands<Utility>();
-            //commands.RegisterCommands<Mod>();
-            //commands.RegisterCommands<Owner>();
-            //commands.RegisterCommands<Fun>();
+            commands.RegisterCommands<Dbots>();
+            commands.RegisterCommands<Utility>();
+            commands.RegisterCommands<Mod>();
+            commands.RegisterCommands<Owner>();
+            commands.RegisterCommands<Fun>();
             commands.RegisterCommands<YouTube>();
 
             await discord.ConnectAsync();

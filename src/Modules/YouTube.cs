@@ -102,7 +102,6 @@ namespace Lykos.Modules
                     if (curMember.PermissionsIn(ctx.Channel).HasPermission(Permissions.ManageMessages))
                     {
                         await ctx_second.Message.DeleteAsync();
-                        await ctx.Message.DeleteAsync();
                     }
                     
                     System.Threading.Thread.Sleep(1000);
