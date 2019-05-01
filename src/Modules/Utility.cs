@@ -75,5 +75,6 @@ namespace Lykos.Modules
                 $"• It took me `{ping}ms` to reply to your message!\n" +
                 $"• Last Websocket Heartbeat took `{ctx.Client.Ping}ms`!");
         }
+
     }
 }

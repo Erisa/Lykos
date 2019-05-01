@@ -8,6 +8,10 @@ using Lykos.Modules;
 using Newtonsoft.Json;
 using System.Linq;
 using Google.Cloud.Storage.V1;
+using Google.Apis.YouTube.v3;
+using Google.Apis.Services;
+using DSharpPlus.Interactivity;
+using System.Threading;
 
 namespace Lykos {
     class Program {
@@ -19,6 +23,9 @@ namespace Lykos {
         public static StorageClient storageClient = StorageClient.Create();
         public static string bucketName = "cdn.erisa.moe";
         public static HasteBinClient hasteUploader = new HasteBinClient("https://paste.erisa.moe");
+        public static bool usingYoutube;
+        public static YouTubeService youtubeService;
+        public static InteractivityModule interactivity;
 
         static void Main(string[] args)
         {
@@ -33,6 +40,23 @@ namespace Lykos {
                 json = await sr.ReadToEndAsync();
 
             cfgjson = JsonConvert.DeserializeObject<ConfigJson>(json);
+
+            if (cfgjson.YoutubeData == null || cfgjson.YoutubeData == "youtubekeyhere")
+            {
+                Console.WriteLine("[WARN] YouTube API key not supplied. YouTube commands will not function.");
+                usingYoutube = false;
+            } else
+            {
+                youtubeService = new YouTubeService(new BaseClientService.Initializer()
+                {
+                    ApiKey = cfgjson.YoutubeData,
+                    ApplicationName = "Lykos-Bot"
+                });
+
+                usingYoutube = true;
+
+            }
+
             discord = new DiscordClient(new DiscordConfiguration
             {
                 Token = cfgjson.Token,
@@ -41,9 +65,15 @@ namespace Lykos {
                 LogLevel = LogLevel.Debug
             });
 
-            discord.Ready += async e =>
+            interactivity = discord.UseInteractivity(new InteractivityConfiguration
+            {
+                Timeout = new System.TimeSpan(60)
+            });
+
+            discord.Ready += e =>
             {
                 Console.WriteLine($"Logged in as {e.Client.CurrentUser.Username}#{e.Client.CurrentUser.Discriminator}");
+                return null; 
             };
 
             discord.MessageCreated += async e =>
@@ -81,11 +111,12 @@ namespace Lykos {
                //await ctx.CommandsNext.SudoAsync(ctx.User, ctx.Channel, $"help {ctx.Command.Name}");
             };
 
-            commands.RegisterCommands<Dbots>();
-            commands.RegisterCommands<Utility>();
-            commands.RegisterCommands<Mod>();
-            commands.RegisterCommands<Owner>();
-            commands.RegisterCommands<Fun>();
+            //commands.RegisterCommands<Dbots>();
+            //commands.RegisterCommands<Utility>();
+            //commands.RegisterCommands<Mod>();
+            //commands.RegisterCommands<Owner>();
+            //commands.RegisterCommands<Fun>();
+            commands.RegisterCommands<YouTube>();
 
             await discord.ConnectAsync();
             // var msg = discord.GetChannelAsync(132632676225122304).GetMessageAsync(1);
@@ -100,5 +131,8 @@ namespace Lykos {
 
         [JsonProperty("prefixes")]
         public string[] Prefixes { get; private set; }
+
+        [JsonProperty("youtube_data_api")]
+        public string YoutubeData { get; private set; }
     }
 }

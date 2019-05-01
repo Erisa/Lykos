@@ -17,6 +17,8 @@
   <ItemGroup>
     <PackageReference Include="DSharpPlus" Version="3.2.3" />
     <PackageReference Include="DSharpPlus.CommandsNext" Version="3.2.3" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="3.2.3" />
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.39.0.1572" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="2.3.0" />
     <PackageReference Include="ini" Version="1.0.7" />
   </ItemGroup>
