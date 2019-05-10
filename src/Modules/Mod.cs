@@ -155,6 +155,7 @@ namespace Lykos.Modules
         }
 
         [Command("supermute")]
+        [Aliases("megamute")]
         [Dbots, RequireDbotsPerm(Helpers.dbotsPermLevel.Helper)]
         public async Task SuperMute(CommandContext ctx, DiscordMember target, [RemainingText] string reason = "No reason provided.")
         {
