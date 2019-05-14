@@ -82,6 +82,13 @@ namespace Lykos {
                 {
                     await e.Channel.SendMessageAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(cfgjson.Prefixes)}```");
                 }
+
+                if (e.Channel.Id == 577871838454218766)
+                {
+                    var mem = await e.Guild.GetMemberAsync(e.Author.Id);
+                    var role = e.Guild.GetRole(577872199344717824);
+                    await mem.GrantRoleAsync(role);
+                }
             };
 
             commands = discord.UseCommandsNext(new CommandsNextConfiguration
