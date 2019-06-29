@@ -1,10 +1,7 @@
 {
   "profiles": {
     "Lykos": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "GOOGLE_APPLICATION_CREDENTIALS": "F:\\creds\\Erisa's Stuff-b2fc9b025b90.json"
-      }
+      "commandName": "Project"
     }
   }
 }
