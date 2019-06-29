@@ -250,6 +250,15 @@ namespace Lykos.Modules
             {
                 msg = msg + "\n- <:xmark:314349398824058880> User is not the owner of Discord Bots.";
             }
+            msg = msg + "\nExtras:\n";
+            if (Helpers.isDbotsBooster(target))
+            {
+                msg = msg + "- <:check:314349398811475968> User is boosting Discord Bots.";
+            } else
+            {
+                msg = msg + "- <:xmark:314349398824058880> User is not boosting Discord Bots.";
+            }
+
 
             await ctx.RespondAsync(msg);
 

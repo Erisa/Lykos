@@ -113,6 +113,12 @@ namespace Lykos.Modules
                 return dbotsPermLevel.nothing;
             }
         }
+
+        public static Boolean isDbotsBooster(DiscordMember target)
+        {
+            var boosterRole = target.Guild.GetRole(585535347753222157);
+            return target.Roles.Contains(boosterRole);
+        }
         
     }
 }
