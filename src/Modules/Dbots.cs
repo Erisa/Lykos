@@ -226,11 +226,20 @@ namespace Lykos.Modules
 
             if (level >= dbotsPermLevel.Helper)
             {
-                msg = msg + "\n- <:check:314349398811475968> User has access to Helper commands.";
+                msg = msg + "\n- <:check:314349398811475968> User has access to Verification Helper commands.";
             }
             else
             {
-                msg = msg + "\n- <:xmark:314349398824058880> User does not have access to Helper commands.";
+                msg = msg + "\n- <:xmark:314349398824058880> User does not have access to Verification Helper commands.";
+            }
+
+            if (level >= dbotsPermLevel.SiteHelper)
+            {
+                msg = msg + "\n- <:check:314349398811475968> User has access to Site Helper commands.";
+            }
+            else
+            {
+                msg = msg + "\n- <:xmark:314349398824058880> User does not have access to Site Helper commands.";
             }
 
             if (level >= dbotsPermLevel.Mod)

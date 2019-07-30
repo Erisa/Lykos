@@ -83,7 +83,7 @@ namespace Lykos.Modules
             }
         }
 
-        public enum dbotsPermLevel { nothing, botDev, Helper, Mod, Owner = int.MaxValue }
+        public enum dbotsPermLevel { nothing, botDev, Helper, SiteHelper, Mod, Owner = int.MaxValue }
 
         public static dbotsPermLevel getDbotsPerm(DiscordMember target)
         {
@@ -95,20 +95,30 @@ namespace Lykos.Modules
             var modRole = target.Guild.GetRole(113379036524212224);
             var fakeMod = target.Guild.GetRole(366668416058130432);
             var helperRole = target.Guild.GetRole(407326634819977217);
+            var siteHelperRole = target.Guild.GetRole(598574793712992286);
             var botDevRole = target.Guild.GetRole(110375768374136832);
 
             if (target.IsOwner)
             {
                 return dbotsPermLevel.Owner;
-            } else if (target.Roles.Contains(modRole) ||  target.Roles.Contains(fakeMod)) {
+            }
+            else if (target.Roles.Contains(modRole) || target.Roles.Contains(fakeMod))
+            {
                 return dbotsPermLevel.Mod;
-            } else if (target.Roles.Contains(helperRole))
+            }
+            else if (target.Roles.Contains(siteHelperRole))
+            {
+                return dbotsPermLevel.SiteHelper;
+            }
+            else if (target.Roles.Contains(helperRole))
             {
                 return dbotsPermLevel.Helper;
-            } else if (target.Roles.Contains(botDevRole))
+            }
+            else if (target.Roles.Contains(botDevRole))
             {
                 return dbotsPermLevel.botDev;
-            } else
+            }
+            else
             {
                 return dbotsPermLevel.nothing;
             }
@@ -119,6 +129,6 @@ namespace Lykos.Modules
             var boosterRole = target.Guild.GetRole(585535347753222157);
             return target.Roles.Contains(boosterRole);
         }
-        
+
     }
 }
