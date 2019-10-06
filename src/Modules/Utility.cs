@@ -76,5 +76,10 @@ namespace Lykos.Modules
                 $"• Last Websocket Heartbeat took `{ctx.Client.Ping}ms`!");
         }
 
+        [Command("yt")]
+        public async Task YouTube(CommandContext ctx)
+        {
+            await ctx.RespondAsync("This command has been removed because the YouTube API is awful, thank you for understanding!");
+        }
     }
 }

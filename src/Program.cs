@@ -23,8 +23,6 @@ namespace Lykos {
         public static StorageClient storageClient = StorageClient.Create();
         public static string bucketName = "cdn.erisa.moe";
         public static HasteBinClient hasteUploader = new HasteBinClient("https://paste.erisa.moe");
-        public static bool usingYoutube;
-        public static YouTubeService youtubeService;
         public static InteractivityModule interactivity;
 
         static void Main(string[] args)
@@ -34,27 +32,16 @@ namespace Lykos {
 
         static async Task MainAsync(string[] args)
         {
-            var json = "";
+            var json = ""; 
             using (var fs = File.OpenRead("config.json"))
             using (var sr = new StreamReader(fs, new UTF8Encoding(false)))
                 json = await sr.ReadToEndAsync();
 
             cfgjson = JsonConvert.DeserializeObject<ConfigJson>(json);
 
-            if (cfgjson.YoutubeData == null || cfgjson.YoutubeData == "youtubekeyhere")
+            if (cfgjson.YoutubeData != null || cfgjson.YoutubeData != "youtubekeyhere")
             {
-                Console.WriteLine("[WARN] YouTube API key not supplied. YouTube commands will not function.");
-                usingYoutube = false;
-            } else
-            {
-                youtubeService = new YouTubeService(new BaseClientService.Initializer()
-                {
-                    ApiKey = cfgjson.YoutubeData,
-                    ApplicationName = "Lykos-Bot"
-                });
-
-                usingYoutube = true;
-
+                Console.WriteLine("[WARN] YouTube API functions have been deprecated, an API key is not needed and may cause problems in future versions.");
             }
 
             discord = new DiscordClient(new DiscordConfiguration
@@ -123,7 +110,6 @@ namespace Lykos {
             commands.RegisterCommands<Mod>();
             commands.RegisterCommands<Owner>();
             commands.RegisterCommands<Fun>();
-            commands.RegisterCommands<YouTube>();
 
             await discord.ConnectAsync();
             // var msg = discord.GetChannelAsync(132632676225122304).GetMessageAsync(1);

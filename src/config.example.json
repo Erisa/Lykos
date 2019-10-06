@@ -1,5 +1,4 @@
 {
   "token": "MzA2MTQyMjU3ODE4NjMyMTkz.EXAMPLETOKEN",
-  "prefixes": [ "?" ],
-  "youtube_data_api":  "youtubekeyhere"
+  "prefixes": [ "?" ]
 }
