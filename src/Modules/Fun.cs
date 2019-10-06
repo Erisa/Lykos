@@ -8,7 +8,7 @@ namespace Lykos.Modules
 {
     class Fun
     {
-        List<String> flips = new List<string>(new string[] {
+        readonly List<String> flips = new List<string>(new string[] {
             "( ﾉ⊙︵⊙）ﾉ︵┻━┻",
             "(╯°□°）╯︵┻━┻",
             "( ﾉ\\♉︵\\♉ ）ﾉ︵┻━┻",

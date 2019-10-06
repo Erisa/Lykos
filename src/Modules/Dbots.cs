@@ -24,7 +24,7 @@ namespace Lykos.Modules
             if (ctx.Command.Name == "help")
                 return false;
 
-            var level = getDbotsPerm(ctx.Member);
+            var level = GetDbotsPerm(ctx.Member);
             if (level >= this.TargetLvl)
             {
                 return true;
@@ -62,34 +62,33 @@ namespace Lykos.Modules
 
         [Command("dbotsowner")]
         [Dbots]
-        public async Task dbotsOwner(CommandContext ctx)
+        public async Task DbotsOwner(CommandContext ctx)
         {
             await ctx.RespondAsync($"Everyone knows the secret owner of **Discord Bots** is **{ctx.User.Username}#{ctx.User.Discriminator}**.");
         }
 
         [Command("whenissarahsbirthday")]
-        public async Task whenissarahsbirthday(CommandContext ctx)
+        public async Task Whenissarahsbirthday(CommandContext ctx)
         {
             await ctx.RespondAsync($"Today.");
         }
 
         [Command("cotd")]
-        public async Task cotd(CommandContext ctx)
+        public async Task Cotd(CommandContext ctx)
         {
             var scat = await ctx.Client.GetUserAsync(103347843934212096);
             await ctx.RespondAsync($"Todays cat of the day is **{scat.Username}#{scat.Discriminator}**!");
         }
 
         [Command("zotd")]
-        public async Task zotd(CommandContext ctx)
+        public async Task Zotd(CommandContext ctx)
         {
             var zeta = await ctx.Client.GetUserAsync(94129005791281152);
             await ctx.RespondAsync($"Todays Zeta of the day is **{zeta.Username}#{zeta.Discriminator}**!");
         }
 
-
-        ulong BotDevID = 110375768374136832;
-        ulong unlistedID = 479762844720824320;
+        readonly ulong BotDevID = 110375768374136832;
+        readonly ulong unlistedID = 479762844720824320;
 
         [
             Command("undev"),
@@ -212,60 +211,60 @@ namespace Lykos.Modules
             if (target == null)
                 target = ctx.Member;
 
-            DbotsPermLevel level = Helpers.getDbotsPerm(target);
+            DbotsPermLevel level = Helpers.GetDbotsPerm(target);
             String msg = $"The permission level of **{target.Username}#{target.Discriminator}** is `{level.ToString("d")}` (`{level.ToString().ToUpper()}`)";
             if (level >= DbotsPermLevel.botDev)
             {
-                msg = msg + "\n- <:check:314349398811475968> User is a Bot Developer or higher.";
+                msg += "\n- <:check:314349398811475968> User is a Bot Developer or higher.";
             }
             else
             {
-                msg = msg + "\n- <:xmark:314349398824058880> User is not a Bot Developer.";
+                msg += "\n- <:xmark:314349398824058880> User is not a Bot Developer.";
             }
 
             if (level >= DbotsPermLevel.Helper)
             {
-                msg = msg + "\n- <:check:314349398811475968> User has access to Verification Helper commands.";
+                msg += "\n- <:check:314349398811475968> User has access to Verification Helper commands.";
             }
             else
             {
-                msg = msg + "\n- <:xmark:314349398824058880> User does not have access to Verification Helper commands.";
+                msg += "\n- <:xmark:314349398824058880> User does not have access to Verification Helper commands.";
             }
 
             if (level >= DbotsPermLevel.siteHelper)
             {
-                msg = msg + "\n- <:check:314349398811475968> User has access to Site Helper commands.";
+                msg += "\n- <:check:314349398811475968> User has access to Site Helper commands.";
             }
             else
             {
-                msg = msg + "\n- <:xmark:314349398824058880> User does not have access to Site Helper commands.";
+                msg += "\n- <:xmark:314349398824058880> User does not have access to Site Helper commands.";
             }
 
             if (level >= DbotsPermLevel.mod)
             {
-                msg = msg + "\n- <:check:314349398811475968> User has access to Moderator commands.";
+                msg += "\n- <:check:314349398811475968> User has access to Moderator commands.";
             }
             else
             {
-                msg = msg + "\n- <:xmark:314349398824058880> User does not have access to Moderator commands.";
+                msg += "\n- <:xmark:314349398824058880> User does not have access to Moderator commands.";
             }
 
             if (level >= DbotsPermLevel.owner)
             {
-                msg = msg + "\n- <:check:314349398811475968> User is the owner of Discord Bots.";
+                msg += "\n- <:check:314349398811475968> User is the owner of Discord Bots.";
             }
             else
             {
-                msg = msg + "\n- <:xmark:314349398824058880> User is not the owner of Discord Bots.";
+                msg += "\n- <:xmark:314349398824058880> User is not the owner of Discord Bots.";
             }
-            msg = msg + "\nExtras:\n";
-            if (Helpers.isDbotsBooster(target))
+            msg += "\nExtras:\n";
+            if (Helpers.IsDbotsBooster(target))
             {
-                msg = msg + "- <:check:314349398811475968> User is boosting Discord Bots.";
+                msg += "- <:check:314349398811475968> User is boosting Discord Bots.";
             }
             else
             {
-                msg = msg + "- <:xmark:314349398824058880> User is not boosting Discord Bots.";
+                msg += "- <:xmark:314349398824058880> User is not boosting Discord Bots.";
             }
 
 

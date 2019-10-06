@@ -4,17 +4,15 @@
 
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Lykos.Modules
 {
     public class HasteBinClient
     {
-        private static HttpClient _httpClient;
-        private string _baseUrl;
+        private static readonly HttpClient _httpClient;
+        private readonly string _baseUrl;
 
         static HasteBinClient()
         {
@@ -35,8 +33,10 @@ namespace Lykos.Modules
             }
             string postUrl = $"{fullUrl}documents";
 
-            var request = new HttpRequestMessage(HttpMethod.Post, new Uri(postUrl));
-            request.Content = new StringContent(content);
+            var request = new HttpRequestMessage(HttpMethod.Post, new Uri(postUrl))
+            {
+                Content = new StringContent(content)
+            };
             HttpResponseMessage result = await _httpClient.SendAsync(request);
 
             if (result.IsSuccessStatusCode)

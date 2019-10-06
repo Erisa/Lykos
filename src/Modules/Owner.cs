@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.CommandsNext;
+﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
-using Newtonsoft.Json;
 using Google.Cloud.Storage.V1;
-using System.Net;
+using System;
 using System.IO;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+using System.Net;
+using System.Threading.Tasks;
 using static Lykos.Modules.Helpers;
 
 namespace Lykos.Modules
@@ -65,7 +58,7 @@ namespace Lykos.Modules
                 watch.Stop();
                 await msg.ModifyAsync($"Disconnected from websocket!\n- This took `{watch.ElapsedMilliseconds}ms` to complete!\nNow stopping main service. If that doesn't work, I'll just end my process!");
 
-                ShellResult finishedShell = Helpers.runShellCommand("pm2 stop lykos");
+                ShellResult finishedShell = Helpers.RunShellCommand("pm2 stop lykos");
 
                 if (finishedShell.proc.ExitCode != 0)
                 {
@@ -79,7 +72,7 @@ namespace Lykos.Modules
             {
                 var msg = await ctx.RespondAsync("executing..");
 
-                ShellResult finishedShell = Helpers.runShellCommand(command);
+                ShellResult finishedShell = Helpers.RunShellCommand(command);
 
 
                 if (finishedShell.result.Length > 1947)
@@ -88,11 +81,13 @@ namespace Lykos.Modules
                     if (hasteURL.IsSuccess)
                     {
                         await msg.ModifyAsync($"Done, but output exceeded character limit! (`{finishedShell.result.Length}`/`1947`)\nFull output can be viewed here: https://paste.erisa.moe/raw/{hasteURL.Key}\nProcess exited with code `{finishedShell.proc.ExitCode}`.");
-                    } else
+                    }
+                    else
                     {
                         await msg.ModifyAsync("Error occured during upload to hastebin. Action was executed regardless, exit code was `{proc.ExitCode}`");
                     }
-                } else
+                }
+                else
                 {
                     await msg.ModifyAsync($"Done, output: ```\n{finishedShell.result}```Process exited with code `{finishedShell.proc.ExitCode}`.");
                 }
@@ -110,7 +105,8 @@ namespace Lykos.Modules
         [Description("Commands that manage data across Erisas things and stuff.")]
         [RequireOwner]
         [Hidden]
-        class Eri {
+        class Eri
+        {
             [Group("update")]
             [RequireOwner]
             class Update
@@ -129,11 +125,12 @@ namespace Lykos.Modules
                     Google.Apis.Storage.v1.Data.Object storageObject;
                     using (var f = File.OpenRead("AVATAR.png"))
                     {
-                        objectName = objectName ?? Path.GetFileName("AVATAR.png");
+                        objectName ??= Path.GetFileName("AVATAR.png");
                         try
                         {
                             storageObject = await Program.storageClient.UploadObjectAsync(Program.bucketName, objectName, "image/png", f);
-                        } catch (Google.GoogleApiException e)
+                        }
+                        catch (Google.GoogleApiException e)
                         {
                             await msg.ModifyAsync($"<:xmark:314349398824058880> A Google Cloud API error occured during upload! ```\n{e.Message}```");
                             storageObject = null;
@@ -149,7 +146,6 @@ namespace Lykos.Modules
                     catch (Google.GoogleApiException e)
                     {
                         await msg.ModifyAsync($"<:xmark:314349398824058880>  A Google Cloud API error occured during object access! ```\n{e.Message}```");
-                        storageObject = null;
                         return;
                     }
 
@@ -166,7 +162,8 @@ namespace Lykos.Modules
                         {
                             IfMetagenerationMatch = storageObject.Metageneration
                         });
-                    } catch(Google.GoogleApiException e)
+                    }
+                    catch (Google.GoogleApiException e)
                     {
                         await msg.ModifyAsync($"<:xmark:314349398824058880> A Google Cloud API error occured during object updating! ```\n{e.Message}```");
                         return;

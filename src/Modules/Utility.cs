@@ -10,8 +10,7 @@ namespace Lykos.Modules
 {
     class Utility
     {
-
-        string[] validExts = { "gif", "png", "jpg", "webp" };
+        readonly string[] validExts = { "gif", "png", "jpg", "webp" };
 
         [Command("avatar"), Aliases("avy")]
         [Description("Shows the avatar of a user.")]

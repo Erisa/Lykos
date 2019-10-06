@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DSharpPlus.Entities;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using DSharpPlus;
-using DSharpPlus.CommandsNext;
-using DSharpPlus.Entities;
 
 namespace Lykos.Modules
 {
     public class Helpers
     {
-        private static ulong dbotsGuildId = 110373943822540800;
+        private static readonly ulong dbotsGuildId = 110373943822540800;
 
         public static OSPlatform GetOSPlatform()
         {
@@ -29,7 +25,7 @@ namespace Lykos.Modules
             return osPlatform;
         }
 
-        public static ShellResult runShellCommand(String command)
+        public static ShellResult RunShellCommand(String command)
         {
             string fileName;
             string arguments;
@@ -85,7 +81,7 @@ namespace Lykos.Modules
 
         public enum DbotsPermLevel { nothing, botDev, Helper, siteHelper, mod, owner = int.MaxValue }
 
-        public static DbotsPermLevel getDbotsPerm(DiscordMember target)
+        public static DbotsPermLevel GetDbotsPerm(DiscordMember target)
         {
             if (target.Guild.Id != dbotsGuildId)
             {
@@ -125,7 +121,7 @@ namespace Lykos.Modules
             }
         }
 
-        public static Boolean isDbotsBooster(DiscordMember target)
+        public static Boolean IsDbotsBooster(DiscordMember target)
         {
             var boosterRole = target.Guild.GetRole(585535347753222157);
             return target.Roles.Contains(boosterRole);

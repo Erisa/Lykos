@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DSharpPlus;
+﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
-using Newtonsoft.Json;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Lykos.Modules
 {
@@ -109,7 +106,7 @@ namespace Lykos.Modules
                 return;
             }
 
-            if (Helpers.getDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
+            if (Helpers.GetDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
             {
                 await ctx.RespondAsync($":x: **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only mute bots)");
                 return;
@@ -166,7 +163,7 @@ namespace Lykos.Modules
                 return;
             }
 
-            if (Helpers.getDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
+            if (Helpers.GetDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
             {
                 await ctx.RespondAsync($":x: **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only mute bots)");
                 return;
@@ -219,7 +216,7 @@ namespace Lykos.Modules
                 return;
             }
 
-            if (Helpers.getDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
+            if (Helpers.GetDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
             {
                 await ctx.RespondAsync($":x: **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only unmute bots)");
                 return;

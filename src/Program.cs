@@ -23,12 +23,12 @@ namespace Lykos
         public static HasteBinClient hasteUploader = new HasteBinClient("https://paste.erisa.moe");
         public static InteractivityModule interactivity;
 
-        static void Main(string[] args)
+        static void Main()
         {
-            MainAsync(args).ConfigureAwait(false).GetAwaiter().GetResult();
+            MainAsync().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
-        static async Task MainAsync(string[] args)
+        static async Task MainAsync()
         {
             var json = "";
             using (var fs = File.OpenRead("config.json"))
