@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.CommandsNext;
+﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using static Lykos.Modules.Helpers;
 
 namespace Lykos.Modules
@@ -15,9 +12,9 @@ namespace Lykos.Modules
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class RequireDbotsPermAttribute : CheckBaseAttribute
     {
-        public dbotsPermLevel TargetLvl { get; set; }
+        public DbotsPermLevel TargetLvl { get; set; }
 
-        public RequireDbotsPermAttribute(dbotsPermLevel targetLvl )
+        public RequireDbotsPermAttribute(DbotsPermLevel targetLvl)
         {
             this.TargetLvl = targetLvl;
         }
@@ -31,7 +28,8 @@ namespace Lykos.Modules
             if (level >= this.TargetLvl)
             {
                 return true;
-            } else
+            }
+            else
             {
                 await ctx.RespondAsync($"<:xmark:314349398824058880> You don't have permission to access this command! ```\n" +
                         $"Required permission level:  {this.TargetLvl.ToString("d")} ({this.TargetLvl.ToString().ToUpper()})\n" +
@@ -50,7 +48,8 @@ namespace Lykos.Modules
             if (ctx.Guild.Id == 110373943822540800)
             {
                 return true;
-            } else
+            }
+            else
             {
                 await ctx.RespondAsync("<:xmark:314349398824058880> This command only works in **Discord Bots**!");
                 return false;
@@ -96,7 +95,7 @@ namespace Lykos.Modules
             Command("undev"),
             Aliases("takedev"),
             Dbots,
-            RequireDbotsPerm(dbotsPermLevel.Mod),
+            RequireDbotsPerm(DbotsPermLevel.mod),
             Description("Removes Bot Developer from a user. Only usable in Discord Bots.")
         ]
         public async Task Undev(CommandContext ctx, [Description("The user to remove a botdev role from.")] DiscordMember target, [Description("The reason for removing the role.")] params string[] reason)
@@ -122,7 +121,7 @@ namespace Lykos.Modules
 
         [Command("givedev")]
         [Dbots]
-        [RequireDbotsPerm(dbotsPermLevel.Mod)]
+        [RequireDbotsPerm(DbotsPermLevel.mod)]
         [Description("Gives Bot Developer to a user. Only usable in Discord Bots.")]
         public async Task Givedev(CommandContext ctx, [Description("The user to give a botdev role to.")] DiscordMember target, [Description("The reason for adding the role.")] params string[] reason)
         {
@@ -147,7 +146,7 @@ namespace Lykos.Modules
 
         [Command("list")]
         [Dbots]
-        [RequireDbotsPerm(dbotsPermLevel.Helper)]
+        [RequireDbotsPerm(DbotsPermLevel.Helper)]
         [Aliases("listed", "takeunlisted")]
         [Description("Removes Bot Developer from a user. Only usable in Discord Bots.")]
         public async Task List(CommandContext ctx, [Description("The user to remove a botdev role from.")] DiscordMember target, [Description("The reason for removing the role.")] params string[] reason)
@@ -177,7 +176,7 @@ namespace Lykos.Modules
 
         [Command("unlist")]
         [Dbots]
-        [RequireDbotsPerm(dbotsPermLevel.Helper)]
+        [RequireDbotsPerm(DbotsPermLevel.Helper)]
         [Description("Gives Bot Developer to a user. Only usable in Discord Bots.")]
         public async Task Unlist(CommandContext ctx, [Description("The user to give a botdev role to.")] DiscordMember target, [Description("The reason for adding the role.")] params string[] reason)
         {
@@ -203,7 +202,7 @@ namespace Lykos.Modules
                 await ctx.RespondAsync($"<:check:314349398811475968> Unlisted given to **{target.Username}#{target.Discriminator}**!");
             }
 
-            
+
         }
 
         [Command("checkperms")]
@@ -213,9 +212,9 @@ namespace Lykos.Modules
             if (target == null)
                 target = ctx.Member;
 
-            dbotsPermLevel level = Helpers.getDbotsPerm(target);
+            DbotsPermLevel level = Helpers.getDbotsPerm(target);
             String msg = $"The permission level of **{target.Username}#{target.Discriminator}** is `{level.ToString("d")}` (`{level.ToString().ToUpper()}`)";
-            if (level >= dbotsPermLevel.botDev)
+            if (level >= DbotsPermLevel.botDev)
             {
                 msg = msg + "\n- <:check:314349398811475968> User is a Bot Developer or higher.";
             }
@@ -224,7 +223,7 @@ namespace Lykos.Modules
                 msg = msg + "\n- <:xmark:314349398824058880> User is not a Bot Developer.";
             }
 
-            if (level >= dbotsPermLevel.Helper)
+            if (level >= DbotsPermLevel.Helper)
             {
                 msg = msg + "\n- <:check:314349398811475968> User has access to Verification Helper commands.";
             }
@@ -233,7 +232,7 @@ namespace Lykos.Modules
                 msg = msg + "\n- <:xmark:314349398824058880> User does not have access to Verification Helper commands.";
             }
 
-            if (level >= dbotsPermLevel.SiteHelper)
+            if (level >= DbotsPermLevel.siteHelper)
             {
                 msg = msg + "\n- <:check:314349398811475968> User has access to Site Helper commands.";
             }
@@ -242,7 +241,7 @@ namespace Lykos.Modules
                 msg = msg + "\n- <:xmark:314349398824058880> User does not have access to Site Helper commands.";
             }
 
-            if (level >= dbotsPermLevel.Mod)
+            if (level >= DbotsPermLevel.mod)
             {
                 msg = msg + "\n- <:check:314349398811475968> User has access to Moderator commands.";
             }
@@ -251,7 +250,7 @@ namespace Lykos.Modules
                 msg = msg + "\n- <:xmark:314349398824058880> User does not have access to Moderator commands.";
             }
 
-            if (level >= dbotsPermLevel.Owner)
+            if (level >= DbotsPermLevel.owner)
             {
                 msg = msg + "\n- <:check:314349398811475968> User is the owner of Discord Bots.";
             }
@@ -263,7 +262,8 @@ namespace Lykos.Modules
             if (Helpers.isDbotsBooster(target))
             {
                 msg = msg + "- <:check:314349398811475968> User is boosting Discord Bots.";
-            } else
+            }
+            else
             {
                 msg = msg + "- <:xmark:314349398824058880> User is not boosting Discord Bots.";
             }

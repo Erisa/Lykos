@@ -98,7 +98,7 @@ namespace Lykos.Modules
 
 
         [Command("mute")]
-        [Dbots, RequireDbotsPerm(Helpers.dbotsPermLevel.Helper)]
+        [Dbots, RequireDbotsPerm(Helpers.DbotsPermLevel.Helper)]
         [Dbots]
         public async Task Mute(CommandContext ctx, DiscordMember target, [RemainingText] string reason = "No reason provided.")
         {
@@ -109,7 +109,7 @@ namespace Lykos.Modules
                 return;
             }
 
-            if (Helpers.getDbotsPerm(ctx.Member) == Helpers.dbotsPermLevel.Helper && !target.IsBot)
+            if (Helpers.getDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
             {
                 await ctx.RespondAsync($":x: **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only mute bots)");
                 return;
@@ -156,7 +156,7 @@ namespace Lykos.Modules
 
         [Command("supermute")]
         [Aliases("megamute")]
-        [Dbots, RequireDbotsPerm(Helpers.dbotsPermLevel.Helper)]
+        [Dbots, RequireDbotsPerm(Helpers.DbotsPermLevel.Helper)]
         public async Task SuperMute(CommandContext ctx, DiscordMember target, [RemainingText] string reason = "No reason provided.")
         {
             var botMember = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
@@ -166,7 +166,7 @@ namespace Lykos.Modules
                 return;
             }
 
-            if (Helpers.getDbotsPerm(ctx.Member) == Helpers.dbotsPermLevel.Helper && !target.IsBot)
+            if (Helpers.getDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
             {
                 await ctx.RespondAsync($":x: **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only mute bots)");
                 return;
@@ -209,7 +209,7 @@ namespace Lykos.Modules
 
 
         [Command("unmute")]
-        [Dbots, RequireDbotsPerm(Helpers.dbotsPermLevel.Helper)]
+        [Dbots, RequireDbotsPerm(Helpers.DbotsPermLevel.Helper)]
         public async Task Unmute(CommandContext ctx, DiscordMember target, [RemainingText] String reason = "No reason provided.")
         {
             var botMember = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
@@ -219,7 +219,7 @@ namespace Lykos.Modules
                 return;
             }
 
-            if (Helpers.getDbotsPerm(ctx.Member) == Helpers.dbotsPermLevel.Helper && !target.IsBot)
+            if (Helpers.getDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
             {
                 await ctx.RespondAsync($":x: **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only unmute bots)");
                 return;

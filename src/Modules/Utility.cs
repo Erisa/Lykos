@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.CommandsNext;
+﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using Newtonsoft.Json;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Lykos.Modules
 {
@@ -29,17 +26,19 @@ namespace Lykos.Modules
             if (format == null)
             {
                 format = hash.StartsWith("a_") ? "gif" : "png";
-            } else if (!validExts.Any(format.Contains))
+            }
+            else if (!validExts.Any(format.Contains))
             {
                 await ctx.RespondAsync("<:xmark:314349398824058880> You supplied an invalid format, either give none or one of the following: `gif`, `png`, `jpg`, `webp`");
                 return;
-            } else if (format == "gif" && !hash.StartsWith("a_"))
+            }
+            else if (format == "gif" && !hash.StartsWith("a_"))
             {
                 await ctx.RespondAsync("<:xmark:314349398824058880> The format of `gif` only applies to animated avatars.\nThe user you are trying to lookup does not have an animated avatar.");
                 return;
             }
 
-            string avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{hash}.{format}?size=1024"; 
+            string avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{hash}.{format}?size=1024";
             var embed = new DiscordEmbedBuilder()
             .WithColor(new DiscordColor(0xC63B68))
             .WithTimestamp(DateTime.UtcNow)

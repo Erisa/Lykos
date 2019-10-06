@@ -12,7 +12,7 @@ namespace Lykos.Modules
 {
     public class Helpers
     {
-        static ulong dbotsGuildId = 110373943822540800;
+        private static ulong dbotsGuildId = 110373943822540800;
 
         public static OSPlatform GetOSPlatform()
         {
@@ -83,13 +83,13 @@ namespace Lykos.Modules
             }
         }
 
-        public enum dbotsPermLevel { nothing, botDev, Helper, SiteHelper, Mod, Owner = int.MaxValue }
+        public enum DbotsPermLevel { nothing, botDev, Helper, siteHelper, mod, owner = int.MaxValue }
 
-        public static dbotsPermLevel getDbotsPerm(DiscordMember target)
+        public static DbotsPermLevel getDbotsPerm(DiscordMember target)
         {
             if (target.Guild.Id != dbotsGuildId)
             {
-                return dbotsPermLevel.nothing;
+                return DbotsPermLevel.nothing;
             }
 
             var modRole = target.Guild.GetRole(113379036524212224);
@@ -98,29 +98,30 @@ namespace Lykos.Modules
             var siteHelperRole = target.Guild.GetRole(598574793712992286);
             var botDevRole = target.Guild.GetRole(110375768374136832);
 
+
             if (target.IsOwner)
             {
-                return dbotsPermLevel.Owner;
+                return DbotsPermLevel.owner;
             }
             else if (target.Roles.Contains(modRole) || target.Roles.Contains(fakeMod))
             {
-                return dbotsPermLevel.Mod;
+                return DbotsPermLevel.mod;
             }
             else if (target.Roles.Contains(siteHelperRole))
             {
-                return dbotsPermLevel.SiteHelper;
+                return DbotsPermLevel.siteHelper;
             }
             else if (target.Roles.Contains(helperRole))
             {
-                return dbotsPermLevel.Helper;
+                return DbotsPermLevel.Helper;
             }
             else if (target.Roles.Contains(botDevRole))
             {
-                return dbotsPermLevel.botDev;
+                return DbotsPermLevel.botDev;
             }
             else
             {
-                return dbotsPermLevel.nothing;
+                return DbotsPermLevel.nothing;
             }
         }
 
