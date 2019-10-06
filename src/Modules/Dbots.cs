@@ -24,6 +24,9 @@ namespace Lykos.Modules
             if (ctx.Command.Name == "help")
                 return false;
 
+            if (ctx.Guild.Id != 110373943822540800)
+                return false;
+
             var level = GetDbotsPerm(ctx.Member);
             if (level >= this.TargetLvl)
             {
@@ -45,15 +48,7 @@ namespace Lykos.Modules
     {
         public override async Task<bool> CanExecute(CommandContext ctx, bool help)
         {
-            if (ctx.Guild.Id == 110373943822540800)
-            {
-                return true;
-            }
-            else
-            {
-                await ctx.RespondAsync("<:xmark:314349398824058880> This command only works in **Discord Bots**!");
-                return false;
-            }
+            return ctx.Guild.Id == 110373943822540800;
         }
     }
 

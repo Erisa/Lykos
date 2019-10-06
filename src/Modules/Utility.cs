@@ -14,7 +14,7 @@ namespace Lykos.Modules
 
         [Command("avatar"), Aliases("avy")]
         [Description("Shows the avatar of a user.")]
-        public async Task Avatar(CommandContext ctx, [Description("The user whose avatar will be shown.")] DiscordMember target = null, [Description("The format of the resulting image (jpg, png, gif, webp). Defaults to png or gif.")] string format = null)
+        public async Task Avatar(CommandContext ctx, [Description("The user whose avatar will be shown.")] DiscordMember target = null, [Description("The format of the resulting image (jpg, png, gif, webp).")] string format = "png or gif")
         {
             if (target == null)
                 target = ctx.Member;
@@ -22,7 +22,7 @@ namespace Lykos.Modules
             var hash = target.AvatarHash;
 
 
-            if (format == null)
+            if (format == null ||  format == "png or gif")
             {
                 format = hash.StartsWith("a_") ? "gif" : "png";
             }
