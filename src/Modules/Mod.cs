@@ -30,14 +30,15 @@ namespace Lykos.Modules
                 {
                     if (AllowedToMod(await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id), member))
                     {
-                        await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to ban **{target.Username}#{target.Discriminator}**!");
+                        await member.BanAsync(0, $"[Ban by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}");
+                        await ctx.RespondAsync($"🔨 Succesfully bent **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
                         return;
                     }
                     else
                     {
-                        await member.BanAsync(0, $"[Ban by {ctx.User.Username}#{ctx.User.Discriminator}] ${reason}");
-                        await ctx.RespondAsync($"🔨 Succesfully bent **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
+                        await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to ban **{target.Username}#{target.Discriminator}**!");
                         return;
+                        
                     }
                 }
                 else
@@ -68,13 +69,13 @@ namespace Lykos.Modules
             {
                 if (AllowedToMod(await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id), member))
                 {
-                    await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to kick **{target.Username}#{target.Discriminator}**!");
+                    await member.RemoveAsync($"[Kick by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}");
+                    await ctx.RespondAsync($"\U0001f462 Succesfully ejected **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
                     return;
                 }
                 else
                 {
-                    await member.RemoveAsync($"[Kick by {ctx.User.Username}#{ctx.User.Discriminator}] ${reason}");
-                    await ctx.RespondAsync($"🔨 Succesfully ejected **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
+                    await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to kick **{target.Username}#{target.Discriminator}**!");
                     return;
                 }
             }
@@ -86,12 +87,14 @@ namespace Lykos.Modules
         }
 
         // If invoker is allowed to mod target.
-        public bool AllowedToMod(DiscordMember invoker, DiscordMember target)
+        public static bool AllowedToMod(DiscordMember invoker, DiscordMember target)
         {
-            var invoker_hier = invoker.IsOwner ? int.MaxValue : (invoker.Roles.Count() == 0 ? 0 : invoker.Roles.Max(x => x.Position));
-            var target_hier = target.IsOwner ? int.MaxValue : (target.Roles.Count() == 0 ? 0 : target.Roles.Max(x => x.Position));
+            return GetHier(invoker) > GetHier(target);
+        }
 
-            return invoker_hier > target_hier;
+        public static int GetHier(DiscordMember target)
+        {
+            return target.IsOwner ? int.MaxValue : (target.Roles.Count() == 0 ? 0 : target.Roles.Max(x => x.Position));
         }
 
 

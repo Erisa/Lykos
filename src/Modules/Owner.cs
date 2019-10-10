@@ -4,6 +4,7 @@ using DSharpPlus.Entities;
 using Google.Cloud.Storage.V1;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using static Lykos.Modules.Helpers;
@@ -13,6 +14,31 @@ namespace Lykos.Modules
 
     class Owner
     {
+
+        [Group("debug")]
+        [Aliases("d")]
+        [RequireOwner]
+        class DebugCmds
+        {
+            [Command("modcheck")]
+            [Aliases("mod")]
+            public async Task Modcheck(CommandContext ctx, DiscordMember firstMember, [RemainingText] DiscordMember target = null)
+            {
+                if (target == null)
+                {
+                    target = firstMember;
+                    firstMember = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
+                }
+
+                var invoker_hier = Mod.GetHier(firstMember);
+                var target_hier = Mod.GetHier(target);
+
+                bool allowed = Mod.AllowedToMod(firstMember, target);
+
+                await ctx.RespondAsync($"According to my calulcations, **{firstMember.Username}#{firstMember.Discriminator}** has a Role Hierachy of `{invoker_hier.ToString()}`" +
+                    $"and **{target.Username}#{target.Discriminator}** has `{target_hier.ToString()}.`\nFrom this, I can conclude that the answer is `{allowed.ToString()}`.");
+            }
+        }
 
         [Group("system")]
         [Aliases("s", "sys")]
