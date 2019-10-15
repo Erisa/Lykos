@@ -12,7 +12,9 @@ namespace Lykos.Modules
 
         public static OSPlatform GetOSPlatform()
         {
-            OSPlatform osPlatform = OSPlatform.Create("Other Platform");
+            // Default to "Unknown" platform.
+            OSPlatform osPlatform = OSPlatform.Create("Unknown");
+
             // Check if it's windows 
             bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
             osPlatform = isWindows ? OSPlatform.Windows : osPlatform;
@@ -22,6 +24,9 @@ namespace Lykos.Modules
             // Check if it's Linux 
             bool isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
             osPlatform = isLinux ? OSPlatform.Linux : osPlatform;
+            // Check if it's FreeBSD
+            bool isBSD = RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
+            osPlatform = isBSD ? OSPlatform.FreeBSD : osPlatform;
             return osPlatform;
         }
 

@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using static Lykos.Modules.Helpers;
 
@@ -37,6 +38,18 @@ namespace Lykos.Modules
 
                 await ctx.RespondAsync($"According to my calulcations, **{firstMember.Username}#{firstMember.Discriminator}** has a Role Hierachy of `{invoker_hier.ToString()}`" +
                     $"and **{target.Username}#{target.Discriminator}** has `{target_hier.ToString()}`.\nFrom this, I can conclude that the answer is `{allowed.ToString()}`.");
+            }
+
+            [Command("sysinfo")]
+            public async Task Sysinfo(CommandContext ctx)
+            {
+                await ctx.RespondAsync($"🤔 Hmm, based on my research it seems that:\n" +
+                    $"- This device is calling itself `{System.Environment.MachineName}`\n" +
+                    $"- The OS platform is `{Helpers.GetOSPlatform().ToString()}`\n" +
+                    $"- The OS describes itself as `{RuntimeInformation.OSDescription}`\n" +
+                    $"- The OS architecture appears to be `{RuntimeInformation.OSArchitecture}`\n" +
+                    $"- The framework I'm running from is `{RuntimeInformation.FrameworkDescription}`\n");
+
             }
         }
 
