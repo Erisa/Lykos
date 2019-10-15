@@ -36,7 +36,7 @@ namespace Lykos.Modules
                 bool allowed = Mod.AllowedToMod(firstMember, target);
 
                 await ctx.RespondAsync($"According to my calulcations, **{firstMember.Username}#{firstMember.Discriminator}** has a Role Hierachy of `{invoker_hier.ToString()}`" +
-                    $"and **{target.Username}#{target.Discriminator}** has `{target_hier.ToString()}.`\nFrom this, I can conclude that the answer is `{allowed.ToString()}`.");
+                    $"and **{target.Username}#{target.Discriminator}** has `{target_hier.ToString()}`.\nFrom this, I can conclude that the answer is `{allowed.ToString()}`.");
             }
         }
 

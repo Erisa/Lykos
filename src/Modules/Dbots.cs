@@ -261,6 +261,7 @@ namespace Lykos.Modules
             {
                 msg += "- <:xmark:314349398824058880> User is not boosting Discord Bots.";
             }
+            msg += $"\n- `{Mod.GetHier(ctx.Member)}` is this users Role Hierarchy.";
 
 
             await ctx.RespondAsync(msg);
