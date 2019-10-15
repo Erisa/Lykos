@@ -133,6 +133,26 @@ namespace Lykos.Modules
         [Hidden]
         class Eri
         {
+            [Command("gibinvite")]
+            [Description("???")]
+            public async Task Gibinvite(CommandContext ctx, int max_uses = 1, int age = 0)
+            {
+                // this whole command is hardcoded so im making the decision to hardcode this too
+                if (ctx.User.Id != 228574821590499329)
+                {
+                    await ctx.RespondAsync("<:xmark:314349398824058880> This command can only be used by Erisa!");
+                    return;
+                }
+
+                var channel = await ctx.Client.GetChannelAsync(230004550973521932);
+                var inv = await channel.CreateInviteAsync(age, max_uses, false, true, $"gibinvite command used in {ctx.Channel.Id}");
+
+                DiscordDmChannel chan = await ctx.Member.CreateDmChannelAsync();
+                await chan.SendMessageAsync($"Here's the invite you asked for: https://discord.gg/{inv.Code}");
+                await ctx.RespondAsync($"<:check:314349398811475968> I've DMed you an invite to **Erisa's Corner** with `{max_uses}` use(s) and an age of `{age}`!");
+                
+            }
+
             [Group("update")]
             [RequireOwner]
             class Update
