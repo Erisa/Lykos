@@ -49,7 +49,6 @@ namespace Lykos.Modules
                     $"- The OS describes itself as `{RuntimeInformation.OSDescription}`\n" +
                     $"- The OS architecture appears to be `{RuntimeInformation.OSArchitecture}`\n" +
                     $"- The framework I'm running from is `{RuntimeInformation.FrameworkDescription}`\n");
-
             }
         }
 

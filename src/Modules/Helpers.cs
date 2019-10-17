@@ -132,5 +132,10 @@ namespace Lykos.Modules
             return target.Roles.Contains(boosterRole);
         }
 
+        public static string sanitiseEveryone(string input)
+        {
+            return input.Replace("@everyone", "@\u200Beveryone").Replace("@here", "@\u200Bhere");
+        }
+
     }
 }
