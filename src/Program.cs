@@ -126,17 +126,5 @@ namespace Lykos
 
         [JsonProperty("youtube_data_api")]
         public string YoutubeData { get; private set; }
-
-        [JsonProperty("gravatar")]
-        public GravatarConfig Gravatar {get; private set; }
-    }
-
-    public class GravatarConfig
-    {
-        [JsonProperty("email")]
-        public string Email { get; private set; }
-
-        [JsonProperty("password")]
-        public string Password { get; private set; }
     }
 }

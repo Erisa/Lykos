@@ -1,8 +1,4 @@
 {
   "token": "MzA2MTQyMjU3ODE4NjMyMTkz.EXAMPLETOKEN",
-  "prefixes": [ "?" ],
-  "gravatar": {
-    "email": "okfam@example.com",
-    "password":  "hunter2"
-  }
+  "prefixes": [ "?" ]
 }

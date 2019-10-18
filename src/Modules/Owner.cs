@@ -1,5 +1,4 @@
-﻿using CookComputing.XmlRpc;
-using DSharpPlus.CommandsNext;
+﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using Google.Cloud.Storage.V1;
@@ -13,7 +12,8 @@ using static Lykos.Modules.Helpers;
 
 namespace Lykos.Modules
 {
-    partial class Owner
+
+    class Owner
     {
 
         [Group("debug")]
@@ -108,12 +108,6 @@ namespace Lykos.Modules
             [Command("sh")]
             public async Task Shell(CommandContext ctx, [RemainingText] string command)
             {
-                if (Helpers.GetOSPlatform() == OSPlatform.Windows)
-                {
-                    await ctx.RespondAsync(" <:xmark:314349398824058880> This command doesn't work on Windows yet!");
-                    return;
-                }
-
                 var msg = await ctx.RespondAsync("executing..");
 
                 ShellResult finishedShell = Helpers.RunShellCommand(command);
@@ -149,7 +143,7 @@ namespace Lykos.Modules
         [Description("Commands that manage data across Erisas things and stuff.")]
         [RequireOwner]
         [Hidden]
-        partial class Eri
+        class Eri
         {
             [Command("gibinvite")]
             [Description("???")]
@@ -173,15 +167,12 @@ namespace Lykos.Modules
 
             [Group("update")]
             [RequireOwner]
-            partial class Update
+            class Update
             {
-
                 [Command("avatar")]
                 public async Task Avatar(CommandContext ctx)
                 {
-                    var msg = await ctx.RespondAsync("<a:loading:585958072850317322> - Uploading to Google Cloud...\n<a:loading:585958072850317322> - Pending Gravatar upload.");
-
-
+                    var msg = await ctx.RespondAsync("Updating network avatar.. if no status message is displayed soon, assume a fatal error occured.");
                     string avatarUrl = $"https://cdn.discordapp.com/avatars/{ctx.User.Id}/{ctx.User.AvatarHash}.png?size=1024";
                     using (var client = new WebClient())
                     {
@@ -236,21 +227,8 @@ namespace Lykos.Modules
                         return;
                     }
 
-                    await msg.ModifyAsync("<:check:314349398811475968> - Uploaded to Google Cloud!\n<a:loading:585958072850317322> - Uploading to Gravatar...");
+                    await msg.ModifyAsync("<:check:314349398811475968> Should be done!!");
 
-                    // and thus the fun begins.
-
-                    string email_hash = Helpers.CalculateMD5Hash(Program.cfgjson.Gravatar.Email);
-
-                    IGravatarApi gravatar = XmlRpcProxyGen.Create<IGravatarApi>();
-
-                    gravatar.Url = $"http://gravatar.com/xmlrpc?{email_hash}";
-
-                    var userImage = gravatar.saveUrl(avatarUrl, 0, Program.cfgjson.Gravatar.Password);
-
-                    gravatar.useImage(userImage, new string[] { Program.cfgjson.Gravatar.Email }, Program.cfgjson.Gravatar.Password);
-
-                    await msg.ModifyAsync("<:check:314349398811475968> - Uploaded to Google Cloud!\n<:check:314349398811475968> - Uploaded to Gravatar!");
                 }
             }
         }
