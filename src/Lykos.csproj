@@ -20,6 +20,7 @@
     <PackageReference Include="DSharpPlus.Interactivity" Version="3.2.3" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="2.3.0" />
     <PackageReference Include="ini" Version="1.0.7" />
+    <PackageReference Include="Kveer.XmlRPC" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup>

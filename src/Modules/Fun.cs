@@ -24,7 +24,7 @@ namespace Lykos.Modules
 
         [Command("headpat")]
         [Description("Give someone a good headpat, or treat yourself to one!")]
-        public async Task Headpat(CommandContext ctx, [Description("The person to give a headpat to!")] string target = "me")
+        public async Task Headpat(CommandContext ctx, [Description("The person to give a headpat to!"), RemainingText] string target = "me")
         {
             target = Helpers.sanitiseEveryone(target);
 
@@ -35,6 +35,12 @@ namespace Lykos.Modules
             {
                 await ctx.RespondAsync($"<:blobpats:585804188735504435> {target} was given a big headpat by {ctx.User.Username}!");
             }
+        }
+
+        [Command("pingeri")]
+        public async Task Pingeri(CommandContext ctx)
+        {
+            await ctx.RespondAsync("<@228574821590499329>");
         }
     }
 }
