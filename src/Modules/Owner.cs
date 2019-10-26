@@ -106,13 +106,14 @@ namespace Lykos.Modules
             }
 
             [Command("sh")]
+            [Aliases("cmd")]
             public async Task Shell(CommandContext ctx, [RemainingText] string command)
             {
-                if (Helpers.GetOSPlatform() == OSPlatform.Windows)
-                {
-                    await ctx.RespondAsync(" <:xmark:314349398824058880> This command doesn't work on Windows yet!");
-                    return;
-                }
+                // if (Helpers.GetOSPlatform() == OSPlatform.Windows)
+                // {
+                //    await ctx.RespondAsync(" <:xmark:314349398824058880> This command doesn't work on Windows yet!");
+                //    return;
+                // }
 
                 var msg = await ctx.RespondAsync("executing..");
 
@@ -177,9 +178,22 @@ namespace Lykos.Modules
             {
 
                 [Command("avatar")]
-                public async Task Avatar(CommandContext ctx)
+                public async Task Avatar(CommandContext ctx, string arg = "No")
                 {
-                    var msg = await ctx.RespondAsync("<a:loading:585958072850317322> - Uploading to Google Cloud...\n<a:loading:585958072850317322> - Pending Gravatar upload.");
+
+                    DiscordMessage msg;
+                    string objectName;
+
+                    if (arg != "No")
+                    {
+                        msg = await ctx.RespondAsync($"WARNING: You have opted to update the \"{arg}\" avatar. This will not update the \"current\" avatar.\n<a:loading:585958072850317322> - Uploading to Google Cloud...");
+                        objectName = $"avatars/{arg}.png";
+                    } else
+                    {
+
+                        msg = await ctx.RespondAsync("<a:loading:585958072850317322> - Uploading to Google Cloud...");
+                        objectName = "avatars/current.png";
+                    }
 
 
                     string avatarUrl = $"https://cdn.discordapp.com/avatars/{ctx.User.Id}/{ctx.User.AvatarHash}.png?size=1024";
@@ -187,7 +201,6 @@ namespace Lykos.Modules
                     {
                         client.DownloadFile(avatarUrl, "AVATAR.png");
                     }
-                    var objectName = "avatars/current.png";
 
                     Google.Apis.Storage.v1.Data.Object storageObject;
                     using (var f = File.OpenRead("AVATAR.png"))
@@ -236,21 +249,8 @@ namespace Lykos.Modules
                         return;
                     }
 
-                    await msg.ModifyAsync("<:check:314349398811475968> - Uploaded to Google Cloud!\n<a:loading:585958072850317322> - Uploading to Gravatar...");
+                    await msg.ModifyAsync($"WARNING: You have opted to update the \"{arg}\" avatar. This will not update the \"current\" avatar.\n<:check:314349398811475968> - Uploaded to Google Cloud!");
 
-                    // and thus the fun begins.
-
-                    string email_hash = Helpers.CalculateMD5Hash(Program.cfgjson.Gravatar.Email);
-
-                    IGravatarApi gravatar = XmlRpcProxyGen.Create<IGravatarApi>();
-
-                    gravatar.Url = $"http://gravatar.com/xmlrpc?{email_hash}";
-
-                    var userImage = gravatar.saveUrl(avatarUrl, 0, Program.cfgjson.Gravatar.Password);
-
-                    gravatar.useImage(userImage, new string[] { Program.cfgjson.Gravatar.Email }, Program.cfgjson.Gravatar.Password);
-
-                    await msg.ModifyAsync("<:check:314349398811475968> - Uploaded to Google Cloud!\n<:check:314349398811475968> - Uploaded to Gravatar!");
                 }
             }
         }

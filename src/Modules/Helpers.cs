@@ -42,8 +42,8 @@ namespace Lykos.Modules
             {
                 // doesnt function correctly
                 // TODO: make it function correctly
-                fileName = "C:/Windows/system32/cmd.exe";
-                arguments = $"/C {escapedArgs} 2>&1";
+                fileName = "C:\\Windows\\system32\\cmd.exe";
+                arguments = $"/C \"{escapedArgs}\"";
             }
             else
             {
