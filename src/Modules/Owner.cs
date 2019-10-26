@@ -178,22 +178,14 @@ namespace Lykos.Modules
             {
 
                 [Command("avatar")]
-                public async Task Avatar(CommandContext ctx, string arg = "No")
+                public async Task Avatar(CommandContext ctx, string name = "current")
                 {
 
                     DiscordMessage msg;
                     string objectName;
 
-                    if (arg != "No")
-                    {
-                        msg = await ctx.RespondAsync($"WARNING: You have opted to update the \"{arg}\" avatar. This will not update the \"current\" avatar.\n<a:loading:585958072850317322> - Uploading to Google Cloud...");
-                        objectName = $"avatars/{arg}.png";
-                    } else
-                    {
-
-                        msg = await ctx.RespondAsync("<a:loading:585958072850317322> - Uploading to Google Cloud...");
-                        objectName = "avatars/current.png";
-                    }
+                    msg = await ctx.RespondAsync($"Selected name: `{name}`\n<a:loading:585958072850317322> - Uploading to Google Cloud...");
+                    objectName = $"avatars/{name}.png";
 
 
                     string avatarUrl = $"https://cdn.discordapp.com/avatars/{ctx.User.Id}/{ctx.User.AvatarHash}.png?size=1024";
@@ -249,8 +241,7 @@ namespace Lykos.Modules
                         return;
                     }
 
-                    await msg.ModifyAsync($"WARNING: You have opted to update the \"{arg}\" avatar. This will not update the \"current\" avatar.\n<:check:314349398811475968> - Uploaded to Google Cloud!");
-
+                    await msg.ModifyAsync($"Selected name: `{name}`\n<:check:314349398811475968> - Uploaded to Google Cloud!");
                 }
             }
         }
