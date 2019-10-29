@@ -110,7 +110,7 @@ namespace Lykos.Modules
                 return;
             }
 
-            if (Helpers.GetDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
+            if (Helpers.GetDbotsPerm(ctx.Member) < Helpers.DbotsPermLevel.mod && !target.IsBot)
             {
                 await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only mute bots)");
                 return;
@@ -216,7 +216,7 @@ namespace Lykos.Modules
                 return;
             }
 
-            if (Helpers.GetDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
+            if (Helpers.GetDbotsPerm(ctx.Member) < Helpers.DbotsPermLevel.mod && !target.IsBot)
             {
                 await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only mute bots)");
                 return;
@@ -247,7 +247,7 @@ namespace Lykos.Modules
                 }
                 else
                 {
-                    await ctx.RespondAsync($"<:xmark:314349398824058880>  **{target.Username}#{target.Discriminator}**!");
+                    await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to supermute **{target.Username}#{target.Discriminator}**!");
                     return;
                 }
             }
@@ -269,7 +269,7 @@ namespace Lykos.Modules
                 return;
             }
 
-            if (Helpers.GetDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
+            if (Helpers.GetDbotsPerm(ctx.Member) < Helpers.DbotsPermLevel.mod && !target.IsBot)
             {
                 await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only unmute bots)");
                 return;
@@ -304,18 +304,19 @@ namespace Lykos.Modules
                 }
                 else
                 {
-                    await ctx.RespondAsync($"<:xmark:314349398824058880> You aren't allowed to unmute **{target.Username}#{target.Discriminator}**!");
+                    await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to unmute **{target.Username}#{target.Discriminator}**!");
                     return;
                 }
             }
             else
             {
-                await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to unmute **{target.Username}#{target.Discriminator}**!");
+                await ctx.RespondAsync($"<:xmark:314349398824058880> You aren't allowed to unmute **{target.Username}#{target.Discriminator}**!");
             }
         }
 
 
         [Command("noreadgeneral")]
+        [Aliases("bully")]
         [Dbots, RequireDbotsPerm(Helpers.DbotsPermLevel.Helper)]
         public async Task Noreadgeneral(CommandContext ctx, DiscordMember target, [RemainingText] string reason = "No reason provided.")
         {
@@ -326,7 +327,7 @@ namespace Lykos.Modules
                 return;
             }
 
-            if (Helpers.GetDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
+            if (Helpers.GetDbotsPerm(ctx.Member) < Helpers.DbotsPermLevel.mod  && !target.IsBot)
             {
                 await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only bully bots)");
                 return;
@@ -351,18 +352,19 @@ namespace Lykos.Modules
                 }
                 else
                 {
-                    await ctx.RespondAsync($"<:xmark:314349398824058880> You aren't allowed to bully **{target.Username}#{target.Discriminator}**!");
+                    await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to bully **{target.Username}#{target.Discriminator}**!");
                     return;
                 }
             }
             else
             {
-                await ctx.RespondAsync($"<:xmark:314349398824058880>  I don't have permission to bully **{target.Username}#{target.Discriminator}**!");
+                await ctx.RespondAsync($"<:xmark:314349398824058880> You aren't allowed to bully **{target.Username}#{target.Discriminator}**!");
             }
         }
 
 
         [Command("canreadgeneral")]
+        [Aliases("unbully")]
         [Dbots, RequireDbotsPerm(Helpers.DbotsPermLevel.Helper)]
         public async Task Canreadgeneral(CommandContext ctx, DiscordMember target, [RemainingText] String reason = "No reason provided.")
         {
@@ -400,13 +402,13 @@ namespace Lykos.Modules
                 }
                 else
                 {
-                    await ctx.RespondAsync($"<:xmark:314349398824058880> You aren't allowed to unbully **{target.Username}#{target.Discriminator}**!");
+                    await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to unbully **{target.Username}#{target.Discriminator}**!");
                     return;
                 }
             }
             else
             {
-                await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to unbully **{target.Username}#{target.Discriminator}**!");
+                await ctx.RespondAsync($"<:xmark:314349398824058880> You aren't allowed to unbully **{target.Username}#{target.Discriminator}**!");
             }
 
         }
