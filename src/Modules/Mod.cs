@@ -38,7 +38,7 @@ namespace Lykos.Modules
                     {
                         await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to ban **{target.Username}#{target.Discriminator}**!");
                         return;
-                        
+
                     }
                 }
                 else
@@ -110,7 +110,7 @@ namespace Lykos.Modules
                 return;
             }
 
-            if (Helpers.GetDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
+            if (Helpers.GetDbotsPerm(ctx.Member) < Helpers.DbotsPermLevel.mod && !target.IsBot)
             {
                 await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only mute bots)");
                 return;
@@ -216,7 +216,7 @@ namespace Lykos.Modules
                 return;
             }
 
-            if (Helpers.GetDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
+            if (Helpers.GetDbotsPerm(ctx.Member) < Helpers.DbotsPermLevel.mod && !target.IsBot)
             {
                 await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only mute bots)");
                 return;
@@ -247,7 +247,7 @@ namespace Lykos.Modules
                 }
                 else
                 {
-                    await ctx.RespondAsync($"<:xmark:314349398824058880>  **{target.Username}#{target.Discriminator}**!");
+                    await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to supermute **{target.Username}#{target.Discriminator}**!");
                     return;
                 }
             }
@@ -269,7 +269,7 @@ namespace Lykos.Modules
                 return;
             }
 
-            if (Helpers.GetDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
+            if (Helpers.GetDbotsPerm(ctx.Member) < Helpers.DbotsPermLevel.mod && !target.IsBot)
             {
                 await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only unmute bots)");
                 return;
@@ -304,18 +304,116 @@ namespace Lykos.Modules
                 }
                 else
                 {
-                    await ctx.RespondAsync($"<:xmark:314349398824058880> You aren't allowed to unmute **{target.Username}#{target.Discriminator}**!");
+                    await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to unmute **{target.Username}#{target.Discriminator}**!");
                     return;
                 }
             }
             else
             {
-                await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to unmute **{target.Username}#{target.Discriminator}**!");
+                await ctx.RespondAsync($"<:xmark:314349398824058880> You aren't allowed to unmute **{target.Username}#{target.Discriminator}**!");
+            }
+        }
+
+
+        [Command("noreadgeneral")]
+        [Aliases("bully")]
+        [Dbots, RequireDbotsPerm(Helpers.DbotsPermLevel.Helper)]
+        public async Task Noreadgeneral(CommandContext ctx, DiscordMember target, [RemainingText] string reason = "No reason provided.")
+        {
+            var botMember = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
+
+            if (!botMember.PermissionsIn(ctx.Channel).HasPermission(Permissions.ManageRoles))
+            {
+                return;
             }
 
+            if (Helpers.GetDbotsPerm(ctx.Member) < Helpers.DbotsPermLevel.mod  && !target.IsBot)
+            {
+                await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only bully bots)");
+                return;
+            }
 
+            var roleToUse = ctx.Guild.GetRole(638861615445311509);
+            String fullReason = System.Uri.EscapeDataString($"[Noreadgeneral by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}");
+
+            if (AllowedToMod(ctx.Member, target))
+            {
+                if (AllowedToMod(await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id), target))
+                {
+                    if (target.Roles.Contains(roleToUse))
+                    {
+                        await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** is already restricted from non-testing channels!");
+                        return;
+                    }
+
+                    await target.GrantRoleAsync(ctx.Guild.GetRole(638861615445311509), fullReason);
+
+                    await ctx.RespondAsync($"<:check:314349398811475968> Successfully applied role to **{target.Username}#{target.Discriminator}**!");
+                }
+                else
+                {
+                    await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to bully **{target.Username}#{target.Discriminator}**!");
+                    return;
+                }
+            }
+            else
+            {
+                await ctx.RespondAsync($"<:xmark:314349398824058880> You aren't allowed to bully **{target.Username}#{target.Discriminator}**!");
+            }
+        }
+
+
+        [Command("canreadgeneral")]
+        [Aliases("unbully")]
+        [Dbots, RequireDbotsPerm(Helpers.DbotsPermLevel.Helper)]
+        public async Task Canreadgeneral(CommandContext ctx, DiscordMember target, [RemainingText] String reason = "No reason provided.")
+        {
+            var botMember = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
+
+            if (!botMember.PermissionsIn(ctx.Channel).HasPermission(Permissions.ManageRoles))
+            {
+                return;
+            }
+
+            if (Helpers.GetDbotsPerm(ctx.Member) == Helpers.DbotsPermLevel.Helper && !target.IsBot)
+            {
+                await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** is not a bot! (Helpers can only unbully bots)");
+                return;
+            }
+
+            var roleToUse = ctx.Guild.GetRole(638861615445311509);
+            String fullReason = System.Uri.EscapeDataString($"[Canreadgeneral by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}");
+
+            if (AllowedToMod(ctx.Member, target))
+            {
+                if (AllowedToMod(await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id), target))
+                {
+                    if (target.Roles.Contains(roleToUse))
+                    {
+                        await target.RevokeRoleAsync(roleToUse, fullReason);
+
+                        await ctx.RespondAsync($"<:check:314349398811475968> Successfully removed the role from **{target.Username}#{target.Discriminator}**!");
+
+                    }
+                    else
+                    {
+                        await ctx.RespondAsync($"<:xmark:314349398824058880> **{target.Username}#{target.Discriminator}** is not restricted from general!");
+                    }
+                }
+                else
+                {
+                    await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to unbully **{target.Username}#{target.Discriminator}**!");
+                    return;
+                }
+            }
+            else
+            {
+                await ctx.RespondAsync($"<:xmark:314349398824058880> You aren't allowed to unbully **{target.Username}#{target.Discriminator}**!");
+            }
 
         }
 
+
     }
+
 }
