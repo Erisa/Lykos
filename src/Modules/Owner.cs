@@ -148,7 +148,6 @@ namespace Lykos.Modules
 
         [Group("eri")]
         [Description("Commands that manage data across Erisas things and stuff.")]
-        [RequireOwner]
         [Hidden]
         partial class Eri
         {
@@ -173,13 +172,22 @@ namespace Lykos.Modules
             }
 
             [Group("update")]
-            [RequireOwner]
             partial class Update
             {
 
                 [Command("avatar")]
                 public async Task Avatar(CommandContext ctx, string name = "current")
                 {
+                    if (ctx.User.Id != 228574821590499329 && ctx.User.Id != 202122613118468097)
+                    {
+                        await ctx.RespondAsync("<:xmark:314349398824058880> This command can only be used by Erisa or Esumi!");
+                        return;
+                    }
+
+                    if (ctx.User.Id == 202122613118468097 && name == "current")
+                    {
+                        name = "esumi";
+                    }
 
                     DiscordMessage msg;
                     string objectName;
