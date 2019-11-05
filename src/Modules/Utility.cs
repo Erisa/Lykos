@@ -37,7 +37,7 @@ namespace Lykos.Modules
                 return;
             }
 
-            string avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{hash}.{format}?size=1024";
+            string avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{hash}.{format}?size=4096";
             var embed = new DiscordEmbedBuilder()
             .WithColor(new DiscordColor(0xC63B68))
             .WithTimestamp(DateTime.UtcNow)

@@ -196,7 +196,7 @@ namespace Lykos.Modules
                     objectName = $"avatars/{name}.png";
 
 
-                    string avatarUrl = $"https://cdn.discordapp.com/avatars/{ctx.User.Id}/{ctx.User.AvatarHash}.png?size=1024";
+                    string avatarUrl = $"https://cdn.discordapp.com/avatars/{ctx.User.Id}/{ctx.User.AvatarHash}.png?size=4096";
                     using (var client = new WebClient())
                     {
                         client.DownloadFile(avatarUrl, "AVATAR.png");
