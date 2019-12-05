@@ -13,13 +13,13 @@ using static Lykos.Modules.Helpers;
 
 namespace Lykos.Modules
 {
-    partial class Owner
+    partial class Owner : BaseCommandModule
     {
 
         [Group("debug")]
         [Aliases("d")]
         [RequireOwner]
-        class DebugCmds
+        class DebugCmds : BaseCommandModule
         {
             [Command("modcheck")]
             [Aliases("mod")]
@@ -56,15 +56,8 @@ namespace Lykos.Modules
         [Aliases("s", "sys")]
         [RequireOwner]
         [Hidden]
-        class SystemCmds
+        class SystemCmds : BaseCommandModule
         {
-
-            [Command("sudo")]
-            public async Task Sudo(CommandContext ctx, DiscordMember targetMem, [RemainingText] String command)
-            {
-                await ctx.CommandsNext.SudoAsync(targetMem, ctx.Channel, "lk " + command);
-            }
-
             [Command("reconnect"), Aliases("rc", "re")]
             public async Task Reconnect(CommandContext ctx)
             {
@@ -149,7 +142,7 @@ namespace Lykos.Modules
         [Group("eri")]
         [Description("Commands that manage data across Erisas things and stuff.")]
         [Hidden]
-        partial class Eri
+        partial class Eri : BaseCommandModule
         {
             [Command("gibinvite")]
             [Description("???")]
@@ -172,7 +165,7 @@ namespace Lykos.Modules
             }
 
             [Group("update")]
-            partial class Update
+            partial class Update : BaseCommandModule
             {
 
                 [Command("avatar")]

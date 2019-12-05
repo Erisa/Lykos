@@ -2,13 +2,14 @@
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DSharpPlus.Net.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Lykos.Modules
 {
-    class Mod
+    class Mod : BaseCommandModule
     {
 
         [Command("ban")]
@@ -152,7 +153,6 @@ namespace Lykos.Modules
                 return;
             }
 
-
         }
 
         [Command("nickreset")]
@@ -184,7 +184,7 @@ namespace Lykos.Modules
                         return;
                     }
 
-                    await target.ModifyAsync(nickname: "", reason: fullReason);
+                    await target.ModifyAsync(new Action<MemberEditModel>((MemberEditModel) => MemberEditModel.Nickname = null));
 
                     await ctx.RespondAsync($"<:check:314349398811475968> Reset the nickname of **{target.Username}#{target.Discriminator}**!");
                 }

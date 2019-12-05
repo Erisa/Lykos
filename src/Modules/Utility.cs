@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Lykos.Modules
 {
-    class Utility
+    class Utility : BaseCommandModule
     {
         readonly string[] validExts = { "gif", "png", "jpg", "webp" };
 

@@ -3,6 +3,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using static Lykos.Modules.Helpers;
 
@@ -19,7 +20,7 @@ namespace Lykos.Modules
             this.TargetLvl = targetLvl;
         }
 
-        public override async Task<bool> CanExecute(CommandContext ctx, bool help)
+        public override async Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help)
         {
             if (ctx.Command.Name == "help")
                 return false;
@@ -46,13 +47,13 @@ namespace Lykos.Modules
 
     public class DbotsAttribute : CheckBaseAttribute
     {
-        public override async Task<bool> CanExecute(CommandContext ctx, bool help)
+        public override async Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help)
         {
             return ctx.Guild.Id == 110373943822540800;
         }
     }
 
-    class Dbots
+    class Dbots : BaseCommandModule
     {
 
         [Command("dbotsowner")]
@@ -121,9 +122,9 @@ namespace Lykos.Modules
         {
             String streason;
             if (reason.Length == 0)
-                streason = $"[Givedev by {ctx.User.Username}#{ctx.User.Discriminator}] No reason specified.";
+                streason = $"[Givedev by {Encoding.UTF8.GetBytes(ctx.User.Username)}#{ctx.User.Discriminator}] No reason specified.";
             else
-                streason = $"[Givedev by {ctx.User.Username}#{ctx.User.Discriminator}] " + String.Join(" ", reason);
+                streason = $"[Givedev by {Encoding.UTF8.GetBytes(ctx.User.Username)}#{ctx.User.Discriminator}] " + String.Join(" ", reason);
 
             var role = ctx.Guild.GetRole(BotDevID);
             if (target.Roles.Contains(role))
@@ -261,7 +262,7 @@ namespace Lykos.Modules
             {
                 msg += "- <:xmark:314349398824058880> User is not boosting Discord Bots.";
             }
-            msg += $"\n- `{Mod.GetHier(ctx.Member)}` is this users Role Hierarchy.";
+            msg += $"\n- `{Mod.GetHier(target)}` is this users Role Hierarchy.";
 
 
             await ctx.RespondAsync(msg);

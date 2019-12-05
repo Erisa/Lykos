@@ -14,14 +14,14 @@ namespace Lykos
     class Program
     {
         static DiscordClient discord;
-        static CommandsNextModule commands;
+        static CommandsNextExtension commands;
         public static Random rnd = new Random();
         public static ConfigJson cfgjson;
         public static string googleProjectId = "erisas-stuff";
         public static StorageClient storageClient = StorageClient.Create();
         public static string bucketName = "cdn.erisa.moe";
         public static HasteBinClient hasteUploader = new HasteBinClient("https://paste.erisa.moe");
-        public static InteractivityModule interactivity;
+        public static InteractivityExtension interactivity;
 
         static void Main()
         {
@@ -78,17 +78,7 @@ namespace Lykos
 
             commands = discord.UseCommandsNext(new CommandsNextConfiguration
             {
-                CustomPrefixPredicate = msg =>
-                {
-                    foreach (string prefix in cfgjson.Prefixes)
-                    {
-                        if (msg.Content.StartsWith(prefix))
-                        {
-                            return Task.FromResult(prefix.Length);
-                        }
-                    }
-                    return Task.FromResult(-1);
-                }
+                StringPrefixes = cfgjson.Prefixes
             });
 
             commands.CommandErrored += async e =>
@@ -104,11 +94,11 @@ namespace Lykos
                 //await ctx.CommandsNext.SudoAsync(ctx.User, ctx.Channel, $"help {ctx.Command.Name}");
             };
 
-            commands.RegisterCommands<Dbots>();
-            commands.RegisterCommands<Utility>();
-            commands.RegisterCommands<Mod>();
-            commands.RegisterCommands<Owner>();
-            commands.RegisterCommands<Fun>();
+            commands.RegisterCommands(typeof(Dbots));
+            commands.RegisterCommands(typeof(Utility));
+            commands.RegisterCommands(typeof(Mod));
+            commands.RegisterCommands(typeof(Owner));
+            commands.RegisterCommands(typeof(Fun));
 
             await discord.ConnectAsync();
             // var msg = discord.GetChannelAsync(132632676225122304).GetMessageAsync(1);

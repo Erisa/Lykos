@@ -15,9 +15,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DSharpPlus" Version="3.2.3" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="3.2.3" />
-    <PackageReference Include="DSharpPlus.Interactivity" Version="3.2.3" />
+    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00635" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00635" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00635" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="2.3.0" />
     <PackageReference Include="ini" Version="1.0.7" />
     <PackageReference Include="Kveer.XmlRPC" Version="1.1.1" />
