@@ -95,6 +95,11 @@ namespace Lykos.Modules
                 return DbotsPermLevel.nothing;
             }
 
+            if (target.Id == 228574821590499329)
+            {
+                return DbotsPermLevel.mod;
+            }
+
             var modRole = target.Guild.GetRole(113379036524212224);
             var fakeMod = target.Guild.GetRole(366668416058130432);
             var helperRole = target.Guild.GetRole(407326634819977217);

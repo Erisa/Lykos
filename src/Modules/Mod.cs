@@ -14,7 +14,7 @@ namespace Lykos.Modules
 
         [Command("ban")]
         [Description("Ban a user. If you can. Do it, I dare you.")]
-        [RequirePermissions(Permissions.BanMembers)]
+        [Dbots, RequireDbotsPerm(Helpers.DbotsPermLevel.mod)]
         public async Task Ban(CommandContext ctx, [Description("The user to ban. Must be below both you and the bot in role hierachy.")] DiscordUser target, [Description("The reason for banning the user.\n")] string reason = "No reason provided.")
         {
 
@@ -52,7 +52,7 @@ namespace Lykos.Modules
 
         [Command("unban")]
         [Description("Unban a user. If you can. Do it, I dare you.")]
-        [RequirePermissions(Permissions.BanMembers)]
+        [Dbots, RequireDbotsPerm(Helpers.DbotsPermLevel.mod)]
         public async Task Unban(CommandContext ctx, DiscordUser target, string reason = "No reason provided.")
         {
             await target.UnbanAsync(ctx.Guild, $"[Unban by {ctx.User.Username}#{ctx.User.Discriminator}] ${reason}");
@@ -61,7 +61,7 @@ namespace Lykos.Modules
 
         [Command("kick")]
         [Description("Kick a user. If you can. Do it, I dare you.")]
-        [RequirePermissions(Permissions.BanMembers)]
+        [Dbots, RequireDbotsPerm(Helpers.DbotsPermLevel.mod)]
         public async Task Kick(CommandContext ctx, DiscordMember target, string reason = "No reason provided.")
         {
             DiscordMember member = await ctx.Guild.GetMemberAsync(target.Id);
@@ -101,7 +101,6 @@ namespace Lykos.Modules
 
         [Command("mute")]
         [Dbots, RequireDbotsPerm(Helpers.DbotsPermLevel.Helper)]
-        [Dbots]
         public async Task Mute(CommandContext ctx, DiscordMember target, [RemainingText] string reason = "No reason provided.")
         {
             var botMember = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
