@@ -40,8 +40,7 @@ namespace Lykos.Modules
             string escapedArgs = command.Replace("\"", "\\\"");
             if (GetOSPlatform() == OSPlatform.Windows)
             {
-                // doesnt function correctly
-                // TODO: make it function correctly
+                // now functions correctly
                 fileName = "C:\\Windows\\system32\\cmd.exe";
                 arguments = $"/C \"{escapedArgs}\"";
             }
