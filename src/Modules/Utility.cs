@@ -55,6 +55,7 @@ namespace Lykos.Modules
         }
 
         [Command("prefix")]
+        [Description("Find out what prefixes you can use to trigger me!")]
         [Aliases("prefixes", "px", "h")]
         public async Task Prefix(CommandContext ctx)
         {
@@ -63,6 +64,7 @@ namespace Lykos.Modules
 
 
         [Command("ping")]
+        [Description("Pong? This command lets you know whether I'm working well.")]
         public async Task Ping(CommandContext ctx)
         {
             DSharpPlus.Entities.DiscordMessage return_message = await ctx.Message.RespondAsync("Pinging...");
@@ -72,12 +74,6 @@ namespace Lykos.Modules
             await return_message.ModifyAsync($"P{letter}ng! 🏓\n" +
                 $"• It took me `{ping}ms` to reply to your message!\n" +
                 $"• Last Websocket Heartbeat took `{ctx.Client.Ping}ms`!");
-        }
-
-        [Command("yt")]
-        public async Task YouTube(CommandContext ctx)
-        {
-            await ctx.RespondAsync("This command has been removed because the YouTube API is awful, thank you for understanding!");
         }
 
     }

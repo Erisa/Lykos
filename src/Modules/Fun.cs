@@ -17,6 +17,7 @@ namespace Lykos.Modules
         });
 
         [Command("tableflip")]
+        [Description("( ﾉ⊙︵⊙）ﾉ︵┻━┻")]
         public async Task Tableflip(CommandContext ctx)
         {
             await ctx.RespondAsync(flips[Program.rnd.Next(0, flips.Count)]);
@@ -28,7 +29,7 @@ namespace Lykos.Modules
         {
             target = Helpers.sanitiseEveryone(target);
 
-            if (target == null || target == "me" || target == ctx.User.Username || target == ctx.Member.Nickname)
+            if (target == null || target == "me" || target == ctx.User.Username || target == ctx.Member.Nickname || target == ctx.Member.Mention)
             {
                 await ctx.RespondAsync($"<:blobpats:585804188735504435> \\*gives a big headpat to {ctx.User.Mention}\\*");
             } else
@@ -38,6 +39,7 @@ namespace Lykos.Modules
         }
 
         [Command("pingeri")]
+        [Description("Pong!")]
         public async Task Pingeri(CommandContext ctx)
         {
             await ctx.RespondAsync("<@228574821590499329>");

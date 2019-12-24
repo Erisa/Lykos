@@ -24,12 +24,22 @@ namespace Lykos.Modules
             await msg.DeleteAsync();
         }
 
+        [Command("yeet")]
+        [RequireOwner]
+        public async Task Yeet(CommandContext ctx, ulong messageId)
+        {
+            await ctx.Message.DeleteAsync();
+            var msg = await ctx.Channel.GetMessageAsync(messageId);
+            await msg.SuppressEmbedsAsync();
+        }
+
         [Group("debug")]
         [Aliases("d")]
         [RequireOwner]
         class DebugCmds : BaseCommandModule
         {
             [Command("modcheck")]
+            [Description("Check whether a user has permisssion to mod another user.")]
             [Aliases("mod")]
             public async Task Modcheck(CommandContext ctx, DiscordMember firstMember, [RemainingText] DiscordMember target = null)
             {
@@ -49,6 +59,7 @@ namespace Lykos.Modules
             }
 
             [Command("sysinfo")]
+            [Description("Where am I running? Lets find out together!")]
             public async Task Sysinfo(CommandContext ctx)
             {
                 await ctx.RespondAsync($"🤔 Hmm, based on my research it seems that:\n" +
@@ -67,6 +78,7 @@ namespace Lykos.Modules
         class SystemCmds : BaseCommandModule
         {
             [Command("reconnect"), Aliases("rc", "re")]
+            [Description("Goodbye, hello! This will reconnect my websocket connection.")]
             public async Task Reconnect(CommandContext ctx)
             {
                 var msg = await ctx.RespondAsync("Reconnecting to websocket...");
@@ -77,6 +89,7 @@ namespace Lykos.Modules
             }
 
             [Command("shutdown"), Aliases("shut", "sd", "s", "kill")]
+            [Description("A soft exit. I will disconnect and then end my process.")]
             public async Task Shutdown(CommandContext ctx)
             {
                 var msg = await ctx.RespondAsync("Disonnecting from websocket...");
@@ -88,7 +101,7 @@ namespace Lykos.Modules
             }
 
             [Command("die")]
-
+            [Description("A more permanent goodbye! I will try to end my own service.")]
             public async Task Die(CommandContext ctx)
             {
                 var msg = await ctx.RespondAsync("Disonnecting from websocket...");
@@ -108,6 +121,7 @@ namespace Lykos.Modules
 
             [Command("sh")]
             [Aliases("cmd")]
+            [Description("Run shell commands! Bash for Linux/macOS, batch for Windows!")]
             public async Task Shell(CommandContext ctx, [RemainingText] string command)
             {
                 // if (Helpers.GetOSPlatform() == OSPlatform.Windows)
@@ -149,7 +163,6 @@ namespace Lykos.Modules
 
         [Group("eri")]
         [Description("Commands that manage data across Erisas things and stuff.")]
-        [Hidden]
         partial class Eri : BaseCommandModule
         {
             [Command("gibinvite")]
@@ -177,6 +190,7 @@ namespace Lykos.Modules
             {
 
                 [Command("avatar")]
+                [Description("Updates cdn.erisa.moe/avatars/current.png or any other filename.")]
                 public async Task Avatar(CommandContext ctx, string name = "current")
                 {
                     if (ctx.User.Id != 228574821590499329 && ctx.User.Id != 202122613118468097)
