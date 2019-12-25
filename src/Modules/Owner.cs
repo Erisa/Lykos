@@ -103,8 +103,13 @@ namespace Lykos.Modules
 
             [Command("die")]
             [Description("A more permanent goodbye! I will try to end my own service.")]
-            public async Task Die(CommandContext ctx)
+            public async Task Die(CommandContext ctx, string target = null)
             {
+                if (target != null && System.Environment.MachineName.ToLower() != target.ToLower())
+                {
+                    return;
+                }
+
                 var msg = await ctx.RespondAsync("Disonnecting from websocket...");
                 var watch = System.Diagnostics.Stopwatch.StartNew();
                 await ctx.Client.DisconnectAsync();
