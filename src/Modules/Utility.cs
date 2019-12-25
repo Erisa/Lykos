@@ -5,12 +5,55 @@ using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace Lykos.Modules
 {
     class Utility : BaseCommandModule
     {
         readonly string[] validExts = { "gif", "png", "jpg", "webp" };
+        readonly Regex emoji_rx = new Regex("<(a?):\\w*:(\\d*)>");
+
+        [Command("bigmoji")]
+        [Aliases("steal", "bm")]
+        public async Task Bigmoji(CommandContext ctx, ulong messageId)
+        {
+
+            DiscordMessage msg;
+            try
+            {
+                msg = await ctx.Channel.GetMessageAsync(messageId);
+            } catch
+            {
+                await ctx.RespondAsync("Invalid input!");
+                return;
+            }
+
+            if (msg == null)
+            {
+                await ctx.RespondAsync("Invalid input!");
+                return;
+            }
+
+            MatchCollection matches = emoji_rx.Matches(msg.Content);
+
+            if (matches.Count == 0)
+            {
+                await ctx.RespondAsync("I couldn't find any custom emoji in that message!");
+                return;
+            }
+
+            GroupCollection groups = matches[0].Groups;
+            
+            
+            if (groups[1].Value == "a")
+            {
+                await ctx.RespondAsync($"I think this should work:\nhttps://cdn.discordapp.com/emojis/{groups[2].Value}.gif");
+            } else
+            {
+                await ctx.RespondAsync($"I think this should work:\nhttps://cdn.discordapp.com/emojis/{groups[2].Value}.png");
+            }
+        }
 
         [Command("avatar"), Aliases("avy")]
         [Description("Shows the avatar of a user.")]
