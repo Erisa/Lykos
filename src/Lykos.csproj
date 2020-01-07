@@ -6,6 +6,9 @@
     <RootNamespace>Lykos</RootNamespace>
     <ApplicationIcon />
     <StartupObject />
+    <RestoreAdditionalProjectSources>
+      https://nuget.emzi0767.com/api/v3/index.json
+    </RestoreAdditionalProjectSources>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
