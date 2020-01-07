@@ -58,7 +58,7 @@ namespace Lykos
             discord.Ready += e =>
             {
                 Console.WriteLine($"Logged in as {e.Client.CurrentUser.Username}#{e.Client.CurrentUser.Discriminator}");
-                return null;
+                return Task.CompletedTask;
             };
 
             discord.MessageCreated += async e =>
