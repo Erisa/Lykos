@@ -119,5 +119,18 @@ namespace Lykos.Modules
                 $"• Last Websocket Heartbeat took `{ctx.Client.Ping}ms`!");
         }
 
+        [Command("owners")]
+        [Description("Who owns me??")]
+        public async Task Owners(CommandContext ctx)
+        {
+            var resp = "My owners are:\n";
+            foreach (var id in Program.cfgjson.Owners)
+            {
+                var user = await ctx.Client.GetUserAsync(id);
+                resp += $"- **{user.Username}#{user.Discriminator}** (`{user.Id}`)\n";
+            }
+            ctx.RespondAsync(resp);
+        }
+
     }
 }

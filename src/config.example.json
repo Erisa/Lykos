@@ -3,6 +3,7 @@
   "prefixes": [ "?" ],
   "gravatar": {
     "email": "okfam@example.com",
-    "password":  "hunter2"
-  }
+    "password": "hunter2"
+  },
+  "owners": [ 616122960599711744, 228574821590499329 ]
 }

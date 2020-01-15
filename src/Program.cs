@@ -1,10 +1,12 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Interactivity;
 using Google.Cloud.Storage.V1;
 using Lykos.Modules;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,7 +49,8 @@ namespace Lykos
                 Token = cfgjson.Token,
                 TokenType = TokenType.Bot,
                 UseInternalLogHandler = true,
-                LogLevel = LogLevel.Debug
+                LogLevel = LogLevel.Debug,
+                
             });
 
             interactivity = discord.UseInteractivity(new InteractivityConfiguration
@@ -78,7 +81,8 @@ namespace Lykos
 
             commands = discord.UseCommandsNext(new CommandsNextConfiguration
             {
-                StringPrefixes = cfgjson.Prefixes
+                StringPrefixes = cfgjson.Prefixes,
+                
             });
 
             commands.CommandErrored += async e =>
@@ -106,6 +110,15 @@ namespace Lykos
         }
     }
 
+    public class Require​Owner​Attribute : CheckBaseAttribute
+    {
+        public override async Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help)
+        {
+            return Program.cfgjson.Owners.Contains(ctx.Member.Id);
+        }
+    }
+
+
     public struct ConfigJson
     {
         [JsonProperty("token")]
@@ -119,6 +132,9 @@ namespace Lykos
 
         [JsonProperty("gravatar")]
         public GravatarConfig Gravatar {get; private set; }
+
+        [JsonProperty("owners")]
+        public List<ulong> Owners { get; private set; }
     }
 
     public class GravatarConfig
