@@ -76,11 +76,25 @@ namespace Lykos.Modules
             await ctx.RespondAsync($"Todays cat of the day is **{scat.Username}#{scat.Discriminator}**!");
         }
 
-        [Command("zotd")]
-        public async Task Zotd(CommandContext ctx)
+        [Command("gotd")]
+        public async Task Gotd(CommandContext ctx)
+        {
+            var circ = await ctx.Client.GetUserAsync(255114091360681986);
+            await ctx.RespondAsync($"Todays genius of the day is **{circ.Username}#{circ.Discriminator}**!");
+        }
+		
+	[Command("zotd")]
+        public async Task zotd(CommandContext ctx)
         {
             var zeta = await ctx.Client.GetUserAsync(94129005791281152);
             await ctx.RespondAsync($"Todays Zeta of the day is **{zeta.Username}#{zeta.Discriminator}**!");
+        }
+		
+	[Command("coty")]
+        public async Task Zotd(CommandContext ctx)
+        {
+            var cutie = await ctx.Client.GetUserAsync(155659573515124736);
+            await ctx.RespondAsync($"The cute of the year is **{cutie.Username}#{cutie.Discriminator}**!");
         }
 
         readonly ulong BotDevID = 110375768374136832;
