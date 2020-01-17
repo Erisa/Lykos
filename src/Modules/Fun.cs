@@ -25,6 +25,7 @@ namespace Lykos.Modules
 
         [Command("headpat")]
         [Description("Give someone a good headpat, or treat yourself to one!")]
+        [Aliases("pat")]
         public async Task Headpat(CommandContext ctx, [Description("The person to give a headpat to!"), RemainingText] string target = "me")
         {
             target = Helpers.sanitiseEveryone(target);

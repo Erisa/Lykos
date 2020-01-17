@@ -130,12 +130,6 @@ namespace Lykos.Modules
             [Description("Run shell commands! Bash for Linux/macOS, batch for Windows!")]
             public async Task Shell(CommandContext ctx, [RemainingText] string command)
             {
-                // if (Helpers.GetOSPlatform() == OSPlatform.Windows)
-                // {
-                //    await ctx.RespondAsync(" <:xmark:314349398824058880> This command doesn't work on Windows yet!");
-                //    return;
-                // }
-
                 var msg = await ctx.RespondAsync("executing..");
 
                 ShellResult finishedShell = Helpers.RunShellCommand(command);
