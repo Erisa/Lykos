@@ -162,6 +162,7 @@ namespace Lykos.Modules
         }
 
         [Group("eri")]
+        [RequireOwner]
         [Description("Commands that manage data across Erisas things and stuff.")]
         partial class Eri : BaseCommandModule
         {
@@ -169,13 +170,6 @@ namespace Lykos.Modules
             [Description("???")]
             public async Task Gibinvite(CommandContext ctx, int max_uses = 1, int age = 0)
             {
-                // this whole command is hardcoded so im making the decision to hardcode this too
-                if (ctx.User.Id != 228574821590499329)
-                {
-                    await ctx.RespondAsync("<:xmark:314349398824058880> This command can only be used by Erisa!");
-                    return;
-                }
-
                 var channel = await ctx.Client.GetChannelAsync(230004550973521932);
                 var inv = await channel.CreateInviteAsync(age, max_uses, false, true, $"gibinvite command used in {ctx.Channel.Id}");
 

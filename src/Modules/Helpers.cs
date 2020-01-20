@@ -94,7 +94,7 @@ namespace Lykos.Modules
                 return DbotsPermLevel.nothing;
             }
 
-            if (target.Id == 228574821590499329)
+            if (target.Id == 228574821590499329 || target.Id == 616122960599711744)
             {
                 return DbotsPermLevel.mod;
             }
