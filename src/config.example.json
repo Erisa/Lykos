@@ -5,5 +5,18 @@
     "email": "okfam@example.com",
     "password": "hunter2"
   },
-  "owners": [ 616122960599711744, 228574821590499329 ]
+  "owners": [ 616122960599711744, 228574821590499329 ],
+  "s3": {
+    "endpoint": "https://s3.nl-ams.scw.cloud",
+    "region": "nl-ams",
+    "bucket": "cdn.erisa.moe",
+    "accessKey": "SCWBLAHBLAHBLAH",
+    "secretKey": "very-secure-secret",
+    "providerDisplayName": "Scaleway"
+  },
+  "cloudflare": {
+    "apiToken": "blah",
+    "zoneID": "bbbbbb",
+    "urlPrefix":  "https://cdn.erisa.moe/"
+  }
 }

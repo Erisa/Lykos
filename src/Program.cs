@@ -2,7 +2,6 @@
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Interactivity;
-using Google.Cloud.Storage.V1;
 using Lykos.Modules;
 using Newtonsoft.Json;
 using System;
@@ -10,6 +9,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Minio;
+using Minio.Exceptions;
+using Minio.DataModel;
 
 namespace Lykos
 {
@@ -19,11 +21,9 @@ namespace Lykos
         static CommandsNextExtension commands;
         public static Random rnd = new Random();
         public static ConfigJson cfgjson;
-        public static string googleProjectId = "erisas-stuff";
-        public static StorageClient storageClient = StorageClient.Create();
-        public static string bucketName = "cdn.erisa.moe";
         public static HasteBinClient hasteUploader = new HasteBinClient("https://paste.erisa.moe");
         public static InteractivityExtension interactivity;
+        public static MinioClient minio;
 
         static void Main()
         {
@@ -38,6 +38,8 @@ namespace Lykos
                 json = await sr.ReadToEndAsync();
 
             cfgjson = JsonConvert.DeserializeObject<ConfigJson>(json);
+
+            minio = new MinioClient("s3.nl-ams.scw.cloud", cfgjson.S3.AccessKey, cfgjson.S3.SecretKey, cfgjson.S3.Region).WithSSL();
 
             if (cfgjson.YoutubeData != null || cfgjson.YoutubeData != "youtubekeyhere")
             {
@@ -131,10 +133,50 @@ namespace Lykos
         public string YoutubeData { get; private set; }
 
         [JsonProperty("gravatar")]
-        public GravatarConfig Gravatar {get; private set; }
+        public GravatarConfig Gravatar { get; private set; }
+
+        [JsonProperty("s3")]
+        public JsonCfgS3 S3 { get; private set; }
 
         [JsonProperty("owners")]
         public List<ulong> Owners { get; private set; }
+
+        [JsonProperty("cloudflare")]
+        public CloudflareConfig Cloudflare { get; private set; }
+
+    }
+
+    public class CloudflareConfig
+    {
+        [JsonProperty("apiToken")]
+        public string Token { get; private set; }
+
+        [JsonProperty("zoneID")]
+        public string ZoneID { get; private set; }
+
+        [JsonProperty("urlPrefix")]
+        public string UrlPrefix { get; private set; }
+    }
+
+    public class JsonCfgS3
+    {
+        [JsonProperty("endpoint")]
+        public string Endpoint { get; private set; }
+
+        [JsonProperty("region")]
+        public string Region { get; private set; }
+
+        [JsonProperty("bucket")]
+        public string Bucket { get; private set; }
+
+        [JsonProperty("accessKey")]
+        public string AccessKey { get; private set; }
+
+        [JsonProperty("secretKey")]
+        public string SecretKey { get; private set; }
+
+        [JsonProperty("providerDisplayName")]
+        public string displayName { get; private set; }
     }
 
     public class GravatarConfig

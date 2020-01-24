@@ -1,8 +1,6 @@
-﻿using CookComputing.XmlRpc;
-using DSharpPlus.CommandsNext;
+﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
-using Google.Cloud.Storage.V1;
 using System;
 using System.IO;
 using System.Linq;
@@ -10,6 +8,11 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using static Lykos.Modules.Helpers;
+using Minio.Exceptions;
+using System.Collections.Generic;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace Lykos.Modules
 {
@@ -187,12 +190,6 @@ namespace Lykos.Modules
                 [Description("Updates cdn.erisa.moe/avatars/current.png or any other filename.")]
                 public async Task Avatar(CommandContext ctx, string name = "current")
                 {
-                    if (ctx.User.Id != 228574821590499329 && ctx.User.Id != 202122613118468097)
-                    {
-                        await ctx.RespondAsync("<:xmark:314349398824058880> This command can only be used by Erisa or Esumi!");
-                        return;
-                    }
-
                     if (ctx.User.Id == 202122613118468097 && name == "current")
                     {
                         name = "esumi";
@@ -201,67 +198,89 @@ namespace Lykos.Modules
                     DiscordMessage msg;
                     string objectName;
 
-                    msg = await ctx.RespondAsync($"Selected name: `{name}`\n<a:loading:585958072850317322> - Uploading to Google Cloud...");
+                    msg = await ctx.RespondAsync($"Selected name: `{name}`\n<a:loading:585958072850317322> - Uploading to {Program.cfgjson.S3.displayName}..." +
+                        $"\n🔲 - Waiting to purge Cloudflare cache.");
                     objectName = $"avatars/{name}.png";
 
-
                     string avatarUrl = $"https://cdn.discordapp.com/avatars/{ctx.User.Id}/{ctx.User.AvatarHash}.png?size=4096";
+                    MemoryStream memStream;
                     using (var client = new WebClient())
                     {
-                        client.DownloadFile(avatarUrl, "AVATAR.png");
-                    }
-
-                    Google.Apis.Storage.v1.Data.Object storageObject;
-                    using (var f = File.OpenRead("AVATAR.png"))
-                    {
-                        objectName ??= Path.GetFileName("AVATAR.png");
-                        try
-                        {
-                            storageObject = await Program.storageClient.UploadObjectAsync(Program.bucketName, objectName, "image/png", f);
-                        }
-                        catch (Google.GoogleApiException e)
-                        {
-                            await msg.ModifyAsync($"<:xmark:314349398824058880> A Google Cloud API error occured during upload! ```\n{e.Message}```");
-                            storageObject = null;
-                            return;
-                        }
-                        Console.WriteLine($"Uploaded {objectName}.");
+                        memStream = new MemoryStream(client.DownloadData(avatarUrl));
                     }
 
                     try
                     {
-                        storageObject = Program.storageClient.GetObject(Program.bucketName, objectName, new GetObjectOptions() { Projection = Projection.Full });
+                        var meta = new Dictionary<string, string>
+                        {
+                            { "x-amz-acl", "public-read" }
+                        };
+
+                        await Program.minio.PutObjectAsync(Program.cfgjson.S3.Bucket, objectName, memStream, memStream.Length, "image/png", meta);
                     }
-                    catch (Google.GoogleApiException e)
+                    catch (MinioException e)
                     {
-                        await msg.ModifyAsync($"<:xmark:314349398824058880>  A Google Cloud API error occured during object access! ```\n{e.Message}```");
+                        await msg.ModifyAsync($"<:xmark:314349398824058880> An API error occured while uploading to {Program.cfgjson.S3.displayName}:```\n{e.Message}```");
+                        return;
+                    } catch (Exception e)
+                    {
+                        await msg.ModifyAsync($"<:xmark:314349398824058880> An unexpected error occured while uploading to {Program.cfgjson.S3.displayName}:```\n{e.Message}```");
                         return;
                     }
 
-                    storageObject.Acl.Add(new Google.Apis.Storage.v1.Data.ObjectAccessControl()
-                    {
-                        Bucket = Program.bucketName,
-                        Entity = "allUsers",
-                        Role = "READER"
-                    });
+                    await msg.ModifyAsync($"Selected name: `{name}`\n<:check:314349398811475968> - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
+                        $"\n<a:loading:585958072850317322> Purging the Cloudflare cache...");
 
+                    // https://github.com/Sankra/cloudflare-cache-purger/blob/master/main.csx#L113
+                    var content = new CloudflareContent(new List<string>() { Program.cfgjson.Cloudflare.UrlPrefix + objectName });
+                    var cloudflareContentString = JsonConvert.SerializeObject(content);
                     try
                     {
-                        var updatedObject = await Program.storageClient.UpdateObjectAsync(storageObject, new UpdateObjectOptions()
+                        using (var httpClient = new HttpClient())
                         {
-                            IfMetagenerationMatch = storageObject.Metageneration
-                        });
-                    }
-                    catch (Google.GoogleApiException e)
+                            httpClient.BaseAddress = new Uri("https://api.cloudflare.com/");
+
+                            var request = new HttpRequestMessage(HttpMethod.Delete, "client/v4/zones/" + Program.cfgjson.Cloudflare.ZoneID + "/purge_cache");
+                            request.Content = new StringContent(cloudflareContentString, Encoding.UTF8, "application/json");
+                            request.Headers.Add("Authorization", $"Bearer {Program.cfgjson.Cloudflare.Token}");
+
+                            var response = await httpClient.SendAsync(request);
+                            var responseText = await response.Content.ReadAsStringAsync();
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                await msg.ModifyAsync($"<:check:314349398811475968> - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
+                                    $"\n<:check:314349398811475968> - Successsfully purged the Cloudflare cache for `{objectName}`!");
+                            }
+                            else
+                            {
+                                await msg.ModifyAsync($"<:check:314349398811475968> - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
+                                    $"\n<:xmark:314349398824058880> - An API error occured when purging the Cloudflare cache: ```json\n{responseText}```");
+                            }
+                        }
+                    } catch (Exception e)
                     {
-                        await msg.ModifyAsync($"<:xmark:314349398824058880> A Google Cloud API error occured during object updating! ```\n{e.Message}```");
-                        return;
+                        await msg.ModifyAsync($"<:check:314349398811475968> - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
+                                $"\n<:xmark:314349398824058880> - An unexpected error occured when purging the Cloudflare cache: ```json\n{e.Message}```");
                     }
 
-                    await msg.ModifyAsync($"Selected name: `{name}`\n<:check:314349398811475968> - Uploaded to Google Cloud!");
                 }
             }
+
+
+            // https://github.com/Sankra/cloudflare-cache-purger/blob/master/main.csx#L197
+            readonly struct CloudflareContent
+            {
+                public CloudflareContent(List<string> urls)
+                {
+                    files = urls;
+                }
+
+                public List<string> files { get; }
+            }
+
         }
+
 
     }
 }
