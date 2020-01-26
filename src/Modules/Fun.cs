@@ -39,6 +39,22 @@ namespace Lykos.Modules
             }
         }
 
+        [Command("hug")]
+        [Description("Give someone a good headpat, or treat yourself to one!")]
+        public async Task Hug(CommandContext ctx, [Description("The person to give a headpat to!"), RemainingText] string target = "me")
+        {
+            target = Helpers.sanitiseEveryone(target);
+
+            if (target == null || target == "me" || target == ctx.User.Username || target == ctx.Member.Nickname || target == ctx.Member.Mention)
+            {
+                await ctx.RespondAsync($"<:blobpats:585804188735504435> \\*gives a tight hug to {ctx.User.Mention}\\*");
+            }
+            else
+            {
+                await ctx.RespondAsync($"<:blobpats:585804188735504435> {target} was given a tight hug by {ctx.User.Username}!");
+            }
+        }
+
         [Command("pingeri")]
         [Description("Pong!")]
         public async Task Pingeri(CommandContext ctx)
