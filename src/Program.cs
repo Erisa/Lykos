@@ -39,7 +39,7 @@ namespace Lykos
 
             cfgjson = JsonConvert.DeserializeObject<ConfigJson>(json);
 
-            minio = new MinioClient("s3.nl-ams.scw.cloud", cfgjson.S3.AccessKey, cfgjson.S3.SecretKey, cfgjson.S3.Region).WithSSL();
+            minio = new MinioClient(cfgjson.S3.Endpoint, cfgjson.S3.AccessKey, cfgjson.S3.SecretKey, cfgjson.S3.Region).WithSSL();
 
             if (cfgjson.YoutubeData != null || cfgjson.YoutubeData != "youtubekeyhere")
             {

@@ -7,7 +7,7 @@
   },
   "owners": [ 616122960599711744, 228574821590499329 ],
   "s3": {
-    "endpoint": "https://s3.nl-ams.scw.cloud",
+    "endpoint": "s3.nl-ams.scw.cloud",
     "region": "nl-ams",
     "bucket": "cdn.erisa.moe",
     "accessKey": "SCWBLAHBLAHBLAH",
