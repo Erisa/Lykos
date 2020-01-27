@@ -68,14 +68,11 @@ namespace Lykos
 
             discord.MessageCreated += async e =>
             {
-                if (e.Channel.Id == 671182122429710346)
+                if (e.Channel.Id == 671182122429710346 && e.Message.Content != "")
                 {
-                    if (e.Message.Content != "")
-                    {
-                        await e.Message.DeleteAsync();
-                        var log = await e.Client.GetChannelAsync(671183700448509962);
-                        await log.SendMessageAsync($"{e.Author.Mention}:\n>>> {e.Message.Content}");
-                    }
+                    await e.Message.DeleteAsync();
+                    var log = await e.Client.GetChannelAsync(671183700448509962);
+                    await log.SendMessageAsync($"{e.Author.Mention}:\n>>> {e.Message.Content}");
                 }
 
                 if (e.Message.Content.ToLower() == $"what prefix <@{e.Client.CurrentUser.Id}>" || e.Message.Content.ToLower() == $"what prefix <@!{e.Client.CurrentUser.Id}>")
