@@ -68,17 +68,22 @@ namespace Lykos
 
             discord.MessageCreated += async e =>
             {
+                if (e.Channel.Id == 671182122429710346)
+                {
+                    if (e.Message.Content != "")
+                    {
+                        await e.Message.DeleteAsync();
+                        var log = await e.Client.GetChannelAsync(671183700448509962);
+                        await log.SendMessageAsync($"{e.Author.Mention}:\n>>> {e.Message.Content}");
+                    }
+                }
+
                 if (e.Message.Content.ToLower() == $"what prefix <@{e.Client.CurrentUser.Id}>" || e.Message.Content.ToLower() == $"what prefix <@!{e.Client.CurrentUser.Id}>")
                 {
                     await e.Channel.SendMessageAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(cfgjson.Prefixes)}```");
                 }
 
-                if (e.Channel.Id == 577871838454218766)
-                {
-                    var mem = await e.Guild.GetMemberAsync(e.Author.Id);
-                    var role = e.Guild.GetRole(577872199344717824);
-                    await mem.GrantRoleAsync(role);
-                }
+                
             };
 
             commands = discord.UseCommandsNext(new CommandsNextConfiguration
