@@ -34,7 +34,7 @@ namespace Lykos.Modules
         {
             await ctx.Message.DeleteAsync();
             var msg = await ctx.Channel.GetMessageAsync(messageId);
-            await msg.SuppressEmbedsAsync();
+            await msg.ModifyEmbedSuppressionAsync(true);
         }
 
         [Group("debug")]
