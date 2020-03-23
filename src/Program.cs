@@ -3,15 +3,13 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Interactivity;
 using Lykos.Modules;
+using Minio;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Minio;
-using Minio.Exceptions;
-using Minio.DataModel;
 
 namespace Lykos
 {
@@ -47,7 +45,7 @@ namespace Lykos
                 TokenType = TokenType.Bot,
                 UseInternalLogHandler = true,
                 LogLevel = LogLevel.Debug,
-                
+
             });
 
             interactivity = discord.UseInteractivity(new InteractivityConfiguration
@@ -75,13 +73,13 @@ namespace Lykos
                     await e.Channel.SendMessageAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(cfgjson.Prefixes)}```");
                 }
 
-                
+
             };
 
             commands = discord.UseCommandsNext(new CommandsNextConfiguration
             {
                 StringPrefixes = cfgjson.Prefixes,
-                
+
             });
 
             commands.CommandErrored += async e =>

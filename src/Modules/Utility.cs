@@ -4,8 +4,8 @@ using DSharpPlus.Entities;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Lykos.Modules
 {
@@ -23,7 +23,8 @@ namespace Lykos.Modules
             try
             {
                 msg = await ctx.Channel.GetMessageAsync(messageId);
-            } catch
+            }
+            catch
             {
                 await ctx.RespondAsync("Invalid input!");
                 return;
@@ -44,12 +45,13 @@ namespace Lykos.Modules
             }
 
             GroupCollection groups = matches[0].Groups;
-            
-            
+
+
             if (groups[1].Value == "a")
             {
                 await ctx.RespondAsync($"I think this should work:\nhttps://cdn.discordapp.com/emojis/{groups[2].Value}.gif");
-            } else
+            }
+            else
             {
                 await ctx.RespondAsync($"I think this should work:\nhttps://cdn.discordapp.com/emojis/{groups[2].Value}.png");
             }
@@ -65,7 +67,7 @@ namespace Lykos.Modules
             var hash = target.AvatarHash;
 
 
-            if (format == null ||  format == "png or gif")
+            if (format == null || format == "png or gif")
             {
                 format = hash.StartsWith("a_") ? "gif" : "png";
             }

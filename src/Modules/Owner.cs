@@ -1,18 +1,17 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using Minio.Exceptions;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
 using static Lykos.Modules.Helpers;
-using Minio.Exceptions;
-using System.Collections.Generic;
-using System.Net.Http;
-using Newtonsoft.Json;
-using System.Text;
 
 namespace Lykos.Modules
 {
@@ -179,7 +178,7 @@ namespace Lykos.Modules
                 DiscordDmChannel chan = await ctx.Member.CreateDmChannelAsync();
                 await chan.SendMessageAsync($"Here's the invite you asked for: https://discord.gg/{inv.Code}");
                 await ctx.RespondAsync($"<:check:314349398811475968> I've DMed you an invite to **Erisa's Corner** with `{max_uses}` use(s) and an age of `{age}`!");
-                
+
             }
 
             [Group("update")]
@@ -222,7 +221,8 @@ namespace Lykos.Modules
                     {
                         await msg.ModifyAsync($"<:xmark:314349398824058880> An API error occured while uploading to {Program.cfgjson.S3.displayName}:```\n{e.Message}```");
                         return;
-                    } catch (Exception e)
+                    }
+                    catch (Exception e)
                     {
                         await msg.ModifyAsync($"<:xmark:314349398824058880> An unexpected error occured while uploading to {Program.cfgjson.S3.displayName}:```\n{e.Message}```");
                         return;
@@ -258,7 +258,8 @@ namespace Lykos.Modules
                                     $"\n<:xmark:314349398824058880> - An API error occured when purging the Cloudflare cache: ```json\n{responseText}```");
                             }
                         }
-                    } catch (Exception e)
+                    }
+                    catch (Exception e)
                     {
                         await msg.ModifyAsync($"<:check:314349398811475968> - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
                                 $"\n<:xmark:314349398824058880> - An unexpected error occured when purging the Cloudflare cache: ```json\n{e.Message}```");

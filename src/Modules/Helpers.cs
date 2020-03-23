@@ -1,7 +1,5 @@
-﻿using DSharpPlus.Entities;
-using System;
+﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
