@@ -97,7 +97,5 @@ namespace Lykos.Modules
             await ctx.RespondAsync($"The cute of the year is **{cutie.Username}#{cutie.Discriminator}**!");
         }
 
-        readonly ulong BotDevID = 110375768374136832;
-        readonly ulong unlistedID = 479762844720824320;
     }
 }

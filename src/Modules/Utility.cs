@@ -129,7 +129,7 @@ namespace Lykos.Modules
                 var user = await ctx.Client.GetUserAsync(id);
                 resp += $"- **{user.Username}#{user.Discriminator}** (`{user.Id}`)\n";
             }
-            ctx.RespondAsync(resp);
+            await ctx.RespondAsync(resp);
         }
 
     }

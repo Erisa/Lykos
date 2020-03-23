@@ -10,8 +10,6 @@ namespace Lykos.Modules
 {
     public class Helpers
     {
-        private static readonly ulong dbotsGuildId = 110373943822540800;
-
         public static OSPlatform GetOSPlatform()
         {
             // Default to "Unknown" platform.

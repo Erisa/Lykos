@@ -41,11 +41,6 @@ namespace Lykos
 
             minio = new MinioClient(cfgjson.S3.Endpoint, cfgjson.S3.AccessKey, cfgjson.S3.SecretKey, cfgjson.S3.Region).WithSSL();
 
-            if (cfgjson.YoutubeData != null || cfgjson.YoutubeData != "youtubekeyhere")
-            {
-                Console.WriteLine("[WARN] YouTube API functions have been deprecated, an API key is not needed and may cause problems in future versions.");
-            }
-
             discord = new DiscordClient(new DiscordConfiguration
             {
                 Token = cfgjson.Token,
@@ -115,9 +110,9 @@ namespace Lykos
 
     public class Require​Owner​Attribute : CheckBaseAttribute
     {
-        public override async Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help)
+        public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help)
         {
-            return Program.cfgjson.Owners.Contains(ctx.Member.Id);
+            return Task.FromResult(Program.cfgjson.Owners.Contains(ctx.Member.Id));
         }
     }
 
@@ -129,9 +124,6 @@ namespace Lykos
 
         [JsonProperty("prefixes")]
         public string[] Prefixes { get; private set; }
-
-        [JsonProperty("youtube_data_api")]
-        public string YoutubeData { get; private set; }
 
         [JsonProperty("gravatar")]
         public GravatarConfig Gravatar { get; private set; }
