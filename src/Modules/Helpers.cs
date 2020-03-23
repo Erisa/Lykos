@@ -85,59 +85,6 @@ namespace Lykos.Modules
             }
         }
 
-        public enum DbotsPermLevel { nothing, botDev, Helper, siteHelper, mod, owner = int.MaxValue }
-
-        public static DbotsPermLevel GetDbotsPerm(DiscordMember target)
-        {
-            if (target.Guild.Id != dbotsGuildId)
-            {
-                return DbotsPermLevel.nothing;
-            }
-
-            if (target.Id == 228574821590499329 || target.Id == 616122960599711744)
-            {
-                return DbotsPermLevel.mod;
-            }
-
-            var modRole = target.Guild.GetRole(113379036524212224);
-            var fakeMod = target.Guild.GetRole(366668416058130432);
-            var helperRole = target.Guild.GetRole(407326634819977217);
-            var siteHelperRole = target.Guild.GetRole(598574793712992286);
-            var botDevRole = target.Guild.GetRole(110375768374136832);
-
-
-            if (target.IsOwner)
-            {
-                return DbotsPermLevel.owner;
-            }
-            else if (target.Roles.Contains(modRole) || target.Roles.Contains(fakeMod))
-            {
-                return DbotsPermLevel.mod;
-            }
-            else if (target.Roles.Contains(siteHelperRole))
-            {
-                return DbotsPermLevel.siteHelper;
-            }
-            else if (target.Roles.Contains(helperRole))
-            {
-                return DbotsPermLevel.Helper;
-            }
-            else if (target.Roles.Contains(botDevRole))
-            {
-                return DbotsPermLevel.botDev;
-            }
-            else
-            {
-                return DbotsPermLevel.nothing;
-            }
-        }
-
-        public static Boolean IsDbotsBooster(DiscordMember target)
-        {
-            var boosterRole = target.Guild.GetRole(585535347753222157);
-            return target.Roles.Contains(boosterRole);
-        }
-
         public static string sanitiseEveryone(string input)
         {
             return input.Replace("@everyone", "@\u200Beveryone").Replace("@here", "@\u200Bhere");

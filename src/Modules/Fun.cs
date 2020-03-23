@@ -33,7 +33,8 @@ namespace Lykos.Modules
             if (target == null || target == "me" || target == ctx.User.Username || target == ctx.Member.Nickname || target == ctx.Member.Mention)
             {
                 await ctx.RespondAsync($"<:blobpats:585804188735504435> \\*gives a big headpat to {ctx.User.Mention}\\*");
-            } else
+            }
+            else
             {
                 await ctx.RespondAsync($"<:blobpats:585804188735504435> {target} was given a big headpat by {ctx.User.Username}!");
             }
@@ -61,5 +62,42 @@ namespace Lykos.Modules
         {
             await ctx.RespondAsync("<@228574821590499329>");
         }
+
+        [Command("whenissarahsbirthday")]
+        public async Task Whenissarahsbirthday(CommandContext ctx)
+        {
+            await ctx.RespondAsync($"Today.");
+        }
+
+        [Command("cotd")]
+        public async Task Cotd(CommandContext ctx)
+        {
+            var scat = await ctx.Client.GetUserAsync(103347843934212096);
+            await ctx.RespondAsync($"Todays cat of the day is **{scat.Username}#{scat.Discriminator}**!");
+        }
+
+        [Command("gotd")]
+        public async Task Gotd(CommandContext ctx)
+        {
+            var circ = await ctx.Client.GetUserAsync(255114091360681986);
+            await ctx.RespondAsync($"Todays genius of the day is **{circ.Username}#{circ.Discriminator}**!");
+        }
+
+        [Command("zotd")]
+        public async Task zotd(CommandContext ctx)
+        {
+            var zeta = await ctx.Client.GetUserAsync(94129005791281152);
+            await ctx.RespondAsync($"Todays Zeta of the day is **{zeta.Username}#{zeta.Discriminator}**!");
+        }
+
+        [Command("coty")]
+        public async Task Zotd(CommandContext ctx)
+        {
+            var cutie = await ctx.Client.GetUserAsync(155659573515124736);
+            await ctx.RespondAsync($"The cute of the year is **{cutie.Username}#{cutie.Discriminator}**!");
+        }
+
+        readonly ulong BotDevID = 110375768374136832;
+        readonly ulong unlistedID = 479762844720824320;
     }
 }

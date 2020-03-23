@@ -102,7 +102,6 @@ namespace Lykos
                 //await ctx.CommandsNext.SudoAsync(ctx.User, ctx.Channel, $"help {ctx.Command.Name}");
             };
 
-            commands.RegisterCommands(typeof(Dbots));
             commands.RegisterCommands(typeof(Utility));
             commands.RegisterCommands(typeof(Mod));
             commands.RegisterCommands(typeof(Owner));
