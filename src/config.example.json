@@ -17,6 +17,6 @@
   "cloudflare": {
     "apiToken": "blah",
     "zoneID": "bbbbbb",
-    "urlPrefix":  "https://cdn.erisa.moe/"
+    "urlPrefix": "https://cdn.erisa.moe/"
   }
 }
