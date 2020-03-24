@@ -32,11 +32,11 @@ namespace Lykos.Modules
 
             if (target == null || target == "me" || target == ctx.User.Username || target == ctx.Member.Nickname || target == ctx.Member.Mention)
             {
-                await ctx.RespondAsync($"<:blobpats:585804188735504435> \\*gives a big headpat to {ctx.User.Mention}\\*");
+                await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobPats} \\*gives a big headpat to {ctx.User.Mention}\\*");
             }
             else
             {
-                await ctx.RespondAsync($"<:blobpats:585804188735504435> {target} was given a big headpat by {ctx.User.Username}!");
+                await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobPats} {target} was given a big headpat by {ctx.User.Username}!");
             }
         }
 
@@ -48,11 +48,11 @@ namespace Lykos.Modules
 
             if (target == null || target == "me" || target == ctx.User.Username || target == ctx.Member.Nickname || target == ctx.Member.Mention)
             {
-                await ctx.RespondAsync($"<:blobhug:671023513347555329> \\*gives a tight hug to {ctx.User.Mention}\\*");
+                await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobHug} \\*gives a tight hug to {ctx.User.Mention}\\*");
             }
             else
             {
-                await ctx.RespondAsync($"<:blobhug:671023513347555329> {target} was given a tight hug by {ctx.User.Username}!");
+                await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobHug} {target} was given a tight hug by {ctx.User.Username}!");
             }
         }
 

@@ -177,7 +177,7 @@ namespace Lykos.Modules
 
                 DiscordDmChannel chan = await ctx.Member.CreateDmChannelAsync();
                 await chan.SendMessageAsync($"Here's the invite you asked for: https://discord.gg/{inv.Code}");
-                await ctx.RespondAsync($"<:check:314349398811475968> I've DMed you an invite to **Erisa's Corner** with `{max_uses}` use(s) and an age of `{age}`!");
+                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Check} I've DMed you an invite to **Erisa's Corner** with `{max_uses}` use(s) and an age of `{age}`!");
 
             }
 
@@ -219,16 +219,16 @@ namespace Lykos.Modules
                     }
                     catch (MinioException e)
                     {
-                        await msg.ModifyAsync($"<:xmark:314349398824058880> An API error occured while uploading to {Program.cfgjson.S3.displayName}:```\n{e.Message}```");
+                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Xmark} An API error occured while uploading to {Program.cfgjson.S3.displayName}:```\n{e.Message}```");
                         return;
                     }
                     catch (Exception e)
                     {
-                        await msg.ModifyAsync($"<:xmark:314349398824058880> An unexpected error occured while uploading to {Program.cfgjson.S3.displayName}:```\n{e.Message}```");
+                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Xmark} An unexpected error occured while uploading to {Program.cfgjson.S3.displayName}:```\n{e.Message}```");
                         return;
                     }
 
-                    await msg.ModifyAsync($"Selected name: `{name}`\n<:check:314349398811475968> - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
+                    await msg.ModifyAsync($"Selected name: `{name}`\n{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
                         $"\n<a:loading:585958072850317322> Purging the Cloudflare cache...");
 
                     // https://github.com/Sankra/cloudflare-cache-purger/blob/master/main.csx#L113
@@ -249,20 +249,20 @@ namespace Lykos.Modules
 
                             if (response.IsSuccessStatusCode)
                             {
-                                await msg.ModifyAsync($"<:check:314349398811475968> - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
-                                    $"\n<:check:314349398811475968> - Successsfully purged the Cloudflare cache for `{objectName}`!");
+                                await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
+                                    $"\n{Program.cfgjson.Emoji.Check} - Successsfully purged the Cloudflare cache for `{objectName}`!");
                             }
                             else
                             {
-                                await msg.ModifyAsync($"<:check:314349398811475968> - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
-                                    $"\n<:xmark:314349398824058880> - An API error occured when purging the Cloudflare cache: ```json\n{responseText}```");
+                                await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
+                                    $"\n{Program.cfgjson.Emoji.Xmark} - An API error occured when purging the Cloudflare cache: ```json\n{responseText}```");
                             }
                         }
                     }
                     catch (Exception e)
                     {
-                        await msg.ModifyAsync($"<:check:314349398811475968> - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
-                                $"\n<:xmark:314349398824058880> - An unexpected error occured when purging the Cloudflare cache: ```json\n{e.Message}```");
+                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
+                                $"\n{Program.cfgjson.Emoji.Xmark} - An unexpected error occured when purging the Cloudflare cache: ```json\n{e.Message}```");
                     }
 
                 }

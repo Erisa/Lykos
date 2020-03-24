@@ -87,7 +87,7 @@ namespace Lykos
                 var ctx = e.Context;
                 if (e.Command != null && e.Command.Name == "avatar" && e.Exception is System.ArgumentException)
                 {
-                    await ctx.RespondAsync("<:xmark:314349398824058880> User not found! Only mentions, IDs and Usernames are accepted.\nNote: It is no longer needed to specify `byid`, simply use the ID directly.");
+                    await ctx.RespondAsync("{Program.cfgjson.Emoji.Xmark} User not found! Only mentions, IDs and Usernames are accepted.\nNote: It is no longer needed to specify `byid`, simply use the ID directly.");
                 }
 
                 // Console.WriteLine(e.Exception is System.ArgumentException);
@@ -135,6 +135,8 @@ namespace Lykos
         [JsonProperty("cloudflare")]
         public CloudflareConfig Cloudflare { get; private set; }
 
+        [JsonProperty("emoji")]
+        public EmojiConfig Emoji { get; private set; }
     }
 
     public class CloudflareConfig
@@ -147,6 +149,21 @@ namespace Lykos
 
         [JsonProperty("urlPrefix")]
         public string UrlPrefix { get; private set; }
+    }
+
+    public class EmojiConfig
+    {
+        [JsonProperty("blobpats")]
+        public string BlobPats { get; private set; }
+
+        [JsonProperty("blobhug")]
+        public string BlobHug { get; private set; }
+
+        [JsonProperty("xmark")]
+        public string Xmark { get; private set; }
+
+        [JsonProperty("check")]
+        public string Check { get; private set; }
     }
 
     public class JsonCfgS3

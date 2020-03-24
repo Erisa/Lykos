@@ -35,14 +35,14 @@ namespace Lykos.Modules
                     }
                     else
                     {
-                        await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to ban **{target.Username}#{target.Discriminator}**!");
+                        await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} I don't have permission to ban **{target.Username}#{target.Discriminator}**!");
                         return;
 
                     }
                 }
                 else
                 {
-                    await ctx.RespondAsync($"<:xmark:314349398824058880> You aren't allowed to ban **{target.Username}#{target.Discriminator}**!");
+                    await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} You aren't allowed to ban **{target.Username}#{target.Discriminator}**!");
                     return;
                 }
             }
@@ -74,13 +74,13 @@ namespace Lykos.Modules
                 }
                 else
                 {
-                    await ctx.RespondAsync($"<:xmark:314349398824058880> I don't have permission to kick **{target.Username}#{target.Discriminator}**!");
+                    await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} I don't have permission to kick **{target.Username}#{target.Discriminator}**!");
                     return;
                 }
             }
             else
             {
-                await ctx.RespondAsync($"<:xmark:314349398824058880> You aren't allowed to kick **{target.Username}#{target.Discriminator}**!");
+                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} You aren't allowed to kick **{target.Username}#{target.Discriminator}**!");
                 return;
             }
         }

@@ -18,5 +18,11 @@
     "apiToken": "blah",
     "zoneID": "bbbbbb",
     "urlPrefix": "https://cdn.erisa.moe/"
+  },
+  "emoji": {
+    "blobpats": "<:blobpats:691958091742445688>",
+    "blobhug": "<:blobhug:671023513347555329>",
+    "xmark": "<:xmark:663977222750601217>",
+    "check": "<:check:663977222864109587>"
   }
 }
