@@ -197,7 +197,7 @@ namespace Lykos.Modules
                     DiscordMessage msg;
                     string objectName;
 
-                    msg = await ctx.RespondAsync($"Selected name: `{name}`\n<a:loading:585958072850317322> - Uploading to {Program.cfgjson.S3.displayName}..." +
+                    msg = await ctx.RespondAsync($"Selected name: `{name}`\n{Program.cfgjson.Emoji.Loading} - Uploading to {Program.cfgjson.S3.displayName}..." +
                         $"\n🔲 - Waiting to purge Cloudflare cache.");
                     objectName = $"avatars/{name}.png";
 
@@ -229,7 +229,7 @@ namespace Lykos.Modules
                     }
 
                     await msg.ModifyAsync($"Selected name: `{name}`\n{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
-                        $"\n<a:loading:585958072850317322> Purging the Cloudflare cache...");
+                        $"\n{Program.cfgjson.Emoji.Loading} Purging the Cloudflare cache...");
 
                     // https://github.com/Sankra/cloudflare-cache-purger/blob/master/main.csx#L113
                     var content = new CloudflareContent(new List<string>() { Program.cfgjson.Cloudflare.UrlPrefix + objectName });

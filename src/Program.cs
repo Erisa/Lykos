@@ -164,6 +164,9 @@ namespace Lykos
 
         [JsonProperty("check")]
         public string Check { get; private set; }
+
+        [JsonProperty("loading")]
+        public string Loading { get; private set; }
     }
 
     public class JsonCfgS3
