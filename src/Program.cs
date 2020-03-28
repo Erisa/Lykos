@@ -76,6 +76,15 @@ namespace Lykos
 
             };
 
+            discord.GuildMemberRemoved += async e =>
+            {
+                if (e.Guild.Id == 228625269101953035)
+                {
+                    var channel = await e.Client.GetChannelAsync(228625269101953035);
+                    await channel.SendMessageAsync($"**{e.Member.DisplayName}** has left us 😔");
+                }
+            };
+
             commands = discord.UseCommandsNext(new CommandsNextConfiguration
             {
                 StringPrefixes = cfgjson.Prefixes,
