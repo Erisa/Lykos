@@ -19,7 +19,7 @@ namespace Lykos
         static CommandsNextExtension commands;
         public static Random rnd = new Random();
         public static ConfigJson cfgjson;
-        public static HasteBinClient hasteUploader = new HasteBinClient("https://paste.erisa.moe");
+        public static HasteBinClient hasteUploader;
         public static InteractivityExtension interactivity;
         public static MinioClient minio;
 
@@ -36,6 +36,7 @@ namespace Lykos
                 json = await sr.ReadToEndAsync();
 
             cfgjson = JsonConvert.DeserializeObject<ConfigJson>(json);
+            hasteUploader = new HasteBinClient(cfgjson.HastebinEndpoint);
 
             minio = new MinioClient(cfgjson.S3.Endpoint, cfgjson.S3.AccessKey, cfgjson.S3.SecretKey, cfgjson.S3.Region).WithSSL();
 
@@ -70,7 +71,8 @@ namespace Lykos
 
                 if (e.Message.Content.ToLower() == $"what prefix <@{e.Client.CurrentUser.Id}>" || e.Message.Content.ToLower() == $"what prefix <@!{e.Client.CurrentUser.Id}>")
                 {
-                    await e.Channel.SendMessageAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(cfgjson.Prefixes)}```");
+                    await e.Channel.SendMessageAsync($"My prefixes are: ```json\n" +
+                        $"{JsonConvert.SerializeObject(cfgjson.Prefixes)}```");
                 }
 
 
@@ -96,7 +98,8 @@ namespace Lykos
                 var ctx = e.Context;
                 if (e.Command != null && e.Command.Name == "avatar" && e.Exception is System.ArgumentException)
                 {
-                    await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} User not found! Only mentions, IDs and Usernames are accepted.\nNote: It is no longer needed to specify `byid`, simply use the ID directly.");
+                    await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} User not found! Only mentions, IDs and Usernames are accepted.\n" +
+                        $"Note: It is no longer needed to specify `byid`, simply use the ID directly.");
                 }
 
             };

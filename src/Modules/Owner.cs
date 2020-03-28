@@ -99,7 +99,9 @@ namespace Lykos.Modules
                 var watch = System.Diagnostics.Stopwatch.StartNew();
                 await ctx.Client.DisconnectAsync();
                 watch.Stop();
-                await msg.ModifyAsync($"Disconnected from websocket!\n- This took `{watch.ElapsedMilliseconds}ms` to complete!\nNow exiting main process. Goodbye!");
+                await msg.ModifyAsync($"Disconnected from websocket!\n" +
+                    $"- This took `{watch.ElapsedMilliseconds}ms` to complete!\n" +
+                    $"Now exiting main process. Goodbye!");
                 Environment.Exit(0);
             }
 
@@ -116,7 +118,9 @@ namespace Lykos.Modules
                 var watch = System.Diagnostics.Stopwatch.StartNew();
                 await ctx.Client.DisconnectAsync();
                 watch.Stop();
-                await msg.ModifyAsync($"Disconnected from websocket!\n- This took `{watch.ElapsedMilliseconds}ms` to complete!\nNow stopping main service. If that doesn't work, I'll just end my process!");
+                await msg.ModifyAsync($"Disconnected from websocket!\n" +
+                    $"- This took `{watch.ElapsedMilliseconds}ms` to complete!\n" +
+                    $"Now stopping main service. If that doesn't work, I'll just end my process!");
 
                 ShellResult finishedShell = Helpers.RunShellCommand("pm2 stop lykos");
 
@@ -142,7 +146,8 @@ namespace Lykos.Modules
                     HasteBinResult hasteURL = await Program.hasteUploader.Post(finishedShell.result);
                     if (hasteURL.IsSuccess)
                     {
-                        await msg.ModifyAsync($"Done, but output exceeded character limit! (`{finishedShell.result.Length}`/`1947`)\nFull output can be viewed here: https://paste.erisa.moe/raw/{hasteURL.Key}\nProcess exited with code `{finishedShell.proc.ExitCode}`.");
+                        await msg.ModifyAsync($"Done, but output exceeded character limit! (`{finishedShell.result.Length}`/`1947`)\n" +
+                            $"Full output can be viewed here: https://paste.erisa.moe/raw/{hasteURL.Key}\nProcess exited with code `{finishedShell.proc.ExitCode}`.");
                     }
                     else
                     {
@@ -151,7 +156,8 @@ namespace Lykos.Modules
                 }
                 else
                 {
-                    await msg.ModifyAsync($"Done, output: ```\n{finishedShell.result}```Process exited with code `{finishedShell.proc.ExitCode}`.");
+                    await msg.ModifyAsync($"Done, output: ```\n" +
+                        $"{finishedShell.result}```Process exited with code `{finishedShell.proc.ExitCode}`.");
                 }
             }
 
@@ -197,8 +203,8 @@ namespace Lykos.Modules
                     DiscordMessage msg;
                     string objectName;
 
-                    msg = await ctx.RespondAsync($"Selected name: `{name}`\n{Program.cfgjson.Emoji.Loading} - Uploading to {Program.cfgjson.S3.displayName}..." +
-                        $"\n🔲 - Waiting to purge Cloudflare cache.");
+                    msg = await ctx.RespondAsync($"Selected name: `{name}`\n{Program.cfgjson.Emoji.Loading} - Uploading to {Program.cfgjson.S3.displayName}...\n" +
+                        $"🔲 - Waiting to purge Cloudflare cache.");
                     objectName = $"avatars/{name}.png";
 
                     string avatarUrl = $"https://cdn.discordapp.com/avatars/{ctx.User.Id}/{ctx.User.AvatarHash}.png?size=4096";
@@ -219,17 +225,20 @@ namespace Lykos.Modules
                     }
                     catch (MinioException e)
                     {
-                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Xmark} An API error occured while uploading to {Program.cfgjson.S3.displayName}:```\n{e.Message}```");
+                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Xmark} An API error occured while uploading to {Program.cfgjson.S3.displayName}:```\n" +
+                            $"{e.Message}```");
                         return;
                     }
                     catch (Exception e)
                     {
-                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Xmark} An unexpected error occured while uploading to {Program.cfgjson.S3.displayName}:```\n{e.Message}```");
+                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Xmark} An unexpected error occured while uploading to {Program.cfgjson.S3.displayName}:```\n" +
+                            $"{e.Message}```");
                         return;
                     }
 
-                    await msg.ModifyAsync($"Selected name: `{name}`\n{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
-                        $"\n{Program.cfgjson.Emoji.Loading} Purging the Cloudflare cache...");
+                    await msg.ModifyAsync($"Selected name: `{name}`\n" +
+                        $"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!\n" +
+                        $"{Program.cfgjson.Emoji.Loading} Purging the Cloudflare cache...");
 
                     // https://github.com/Sankra/cloudflare-cache-purger/blob/master/main.csx#L113
                     var content = new CloudflareContent(new List<string>() { Program.cfgjson.Cloudflare.UrlPrefix + objectName });
@@ -261,8 +270,9 @@ namespace Lykos.Modules
                     }
                     catch (Exception e)
                     {
-                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
-                                $"\n{Program.cfgjson.Emoji.Xmark} - An unexpected error occured when purging the Cloudflare cache: ```json\n{e.Message}```");
+                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!\n" +
+                                $"{Program.cfgjson.Emoji.Xmark} - An unexpected error occured when purging the Cloudflare cache: ```json\n" +
+                                $"{e.Message}```");
                     }
 
                 }

@@ -27,6 +27,9 @@ namespace Lykos
 
             [JsonProperty("emoji")]
             public EmojiConfig Emoji { get; private set; }
+
+            [JsonProperty("hastebinEndpoint")]
+            public string HastebinEndpoint { get; private set; }
         }
 
         public class CloudflareConfig

@@ -73,12 +73,14 @@ namespace Lykos.Modules
             }
             else if (!validExts.Any(format.Contains))
             {
-                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} You supplied an invalid format, either give none or one of the following: `gif`, `png`, `jpg`, `webp`");
+                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} You supplied an invalid format, " +
+                    $"either give none or one of the following: `gif`, `png`, `jpg`, `webp`");
                 return;
             }
             else if (format == "gif" && !hash.StartsWith("a_"))
             {
-                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} The format of `gif` only applies to animated avatars.\nThe user you are trying to lookup does not have an animated avatar.");
+                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} The format of `gif` only applies to animated avatars.\n" +
+                    $"The user you are trying to lookup does not have an animated avatar.");
                 return;
             }
 
