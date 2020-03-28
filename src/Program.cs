@@ -87,12 +87,9 @@ namespace Lykos
                 var ctx = e.Context;
                 if (e.Command != null && e.Command.Name == "avatar" && e.Exception is System.ArgumentException)
                 {
-                    await ctx.RespondAsync("{Program.cfgjson.Emoji.Xmark} User not found! Only mentions, IDs and Usernames are accepted.\nNote: It is no longer needed to specify `byid`, simply use the ID directly.");
+                    await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} User not found! Only mentions, IDs and Usernames are accepted.\nNote: It is no longer needed to specify `byid`, simply use the ID directly.");
                 }
 
-                // Console.WriteLine(e.Exception is System.ArgumentException);
-                //if (e.Exception is System.ArgumentException)
-                //await ctx.CommandsNext.SudoAsync(ctx.User, ctx.Channel, $"help {ctx.Command.Name}");
             };
 
             commands.RegisterCommands(typeof(Utility));
@@ -101,7 +98,6 @@ namespace Lykos
             commands.RegisterCommands(typeof(Fun));
 
             await discord.ConnectAsync();
-            // var msg = discord.GetChannelAsync(132632676225122304).GetMessageAsync(1);
             await Task.Delay(-1);
         }
     }
