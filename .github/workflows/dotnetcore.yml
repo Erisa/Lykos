@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    if: "!contains(github.event.commits[0].message, '[skip ci]')"
     strategy:
       matrix:
         os: [ubuntu-18.04, windows-2019]
