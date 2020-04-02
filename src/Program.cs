@@ -62,7 +62,7 @@ namespace Lykos
 
             discord.MessageCreated += async e =>
             {
-                if (e.Channel.Id == 671182122429710346 && e.Message.Content != "")
+                if (e.Channel.Id == 671182122429710346 && e.Message.Attachments.Count == 0)
                 {
                     await e.Message.DeleteAsync();
                     var log = await e.Client.GetChannelAsync(671183700448509962);
