@@ -46,7 +46,6 @@ namespace Lykos
                 TokenType = TokenType.Bot,
                 UseInternalLogHandler = true,
                 LogLevel = LogLevel.Debug,
-
             });
 
             interactivity = discord.UseInteractivity(new InteractivityConfiguration
@@ -69,6 +68,24 @@ namespace Lykos
                     await log.SendMessageAsync($"{e.Author.Mention}:\n>>> {e.Message.Content}");
                 }
 
+
+                if (e.Channel.Id == 695636314959118376)
+                {
+                    var prevMsgs = await e.Channel.GetMessagesBeforeAsync(e.Message.Id, 1);
+                    var prevMsg = prevMsgs[0];
+                    var log = await e.Client.GetChannelAsync(695636452804919297);
+                    if (e.Message.Content.Contains(" "))
+                    {
+                        await e.Message.DeleteAsync();
+                        await log.SendMessageAsync($"{e.Author.Mention}:\n>>> {e.Message.Content}");
+                    } else if (e.Message.Author.Id == prevMsg.Author.Id)
+                    {
+                        await e.Message.DeleteAsync();
+                        await log.SendMessageAsync($"(SAMEAUTHOR) {e.Author.Mention}:\n>>> {e.Message.Content}");
+                    }
+                    
+                }
+
                 if (e.Message.Content.ToLower() == $"what prefix <@{e.Client.CurrentUser.Id}>" || e.Message.Content.ToLower() == $"what prefix <@!{e.Client.CurrentUser.Id}>")
                 {
                     await e.Channel.SendMessageAsync($"My prefixes are: ```json\n" +
@@ -76,6 +93,16 @@ namespace Lykos
                 }
 
 
+            };
+
+            discord.MessageUpdated += async e =>
+            {
+                if (e.Channel.Id == 695636314959118376 && e.Message.Content.Contains(" "))
+                {
+                    await e.Message.DeleteAsync();
+                    var log = await e.Client.GetChannelAsync(695636452804919297);
+                    await log.SendMessageAsync($"(EDIT) {e.Author.Mention}:\n>>> {e.Message.Content}");
+                }
             };
 
             discord.GuildMemberRemoved += async e =>
