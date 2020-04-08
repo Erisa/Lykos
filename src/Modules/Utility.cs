@@ -16,7 +16,8 @@ namespace Lykos.Modules
 
         [Command("bigmoji")]
         [Aliases("steal", "bm")]
-        public async Task Bigmoji(CommandContext ctx, ulong messageId)
+        [Description("Steals the first custom emoji in a given message. Mostly for mobile users!")]
+        public async Task Bigmoji(CommandContext ctx, [Description("A message ID containing the custom emoji you want to steal.")] ulong messageId)
         {
 
             DiscordMessage msg;
@@ -26,13 +27,15 @@ namespace Lykos.Modules
             }
             catch
             {
-                await ctx.RespondAsync("Invalid input!");
+                await ctx.RespondAsync("Invalid input!\n" +
+                    "The input should be a Discord message ID that contains the emoji you want to steal!");
                 return;
             }
 
             if (msg == null)
             {
-                await ctx.RespondAsync("Invalid input!");
+                await ctx.RespondAsync("Invalid input!\n" +
+                    "The input should be a Discord message ID that contains the emoji you want to steal!");
                 return;
             }
 
@@ -49,11 +52,11 @@ namespace Lykos.Modules
 
             if (groups[1].Value == "a")
             {
-                await ctx.RespondAsync($"I think this should work:\nhttps://cdn.discordapp.com/emojis/{groups[2].Value}.gif");
+                await ctx.RespondAsync($"{ctx.User.Mention}, Here's the emoji link you requested:\nhttps://cdn.discordapp.com/emojis/{groups[2].Value}.gif");
             }
             else
             {
-                await ctx.RespondAsync($"I think this should work:\nhttps://cdn.discordapp.com/emojis/{groups[2].Value}.png");
+                await ctx.RespondAsync($"{ctx.User.Mention}, Here's the emoji link you requested:\nhttps://cdn.discordapp.com/emojis/{groups[2].Value}.png");
             }
         }
 
