@@ -117,7 +117,7 @@ namespace Lykos
                         $"{JsonConvert.SerializeObject(cfgjson.Prefixes)}```");
                 }
 
-                if (e.Message.Content.StartsWith("Ik ") || e.Message.Content.StartsWith("ik "))
+                if (e.Message.Content.ToLower().StartsWith("ik "))
                 {
                     var potentialCmd = e.Message.Content.Split(' ')[1];
                     foreach (var cmd in commands.RegisteredCommands)
