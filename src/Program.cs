@@ -102,12 +102,13 @@ namespace Lykos
                     {
                         await e.Message.DeleteAsync();
                         await log.SendMessageAsync($"{e.Author.Mention}:\n>>> {e.Message.Content}");
-                    } else if (e.Message.Author.Id == prevMsg.Author.Id)
+                    }
+                    else if (e.Message.Author.Id == prevMsg.Author.Id)
                     {
                         await e.Message.DeleteAsync();
                         await log.SendMessageAsync($"(SAMEAUTHOR) {e.Author.Mention}:\n>>> {e.Message.Content}");
                     }
-                    
+
                 }
 
                 if (e.Message.Content.ToLower() == $"what prefix <@{e.Client.CurrentUser.Id}>" || e.Message.Content.ToLower() == $"what prefix <@!{e.Client.CurrentUser.Id}>")
@@ -119,7 +120,7 @@ namespace Lykos
                 if (e.Message.Content.StartsWith("Ik ") || e.Message.Content.StartsWith("ik "))
                 {
                     var potentialCmd = e.Message.Content.Split(' ')[1];
-                    foreach(var cmd in commands.RegisteredCommands)
+                    foreach (var cmd in commands.RegisteredCommands)
                     {
                         if (cmd.Key == potentialCmd || potentialCmd == cmd.Value.QualifiedName || cmd.Value.Aliases.Contains(potentialCmd))
                         {
@@ -150,7 +151,7 @@ namespace Lykos
                     var channel = await e.Client.GetChannelAsync(228625269101953035);
                     await channel.SendMessageAsync($"**{e.Member.DisplayName}** has left us 😔");
                 }
-            };         
+            };
 
             await discord.ConnectAsync();
             await Task.Delay(-1);
