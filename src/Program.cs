@@ -125,7 +125,7 @@ namespace Lykos
                         if (cmd.Key == potentialCmd || potentialCmd == cmd.Value.QualifiedName || cmd.Value.Aliases.Contains(potentialCmd))
                         {
                             await e.Channel.SendMessageAsync("It looks like you misundestood my prefix.\n" +
-                                "The main prefix for me is `lk`. The first letter is a lowercase `l`/`L`, not an uppercase `i`/`I`" +
+                                "The main prefix for me is `lk`. The first letter is a lowercase `l`/`L`, not an uppercase `i`/`I\n`" +
                                 "The prefix is inspired by my name, **L**ykos.");
                             break;
                         }
