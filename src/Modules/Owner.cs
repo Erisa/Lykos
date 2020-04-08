@@ -18,24 +18,6 @@ namespace Lykos.Modules
     partial class Owner : BaseCommandModule
     {
 
-        [Command("delete")]
-        [RequireOwner]
-        public async Task Delete(CommandContext ctx, ulong messageId)
-        {
-            await ctx.Message.DeleteAsync();
-            var msg = await ctx.Channel.GetMessageAsync(messageId);
-            await msg.DeleteAsync();
-        }
-
-        [Command("yeet")]
-        [RequireOwner]
-        public async Task Yeet(CommandContext ctx, ulong messageId)
-        {
-            await ctx.Message.DeleteAsync();
-            var msg = await ctx.Channel.GetMessageAsync(messageId);
-            await msg.ModifyEmbedSuppressionAsync(true);
-        }
-
         [Group("debug")]
         [Aliases("d")]
         [RequireOwner]

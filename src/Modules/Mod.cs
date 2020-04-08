@@ -9,6 +9,23 @@ namespace Lykos.Modules
 {
     class Mod : BaseCommandModule
     {
+        [Command("delete")]
+        [RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
+        public async Task Delete(CommandContext ctx, ulong messageId)
+        {
+            await ctx.Message.DeleteAsync();
+            var msg = await ctx.Channel.GetMessageAsync(messageId);
+            await msg.DeleteAsync();
+        }
+
+        [Command("yeet")]
+        [RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
+        public async Task Yeet(CommandContext ctx, ulong messageId)
+        {
+            await ctx.Message.DeleteAsync();
+            var msg = await ctx.Channel.GetMessageAsync(messageId);
+            await msg.ModifyEmbedSuppressionAsync(true);
+        }
 
         [Command("ban")]
         [Description("Ban a user. If you can. Do it, I dare you.")]

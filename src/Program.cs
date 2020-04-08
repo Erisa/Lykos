@@ -7,6 +7,7 @@ using Minio;
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Lykos.Config;
@@ -59,6 +60,29 @@ namespace Lykos
                 return Task.CompletedTask;
             };
 
+
+            commands = discord.UseCommandsNext(new CommandsNextConfiguration
+            {
+                StringPrefixes = cfgjson.Prefixes,
+
+            });
+
+            commands.CommandErrored += async e =>
+            {
+                var ctx = e.Context;
+                if (e.Command != null && e.Command.Name == "avatar" && e.Exception is System.ArgumentException)
+                {
+                    await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} User not found! Only mentions, IDs and Usernames are accepted.\n" +
+                        $"Note: It is no longer needed to specify `byid`, simply use the ID directly.");
+                }
+
+            };
+
+            commands.RegisterCommands(typeof(Utility));
+            commands.RegisterCommands(typeof(Mod));
+            commands.RegisterCommands(typeof(Owner));
+            commands.RegisterCommands(typeof(Fun));
+
             discord.MessageCreated += async e =>
             {
                 if (e.Channel.Id == 671182122429710346 && e.Message.Attachments.Count == 0)
@@ -92,6 +116,20 @@ namespace Lykos
                         $"{JsonConvert.SerializeObject(cfgjson.Prefixes)}```");
                 }
 
+                if (e.Message.Content.StartsWith("Ik ") || e.Message.Content.StartsWith("ik "))
+                {
+                    var potentialCmd = e.Message.Content.Split(' ')[1];
+                    foreach(var cmd in commands.RegisteredCommands)
+                    {
+                        if (cmd.Key == potentialCmd || potentialCmd == cmd.Value.QualifiedName || cmd.Value.Aliases.Contains(potentialCmd))
+                        {
+                            await e.Channel.SendMessageAsync("It looks like you misundestood my prefix.\n" +
+                                "The main prefix for me is `lk`. The first letter is a lowercase `l`/`L`, not an uppercase `i`/`I`" +
+                                "The prefix is inspired by my name, **L**ykos.");
+                            break;
+                        }
+                    }
+                }
 
             };
 
@@ -112,29 +150,7 @@ namespace Lykos
                     var channel = await e.Client.GetChannelAsync(228625269101953035);
                     await channel.SendMessageAsync($"**{e.Member.DisplayName}** has left us 😔");
                 }
-            };
-
-            commands = discord.UseCommandsNext(new CommandsNextConfiguration
-            {
-                StringPrefixes = cfgjson.Prefixes,
-
-            });
-
-            commands.CommandErrored += async e =>
-            {
-                var ctx = e.Context;
-                if (e.Command != null && e.Command.Name == "avatar" && e.Exception is System.ArgumentException)
-                {
-                    await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} User not found! Only mentions, IDs and Usernames are accepted.\n" +
-                        $"Note: It is no longer needed to specify `byid`, simply use the ID directly.");
-                }
-
-            };
-
-            commands.RegisterCommands(typeof(Utility));
-            commands.RegisterCommands(typeof(Mod));
-            commands.RegisterCommands(typeof(Owner));
-            commands.RegisterCommands(typeof(Fun));
+            };         
 
             await discord.ConnectAsync();
             await Task.Delay(-1);
