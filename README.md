@@ -18,7 +18,7 @@ Work it out yourself.
 Yes, as long as you don't copy/paste whole modules to achieve this.
 
 ## Legal
-By using the Lykos source code you agree to both the License (LICENSE.md) and these terms. By ignoring or failing to follow these terms, you are in breach of the software license.
+By using the Lykos source code you agree to both the License (LICENSE.txt) and these terms. By ignoring or failing to follow these terms, you are in breach of the software license.
 
 When hosting a self-hosted version of Lykos, you agree that:
 
