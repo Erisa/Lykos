@@ -90,12 +90,5 @@ namespace Lykos.Modules
             await ctx.RespondAsync($"Todays Zeta of the day is **{zeta.Username}#{zeta.Discriminator}**!");
         }
 
-        [Command("coty")]
-        public async Task Zotd(CommandContext ctx)
-        {
-            var cutie = await ctx.Client.GetUserAsync(155659573515124736);
-            await ctx.RespondAsync($"The cute of the year is **{cutie.Username}#{cutie.Discriminator}**!");
-        }
-
     }
 }
