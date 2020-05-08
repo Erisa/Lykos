@@ -90,5 +90,11 @@ namespace Lykos.Modules
             await ctx.RespondAsync($"Todays Zeta of the day is **{zeta.Username}#{zeta.Discriminator}**!");
         }
 
+        [Command("makura")]
+        public async Task Makura(CommandContext ctx)
+        {
+            await ctx.RespondAsync("makura gay lol");
+        }
+
     }
 }
