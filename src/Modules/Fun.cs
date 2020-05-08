@@ -96,5 +96,14 @@ namespace Lykos.Modules
             await ctx.RespondAsync("makura gay lol");
         }
 
+        [Command("chi")]
+        [Aliases("hotd")]
+        public async Task Chi(CommandContext ctx)
+        {
+            var chi = await ctx.Client.GetUserAsync(511966736744972309);
+            await ctx.RespondAsync($"Todays Hibiki of the day is **{chi.Username}#{chi.Discriminator}**!");
+        }
+
+
     }
 }
