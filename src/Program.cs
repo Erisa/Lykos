@@ -73,7 +73,7 @@ namespace Lykos
                 if (e.Command != null && e.Command.Name == "avatar" && e.Exception is System.ArgumentException)
                 {
                     await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} User not found! Only mentions, IDs and Usernames are accepted.\n" +
-                        $"Note: It is no longer needed to specify `byid`, simply use the ID directly.");
+                        $"Note: It is not needed to specify `byid`, simply use the ID directly.");
                 }
 
             };
@@ -85,14 +85,18 @@ namespace Lykos
 
             discord.MessageCreated += async e =>
             {
-                if (e.Channel.Id == 671182122429710346 && e.Message.Attachments.Count == 0)
+                // gallery
+                if (e.Channel.Id == 671182122429710346)
                 {
-                    await e.Message.DeleteAsync();
-                    var log = await e.Client.GetChannelAsync(671183700448509962);
-                    await log.SendMessageAsync($"{e.Author.Mention}:\n>>> {e.Message.Content}");
+                    if (e.Message.Attachments.Count == 0 && !(e.Message.Content.Contains("http")))
+                    {
+                        await e.Message.DeleteAsync();
+                        var log = await e.Client.GetChannelAsync(671183700448509962);
+                        await log.SendMessageAsync($"{e.Author.Mention}:\n>>> {e.Message.Content}");
+                    }
                 }
 
-
+                // story 2
                 if (e.Channel.Id == 695636314959118376)
                 {
                     var prevMsgs = await e.Channel.GetMessagesBeforeAsync(e.Message.Id, 1);
