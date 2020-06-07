@@ -48,7 +48,7 @@ namespace Lykos.Modules
             }
 
 
-            var proc = new Process
+            Process proc = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {

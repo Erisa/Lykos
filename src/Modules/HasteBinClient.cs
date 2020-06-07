@@ -33,7 +33,7 @@ namespace Lykos.Modules
             }
             string postUrl = $"{fullUrl}documents";
 
-            var request = new HttpRequestMessage(HttpMethod.Post, new Uri(postUrl))
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, new Uri(postUrl))
             {
                 Content = new StringContent(content)
             };

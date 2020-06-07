@@ -31,9 +31,9 @@ namespace Lykos
 
         static async Task MainAsync()
         {
-            var json = "";
-            using (var fs = File.OpenRead("config.json"))
-            using (var sr = new StreamReader(fs, new UTF8Encoding(false)))
+            string json = "";
+            using (FileStream fs = File.OpenRead("config.json"))
+            using (StreamReader sr = new StreamReader(fs, new UTF8Encoding(false)))
                 json = await sr.ReadToEndAsync();
 
             cfgjson = JsonConvert.DeserializeObject<ConfigJson>(json);
@@ -69,7 +69,7 @@ namespace Lykos
 
             commands.CommandErrored += async e =>
             {
-                var ctx = e.Context;
+                CommandContext ctx = e.Context;
                 if (e.Command != null && e.Command.Name == "avatar" && e.Exception is System.ArgumentException)
                 {
                     await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} User not found! Only mentions, IDs and Usernames are accepted.\n" +
@@ -91,7 +91,7 @@ namespace Lykos
                     if (e.Message.Attachments.Count == 0 && !(e.Message.Content.Contains("http")))
                     {
                         await e.Message.DeleteAsync();
-                        var log = await e.Client.GetChannelAsync(671183700448509962);
+                        DSharpPlus.Entities.DiscordChannel log = await e.Client.GetChannelAsync(671183700448509962);
                         await log.SendMessageAsync($"{e.Author.Mention}:\n>>> {e.Message.Content}");
                     }
                 }
@@ -99,9 +99,9 @@ namespace Lykos
                 // story 2
                 if (e.Channel.Id == 695636314959118376)
                 {
-                    var prevMsgs = await e.Channel.GetMessagesBeforeAsync(e.Message.Id, 1);
-                    var prevMsg = prevMsgs[0];
-                    var log = await e.Client.GetChannelAsync(695636452804919297);
+                    System.Collections.Generic.IReadOnlyList<DSharpPlus.Entities.DiscordMessage> prevMsgs = await e.Channel.GetMessagesBeforeAsync(e.Message.Id, 1);
+                    DSharpPlus.Entities.DiscordMessage prevMsg = prevMsgs[0];
+                    DSharpPlus.Entities.DiscordChannel log = await e.Client.GetChannelAsync(695636452804919297);
                     if (e.Message.Content.Contains(" "))
                     {
                         await e.Message.DeleteAsync();
@@ -123,8 +123,8 @@ namespace Lykos
 
                 if (e.Message.Content.ToLower().StartsWith("ik "))
                 {
-                    var potentialCmd = e.Message.Content.Split(' ')[1];
-                    foreach (var cmd in commands.RegisteredCommands)
+                    string potentialCmd = e.Message.Content.Split(' ')[1];
+                    foreach (System.Collections.Generic.KeyValuePair<string, Command> cmd in commands.RegisteredCommands)
                     {
                         if (cmd.Key == potentialCmd || potentialCmd == cmd.Value.QualifiedName || cmd.Value.Aliases.Contains(potentialCmd))
                         {
@@ -143,7 +143,7 @@ namespace Lykos
                 if (e.Channel.Id == 695636314959118376 && e.Message.Content.Contains(" "))
                 {
                     await e.Message.DeleteAsync();
-                    var log = await e.Client.GetChannelAsync(695636452804919297);
+                    DSharpPlus.Entities.DiscordChannel log = await e.Client.GetChannelAsync(695636452804919297);
                     await log.SendMessageAsync($"(EDIT) {e.Author.Mention}:\n>>> {e.Message.Content}");
                 }
             };
@@ -152,7 +152,7 @@ namespace Lykos
             {
                 if (e.Guild.Id == 228625269101953035)
                 {
-                    var channel = await e.Client.GetChannelAsync(228625269101953035);
+                    DSharpPlus.Entities.DiscordChannel channel = await e.Client.GetChannelAsync(228625269101953035);
                     await channel.SendMessageAsync($"**{e.Member.Username}** has left us 😔");
                 }
             };

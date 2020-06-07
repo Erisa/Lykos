@@ -34,13 +34,13 @@ namespace Lykos.Modules
                     firstMember = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
                 }
 
-                var invoker_hier = Mod.GetHier(firstMember);
-                var target_hier = Mod.GetHier(target);
+                int invoker_hier = Mod.GetHier(firstMember);
+                int target_hier = Mod.GetHier(target);
 
                 bool allowed = Mod.AllowedToMod(firstMember, target);
 
-                await ctx.RespondAsync($"According to my calulcations, **{firstMember.Username}#{firstMember.Discriminator}** has a Role Hierachy of `{invoker_hier.ToString()}`" +
-                    $"and **{target.Username}#{target.Discriminator}** has `{target_hier.ToString()}`.\nFrom this, I can conclude that the answer is `{allowed.ToString()}`.");
+                await ctx.RespondAsync($"According to my calulcations, **{firstMember.Username}#{firstMember.Discriminator}** has a Role Hierachy of `{invoker_hier}`" +
+                    $"and **{target.Username}#{target.Discriminator}** has `{target_hier}`.\nFrom this, I can conclude that the answer is `{allowed}`.");
             }
 
             [Command("sysinfo")]
@@ -49,7 +49,7 @@ namespace Lykos.Modules
             {
                 await ctx.RespondAsync($"🤔 Hmm, based on my research it seems that:\n" +
                     $"- This device is calling itself `{System.Environment.MachineName}`\n" +
-                    $"- The OS platform is `{Helpers.GetOSPlatform().ToString()}`\n" +
+                    $"- The OS platform is `{Helpers.GetOSPlatform()}`\n" +
                     $"- The OS describes itself as `{RuntimeInformation.OSDescription}`\n" +
                     $"- The OS architecture appears to be `{RuntimeInformation.OSArchitecture}`\n" +
                     $"- The framework I'm running from is `{RuntimeInformation.FrameworkDescription}`\n");
@@ -66,8 +66,8 @@ namespace Lykos.Modules
             [Description("Goodbye, hello! This will reconnect my websocket connection.")]
             public async Task Reconnect(CommandContext ctx)
             {
-                var msg = await ctx.RespondAsync("Reconnecting to websocket...");
-                var watch = System.Diagnostics.Stopwatch.StartNew();
+                DiscordMessage msg = await ctx.RespondAsync("Reconnecting to websocket...");
+                System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                 await ctx.Client.ReconnectAsync();
                 watch.Stop();
                 await msg.ModifyAsync($"Reconnected to websocket!\n- This took `{watch.ElapsedMilliseconds}ms` to complete!");
@@ -77,8 +77,8 @@ namespace Lykos.Modules
             [Description("A soft exit. I will disconnect and then end my process.")]
             public async Task Shutdown(CommandContext ctx)
             {
-                var msg = await ctx.RespondAsync("Disonnecting from websocket...");
-                var watch = System.Diagnostics.Stopwatch.StartNew();
+                DiscordMessage msg = await ctx.RespondAsync("Disonnecting from websocket...");
+                System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                 await ctx.Client.DisconnectAsync();
                 watch.Stop();
                 await msg.ModifyAsync($"Disconnected from websocket!\n" +
@@ -96,8 +96,8 @@ namespace Lykos.Modules
                     return;
                 }
 
-                var msg = await ctx.RespondAsync("Disonnecting from websocket...");
-                var watch = System.Diagnostics.Stopwatch.StartNew();
+                DiscordMessage msg = await ctx.RespondAsync("Disonnecting from websocket...");
+                System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                 await ctx.Client.DisconnectAsync();
                 watch.Stop();
                 await msg.ModifyAsync($"Disconnected from websocket!\n" +
@@ -118,7 +118,7 @@ namespace Lykos.Modules
             [Description("Run shell commands! Bash for Linux/macOS, batch for Windows!")]
             public async Task Shell(CommandContext ctx, [RemainingText] string command)
             {
-                var msg = await ctx.RespondAsync("executing..");
+                DiscordMessage msg = await ctx.RespondAsync("executing..");
 
                 ShellResult finishedShell = Helpers.RunShellCommand(command);
 
@@ -160,8 +160,8 @@ namespace Lykos.Modules
             [Description("???")]
             public async Task Gibinvite(CommandContext ctx, int max_uses = 1, int age = 0)
             {
-                var channel = await ctx.Client.GetChannelAsync(230004550973521932);
-                var inv = await channel.CreateInviteAsync(age, max_uses, false, true, $"gibinvite command used in {ctx.Channel.Id}");
+                DiscordChannel channel = await ctx.Client.GetChannelAsync(230004550973521932);
+                DiscordInvite inv = await channel.CreateInviteAsync(age, max_uses, false, true, $"gibinvite command used in {ctx.Channel.Id}");
 
                 DiscordDmChannel chan = await ctx.Member.CreateDmChannelAsync();
                 await chan.SendMessageAsync($"Here's the invite you asked for: https://discord.gg/{inv.Code}");
@@ -191,14 +191,14 @@ namespace Lykos.Modules
 
                     string avatarUrl = $"https://cdn.discordapp.com/avatars/{ctx.User.Id}/{ctx.User.AvatarHash}.png?size=4096";
                     MemoryStream memStream;
-                    using (var client = new WebClient())
+                    using (WebClient client = new WebClient())
                     {
                         memStream = new MemoryStream(client.DownloadData(avatarUrl));
                     }
 
                     try
                     {
-                        var meta = new Dictionary<string, string>
+                        Dictionary<string, string> meta = new Dictionary<string, string>
                         {
                             { "x-amz-acl", "public-read" }
                         };
@@ -223,31 +223,33 @@ namespace Lykos.Modules
                         $"{Program.cfgjson.Emoji.Loading} Purging the Cloudflare cache...");
 
                     // https://github.com/Sankra/cloudflare-cache-purger/blob/master/main.csx#L113
-                    var content = new CloudflareContent(new List<string>() { Program.cfgjson.Cloudflare.UrlPrefix + objectName });
-                    var cloudflareContentString = JsonConvert.SerializeObject(content);
+                    CloudflareContent content = new CloudflareContent(new List<string>() { Program.cfgjson.Cloudflare.UrlPrefix + objectName });
+                    string cloudflareContentString = JsonConvert.SerializeObject(content);
                     try
                     {
-                        using (var httpClient = new HttpClient())
+                        using HttpClient httpClient = new HttpClient
                         {
-                            httpClient.BaseAddress = new Uri("https://api.cloudflare.com/");
+                            BaseAddress = new Uri("https://api.cloudflare.com/")
+                        };
 
-                            var request = new HttpRequestMessage(HttpMethod.Delete, "client/v4/zones/" + Program.cfgjson.Cloudflare.ZoneID + "/purge_cache");
-                            request.Content = new StringContent(cloudflareContentString, Encoding.UTF8, "application/json");
-                            request.Headers.Add("Authorization", $"Bearer {Program.cfgjson.Cloudflare.Token}");
+                        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, "client/v4/zones/" + Program.cfgjson.Cloudflare.ZoneID + "/purge_cache")
+                        {
+                            Content = new StringContent(cloudflareContentString, Encoding.UTF8, "application/json")
+                        };
+                        request.Headers.Add("Authorization", $"Bearer {Program.cfgjson.Cloudflare.Token}");
 
-                            var response = await httpClient.SendAsync(request);
-                            var responseText = await response.Content.ReadAsStringAsync();
+                        HttpResponseMessage response = await httpClient.SendAsync(request);
+                        string responseText = await response.Content.ReadAsStringAsync();
 
-                            if (response.IsSuccessStatusCode)
-                            {
-                                await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!" +
-                                    $"\n{Program.cfgjson.Emoji.Check} - Successsfully purged the Cloudflare cache for `{objectName}`!");
-                            }
-                            else
-                            {
-                                await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!" +
-                                    $"\n{Program.cfgjson.Emoji.Xmark} - An API error occured when purging the Cloudflare cache: ```json\n{responseText}```");
-                            }
+                        if (response.IsSuccessStatusCode)
+                        {
+                            await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!" +
+                                $"\n{Program.cfgjson.Emoji.Check} - Successsfully purged the Cloudflare cache for `{objectName}`!");
+                        }
+                        else
+                        {
+                            await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!" +
+                                $"\n{Program.cfgjson.Emoji.Xmark} - An API error occured when purging the Cloudflare cache: ```json\n{responseText}```");
                         }
                     }
                     catch (Exception e)

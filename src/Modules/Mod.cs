@@ -14,7 +14,7 @@ namespace Lykos.Modules
         public async Task Delete(CommandContext ctx, ulong messageId)
         {
             await ctx.Message.DeleteAsync();
-            var msg = await ctx.Channel.GetMessageAsync(messageId);
+            DiscordMessage msg = await ctx.Channel.GetMessageAsync(messageId);
             await msg.DeleteAsync();
         }
 
@@ -23,7 +23,7 @@ namespace Lykos.Modules
         public async Task Yeet(CommandContext ctx, ulong messageId)
         {
             await ctx.Message.DeleteAsync();
-            var msg = await ctx.Channel.GetMessageAsync(messageId);
+            DiscordMessage msg = await ctx.Channel.GetMessageAsync(messageId);
             await msg.ModifyEmbedSuppressionAsync(true);
         }
 

@@ -67,7 +67,7 @@ namespace Lykos.Modules
             if (target == null)
                 target = ctx.Member;
 
-            var hash = target.AvatarHash;
+            string hash = target.AvatarHash;
 
 
             if (format == null || format == "png or gif")
@@ -88,7 +88,7 @@ namespace Lykos.Modules
             }
 
             string avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{hash}.{format}?size=4096";
-            var embed = new DiscordEmbedBuilder()
+            DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
             .WithColor(new DiscordColor(0xC63B68))
             .WithTimestamp(DateTime.UtcNow)
             .WithFooter(
@@ -130,10 +130,10 @@ namespace Lykos.Modules
         [Description("Who owns me??")]
         public async Task Owners(CommandContext ctx)
         {
-            var resp = "My owners are:\n";
-            foreach (var id in Program.cfgjson.Owners)
+            string resp = "My owners are:\n";
+            foreach (ulong id in Program.cfgjson.Owners)
             {
-                var user = await ctx.Client.GetUserAsync(id);
+                DiscordUser user = await ctx.Client.GetUserAsync(id);
                 resp += $"- **{user.Username}#{user.Discriminator}** (`{user.Id}`)\n";
             }
             await ctx.RespondAsync(resp);
