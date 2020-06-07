@@ -60,7 +60,7 @@ namespace Lykos
                 return Task.CompletedTask;
             };
 
-            
+
             commands = discord.UseCommandsNext(new CommandsNextConfiguration
             {
                 StringPrefixes = cfgjson.Prefixes,
