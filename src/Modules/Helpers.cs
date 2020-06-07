@@ -81,7 +81,7 @@ namespace Lykos.Modules
             }
         }
 
-        public static string sanitiseEveryone(string input)
+        public static string SanitiseEveryone(string input)
         {
             return input.Replace("@everyone", "@\u200Beveryone").Replace("@here", "@\u200Bhere");
         }

@@ -28,7 +28,7 @@ namespace Lykos.Modules
         [Aliases("pat")]
         public async Task Headpat(CommandContext ctx, [Description("The person to give a headpat to!"), RemainingText] string target = "me")
         {
-            target = Helpers.sanitiseEveryone(target);
+            target = Helpers.SanitiseEveryone(target);
 
             if (target == null || target == "me" || target == ctx.User.Username || target == ctx.Member.Nickname || target == ctx.Member.Mention)
             {
@@ -44,7 +44,7 @@ namespace Lykos.Modules
         [Description("Give someone a good headpat, or treat yourself to one!")]
         public async Task Hug(CommandContext ctx, [Description("The person to give a headpat to!"), RemainingText] string target = "me")
         {
-            target = Helpers.sanitiseEveryone(target);
+            target = Helpers.SanitiseEveryone(target);
 
             if (target == null || target == "me" || target == ctx.User.Username || target == ctx.Member.Nickname || target == ctx.Member.Mention)
             {
@@ -84,7 +84,7 @@ namespace Lykos.Modules
         }
 
         [Command("zotd")]
-        public async Task zotd(CommandContext ctx)
+        public async Task Zotd(CommandContext ctx)
         {
             var zeta = await ctx.Client.GetUserAsync(94129005791281152);
             await ctx.RespondAsync($"Todays Zeta of the day is **{zeta.Username}#{zeta.Discriminator}**!");

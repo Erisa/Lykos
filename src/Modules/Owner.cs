@@ -185,7 +185,7 @@ namespace Lykos.Modules
                     DiscordMessage msg;
                     string objectName;
 
-                    msg = await ctx.RespondAsync($"Selected name: `{name}`\n{Program.cfgjson.Emoji.Loading} - Uploading to {Program.cfgjson.S3.displayName}...\n" +
+                    msg = await ctx.RespondAsync($"Selected name: `{name}`\n{Program.cfgjson.Emoji.Loading} - Uploading to {Program.cfgjson.S3.DisplayName}...\n" +
                         $"🔲 - Waiting to purge Cloudflare cache.");
                     objectName = $"avatars/{name}.png";
 
@@ -207,19 +207,19 @@ namespace Lykos.Modules
                     }
                     catch (MinioException e)
                     {
-                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Xmark} An API error occured while uploading to {Program.cfgjson.S3.displayName}:```\n" +
+                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Xmark} An API error occured while uploading to {Program.cfgjson.S3.DisplayName}:```\n" +
                             $"{e.Message}```");
                         return;
                     }
                     catch (Exception e)
                     {
-                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Xmark} An unexpected error occured while uploading to {Program.cfgjson.S3.displayName}:```\n" +
+                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Xmark} An unexpected error occured while uploading to {Program.cfgjson.S3.DisplayName}:```\n" +
                             $"{e.Message}```");
                         return;
                     }
 
                     await msg.ModifyAsync($"Selected name: `{name}`\n" +
-                        $"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!\n" +
+                        $"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!\n" +
                         $"{Program.cfgjson.Emoji.Loading} Purging the Cloudflare cache...");
 
                     // https://github.com/Sankra/cloudflare-cache-purger/blob/master/main.csx#L113
@@ -240,19 +240,19 @@ namespace Lykos.Modules
 
                             if (response.IsSuccessStatusCode)
                             {
-                                await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
+                                await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!" +
                                     $"\n{Program.cfgjson.Emoji.Check} - Successsfully purged the Cloudflare cache for `{objectName}`!");
                             }
                             else
                             {
-                                await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!" +
+                                await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!" +
                                     $"\n{Program.cfgjson.Emoji.Xmark} - An API error occured when purging the Cloudflare cache: ```json\n{responseText}```");
                             }
                         }
                     }
                     catch (Exception e)
                     {
-                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.displayName}!\n" +
+                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!\n" +
                                 $"{Program.cfgjson.Emoji.Xmark} - An unexpected error occured when purging the Cloudflare cache: ```json\n" +
                                 $"{e.Message}```");
                     }
@@ -266,10 +266,10 @@ namespace Lykos.Modules
             {
                 public CloudflareContent(List<string> urls)
                 {
-                    files = urls;
+                    Files = urls;
                 }
 
-                public List<string> files { get; }
+                public List<string> Files { get; }
             }
 
         }

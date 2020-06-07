@@ -80,7 +80,7 @@ namespace Lykos
             public string SecretKey { get; private set; }
 
             [JsonProperty("providerDisplayName")]
-            public string displayName { get; private set; }
+            public string DisplayName { get; private set; }
         }
 
         public class GravatarConfig
