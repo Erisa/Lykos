@@ -17,26 +17,29 @@ namespace Lykos.Modules
         [Command("bigmoji")]
         [Aliases("steal", "bm")]
         [Description("Steals the first custom emoji in a given message. Mostly for mobile users!")]
-        public async Task Bigmoji(CommandContext ctx, [Description("A message ID containing the custom emoji you want to steal.")] ulong messageId)
+        public async Task Bigmoji(CommandContext ctx, [Description("A message ID containing the custom emoji you want to steal.")] string messageId)
         {
 
-            DiscordMessage msg;
+            DiscordMessage msg = null;
             try
             {
-                msg = await ctx.Channel.GetMessageAsync(messageId);
+                msg = await ctx.Channel.GetMessageAsync(Convert.ToUInt64(messageId));
             }
             catch
             {
-                await ctx.RespondAsync("Invalid input!\n" +
-                    "The input should be a Discord message ID that contains the emoji you want to steal!");
-                return;
+                // do nothing
             }
 
             if (msg == null)
             {
-                await ctx.RespondAsync("Invalid input!\n" +
-                    "The input should be a Discord message ID that contains the emoji you want to steal!");
-                return;
+                try
+                {
+                    msg = ctx.Message;
+                } catch
+                {
+                    await ctx.RespondAsync("This is where eri is supposed to put the url regex but she's too useless to bother yet.");
+                    return;
+                }
             }
 
             MatchCollection matches = emoji_rx.Matches(msg.Content);
