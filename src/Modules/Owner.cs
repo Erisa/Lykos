@@ -145,7 +145,7 @@ namespace Lykos.Modules
             [Command("say"), Aliases("echo")]
             public async Task Say(CommandContext ctx, [RemainingText] string input)
             {
-                await ctx.RespondAsync(input);
+                await ctx.RespondAsync(Helpers.SanitiseEveryone(input));
             }
 
         }
