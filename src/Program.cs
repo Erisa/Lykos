@@ -39,7 +39,13 @@ namespace Lykos
             cfgjson = JsonConvert.DeserializeObject<ConfigJson>(json);
             hasteUploader = new HasteBinClient(cfgjson.HastebinEndpoint);
 
-            minio = new MinioClient(cfgjson.S3.Endpoint, cfgjson.S3.AccessKey, cfgjson.S3.SecretKey, cfgjson.S3.Region).WithSSL();
+            minio = new MinioClient
+            (
+                cfgjson.S3.Endpoint,
+                cfgjson.S3.AccessKey,
+                cfgjson.S3.SecretKey,
+                cfgjson.S3.Region
+            ).WithSSL();
 
             discord = new DiscordClient(new DiscordConfiguration
             {
@@ -70,24 +76,35 @@ namespace Lykos
             commands.CommandErrored += async e =>
             {
                 CommandContext ctx = e.Context;
+                // This is a fairly ugly workaround but, it does appear to be stable for this command at least.
                 if (e.Command != null && e.Command.Name == "avatar" && e.Exception is System.ArgumentException)
                 {
-                    await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} User not found! Only mentions, IDs and Usernames are accepted.\n" +
+                    await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} User not found! " +
+                        $"Only mentions, IDs and Usernames are accepted.\n" +
                         $"Note: It is not needed to specify `byid`, simply use the ID directly.");
                 }
 
             };
 
-            commands.RegisterCommands(typeof(Utility));
-            commands.RegisterCommands(typeof(Mod));
-            commands.RegisterCommands(typeof(Owner));
-            commands.RegisterCommands(typeof(Fun));
+            Type[] commandClasses =
+            {
+                typeof(Utility),
+                typeof(Mod),
+                typeof(Owner),
+                typeof(Fun)
+            };
+
+            foreach (Type cmdClass in commandClasses)
+            {
+                commands.RegisterCommands(cmdClass);
+            }
 
             discord.MessageCreated += async e =>
             {
                 // gallery
                 if (e.Channel.Id == 671182122429710346)
                 {
+                    // Delete the message if there are no attachments, unless the message contains a URL.
                     if (e.Message.Attachments.Count == 0 && !(e.Message.Content.Contains("http")))
                     {
                         await e.Message.DeleteAsync();
@@ -115,22 +132,29 @@ namespace Lykos
 
                 }
 
-                if (e.Message.Content.ToLower() == $"what prefix <@{e.Client.CurrentUser.Id}>" || e.Message.Content.ToLower() == $"what prefix <@!{e.Client.CurrentUser.Id}>")
+                // Prefix query handling
+                if
+                (
+                  e.Message.Content.ToLower() == $"what prefix <@{e.Client.CurrentUser.Id}>" ||
+                  e.Message.Content.ToLower() == $"what prefix <@!{e.Client.CurrentUser.Id}>"
+                )
                 {
                     await e.Channel.SendMessageAsync($"My prefixes are: ```json\n" +
                         $"{JsonConvert.SerializeObject(cfgjson.Prefixes)}```");
                 }
 
+                // Yell at people who get the prefix wrong, but only if the argument is an actual command.
                 if (e.Message.Content.ToLower().StartsWith("ik "))
                 {
                     string potentialCmd = e.Message.Content.Split(' ')[1];
                     foreach (System.Collections.Generic.KeyValuePair<string, Command> cmd in commands.RegisteredCommands)
                     {
+                        // Checks command name, display name and all aliases.
                         if (cmd.Key == potentialCmd || potentialCmd == cmd.Value.QualifiedName || cmd.Value.Aliases.Contains(potentialCmd))
                         {
                             await e.Channel.SendMessageAsync("It looks like you misundestood my prefix.\n" +
                                 "The main prefix for me is `lk`. The first letter is a lowercase `l`/`L`, not an uppercase `i`/`I\n`" +
-                                "The prefix is inspired by my name, **L**ykos.");
+                                "The prefix is inspired by my name, **L**y**k**os.");
                             break;
                         }
                     }
@@ -138,21 +162,47 @@ namespace Lykos
 
             };
 
+            // Gallery edit handling
             discord.MessageUpdated += async e =>
             {
-                if (e.Channel.Id == 695636314959118376 && e.Message.Content.Contains(" "))
+                // #gallery
+                if (e.Channel.Id == 671182122429710346)
                 {
-                    await e.Message.DeleteAsync();
-                    DSharpPlus.Entities.DiscordChannel log = await e.Client.GetChannelAsync(695636452804919297);
-                    await log.SendMessageAsync($"(EDIT) {e.Author.Mention}:\n>>> {e.Message.Content}");
+                    // Delete the message if there are no attachments, unless the message contains a URL.
+                    if (e.Message.Attachments.Count == 0 && !(e.Message.Content.Contains("http")))
+                    {
+                        await e.Message.DeleteAsync();
+                        DSharpPlus.Entities.DiscordChannel log = await e.Client.GetChannelAsync(671183700448509962);
+                        await log.SendMessageAsync($"[EDIT] {e.Author.Mention}:\n>>> {e.Message.Content}");
+                    }
                 }
             };
 
+            // Leave event handling, for my servers
             discord.GuildMemberRemoved += async e =>
             {
+                DSharpPlus.Entities.DiscordChannel channel = null;
+                // Erisa's Corner
                 if (e.Guild.Id == 228625269101953035)
                 {
-                    DSharpPlus.Entities.DiscordChannel channel = await e.Client.GetChannelAsync(228625269101953035);
+                    // #general-chat
+                    channel = await e.Client.GetChannelAsync(228625269101953035);
+                }
+                // Erisa Lobby
+                else if (e.Guild.Id == 239828629662466058)
+                {
+                    // #chat
+                    channel = await e.Client.GetChannelAsync(701782247233159190);
+                }
+                // Project Evenfall
+                else if (e.Guild.Id == 535688189659316245)
+                {
+                    // #greetings
+                    channel = await e.Client.GetChannelAsync(542497115583283220);
+                }
+
+                if (channel != null)
+                {
                     await channel.SendMessageAsync($"**{e.Member.Username}** has left us 😔");
                 }
             };
