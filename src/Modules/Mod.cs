@@ -10,8 +10,9 @@ namespace Lykos.Modules
     class Mod : BaseCommandModule
     {
         [Command("delete")]
-        [RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
-        public async Task Delete(CommandContext ctx, ulong messageId)
+        [Description("Owner only, delete a message.")]
+        [RequireOwner, RequireBotPermissions(Permissions.ManageMessages)]
+        public async Task Delete(CommandContext ctx, [Description("ID of the message to delete")] ulong messageId)
         {
             await ctx.Message.DeleteAsync();
             DiscordMessage msg = await ctx.Channel.GetMessageAsync(messageId);
@@ -19,8 +20,9 @@ namespace Lykos.Modules
         }
 
         [Command("yeet")]
+        [Description("Deletes the embed on a given message.")]
         [RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
-        public async Task Yeet(CommandContext ctx, ulong messageId)
+        public async Task Yeet(CommandContext ctx, [Description("ID of the message to delete an embed on")] ulong messageId)
         {
             await ctx.Message.DeleteAsync();
             DiscordMessage msg = await ctx.Channel.GetMessageAsync(messageId);
@@ -70,7 +72,7 @@ namespace Lykos.Modules
         [RequirePermissions(Permissions.BanMembers)]
         public async Task Unban(CommandContext ctx, DiscordUser target, string reason = "No reason provided.")
         {
-            await target.UnbanAsync(ctx.Guild, $"[Unban by {ctx.User.Username}#{ctx.User.Discriminator}] ${reason}");
+            await target.UnbanAsync(ctx.Guild, $"[Unban by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}");
             await ctx.RespondAsync($"Succesfully unbanned **{target.Username}#{target.Discriminator}** (`{target.Id}`)");
         }
 

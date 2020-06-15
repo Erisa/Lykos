@@ -52,7 +52,7 @@ namespace Lykos.Modules
                     $"- The OS platform is `{Helpers.GetOSPlatform()}`\n" +
                     $"- The OS describes itself as `{RuntimeInformation.OSDescription}`\n" +
                     $"- The OS architecture appears to be `{RuntimeInformation.OSArchitecture}`\n" +
-                    $"- The framework I'm running from is `{RuntimeInformation.FrameworkDescription}`\n");
+                    $"- The framework I'm running from is `{RuntimeInformation.FrameworkDescription}`");
             }
         }
 
@@ -121,7 +121,6 @@ namespace Lykos.Modules
                 DiscordMessage msg = await ctx.RespondAsync("executing..");
 
                 ShellResult finishedShell = Helpers.RunShellCommand(command);
-
 
                 if (finishedShell.result.Length > 1947)
                 {

@@ -17,7 +17,7 @@ namespace Lykos.Modules
         [Command("bigmoji")]
         [Aliases("steal", "bm")]
         [Description("Steals the first custom emoji in a given message. Mostly for mobile users!")]
-        public async Task Bigmoji(CommandContext ctx, [Description("A message ID containing the custom emoji you want to steal.")] string messageId)
+        public async Task Bigmoji(CommandContext ctx, [Description("A message ID containing the custom emoji you want to steal, or the emoji itself.")] string messageId)
         {
 
             DiscordMessage msg = null;
