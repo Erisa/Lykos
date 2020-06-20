@@ -41,8 +41,8 @@ namespace Lykos.Modules
         }
 
         [Command("hug")]
-        [Description("Give someone a good headpat, or treat yourself to one!")]
-        public async Task Hug(CommandContext ctx, [Description("The person to give a headpat to!"), RemainingText] string target = "me")
+        [Description("Give someone a good hug, or treat yourself to one!")]
+        public async Task Hug(CommandContext ctx, [Description("The person to give a hug to!"), RemainingText] string target = "me")
         {
             target = Helpers.SanitiseEveryone(target);
 
@@ -53,6 +53,22 @@ namespace Lykos.Modules
             else
             {
                 await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobHug} {target} was given a tight hug by {ctx.User.Username}!");
+            }
+        }
+
+        [Command("kiss")]
+        [Description("Give someone a good kiss!")]
+        public async Task Kiss(CommandContext ctx, [Description("The person to give a kiss to!"), RemainingText] string target = "me")
+        {
+            target = Helpers.SanitiseEveryone(target);
+
+            if (target == null || target == "me" || target == ctx.User.Username || target == ctx.Member.Nickname || target == ctx.Member.Mention)
+            {
+                await ctx.RespondAsync("😳");
+            }
+            else
+            {
+                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Kiss} {target} was given a deep and meaningful kiss by {ctx.User.Username}! ❤️");
             }
         }
 

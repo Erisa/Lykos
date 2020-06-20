@@ -60,6 +60,9 @@ namespace Lykos
 
             [JsonProperty("loading")]
             public string Loading { get; private set; }
+
+            [JsonProperty("kiss")]
+            public string Kiss { get; private set; }
         }
 
         public class JsonCfgS3
