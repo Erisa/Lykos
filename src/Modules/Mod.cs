@@ -2,7 +2,9 @@
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
 namespace Lykos.Modules
@@ -101,6 +103,77 @@ namespace Lykos.Modules
             {
                 await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} You aren't allowed to kick **{target.Username}#{target.Discriminator}**!");
                 return;
+            }
+        }
+
+        [Command("prune")]
+        [Description("prune some messages or something")]
+        public async Task Prune(CommandContext ctx, DiscordUser targetUser = null)
+        {
+            var helperRole = ctx.Guild.GetRole(407326634819977217);
+            var modRole = ctx.Guild.GetRole(113379036524212224);
+            DiscordMember targetMember = null;
+            if (targetUser != null)
+            {
+                targetMember = await ctx.Guild.GetMemberAsync(targetUser.Id);
+            }
+            else
+            {
+
+            }
+
+            System.Collections.ObjectModel.Collection<DiscordMessage> messagesToDelete = new System.Collections.ObjectModel.Collection<DiscordMessage> { };
+            var messagesToConsider = await ctx.Channel.GetMessagesAsync(50);
+            if (helperRole == null)
+            {
+                return;
+            }
+
+            if (ctx.Member.Roles.Contains(helperRole))
+            {
+
+                if (targetUser == null)
+                {
+
+                    foreach (var msg in messagesToConsider)
+                    {
+                        if (msg.Author.IsBot)
+                        {
+                            messagesToDelete.Add(msg);
+                        }
+                    }
+                }
+                else if (!targetUser.IsBot)
+                {
+                    await ctx.RespondAsync("That target is not a bot!");
+                    return;
+                }
+                else if (targetMember != null && targetMember.Roles.Contains(modRole))
+                {
+                    await ctx.RespondAsync("You can't take action on a Moderator bot!");
+                    return;
+                }
+                else
+                {
+                    foreach (var msg in messagesToConsider)
+                    {
+                        if (msg.Author == targetUser)
+                        {
+                            messagesToDelete.Add(msg);
+                        }
+                    }
+                }
+                if (messagesToDelete.Count == 0)
+                {
+                    await ctx.RespondAsync("There were no messages that matched! Please don't waste my time :(");
+                }
+                else
+                {
+                    await ctx.Channel.DeleteMessagesAsync((IEnumerable<DiscordMessage>)messagesToDelete, $"Prune by {ctx.User.Id}");
+                    var resp = await ctx.RespondAsync($"Okay! I deleted {messagesToDelete.Count} messages! Hope they were the right ones!");
+                    System.Threading.Thread.Sleep(6000);
+                    await resp.DeleteAsync();
+                }
             }
         }
 
