@@ -35,7 +35,8 @@ namespace Lykos.Modules
                 try
                 {
                     msg = ctx.Message;
-                } catch
+                }
+                catch
                 {
                     await ctx.RespondAsync("This is where eri is supposed to put the url regex but she's too useless to bother yet.");
                     return;

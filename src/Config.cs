@@ -30,6 +30,9 @@ namespace Lykos
 
             [JsonProperty("hastebinEndpoint")]
             public string HastebinEndpoint { get; private set; }
+
+            [JsonProperty("workerLinks")]
+            public WorkerLinksConfig WorkerLinks { get; private set; }
         }
 
         public class CloudflareConfig
@@ -93,6 +96,15 @@ namespace Lykos
 
             [JsonProperty("password")]
             public string Password { get; private set; }
+        }
+
+        public class WorkerLinksConfig
+        {
+            [JsonProperty("baseUrl")]
+            public string BaseUrl { get; private set; }
+
+            [JsonProperty("secret")]
+            public string Secret { get; private set; }
         }
 
     }

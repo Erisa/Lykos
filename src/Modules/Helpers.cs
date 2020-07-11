@@ -36,14 +36,21 @@ namespace Lykos.Modules
             string escapedArgs = command.Replace("\"", "\\\"");
             if (GetOSPlatform() == OSPlatform.Windows)
             {
-                // now functions correctly
-                fileName = "C:\\Windows\\system32\\cmd.exe";
+                fileName = Environment.GetEnvironmentVariable("COMSPEC");
+                // this shouldnt ever fail but so many people have cursed setups
+                if (!System.IO.File.Exists(fileName))
+                {
+                    fileName = "C:\\Windows\\system32\\cmd.exe";
+                }
                 arguments = $"/C \"{escapedArgs}\"";
             }
             else
             {
-                // if you dont have bash i apologise
-                fileName = "/bin/bash";
+                fileName = Environment.GetEnvironmentVariable("SHELL");
+                if (!System.IO.File.Exists(fileName))
+                {
+                    fileName = "/bin/sh";
+                }
                 arguments = $"-c \"{escapedArgs} 2>&1\"";
             }
 

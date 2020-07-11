@@ -261,6 +261,49 @@ namespace Lykos.Modules
                 }
             }
 
+            [Command("link")]
+            public async Task Link(CommandContext ctx, string key, string url)
+            {
+                using HttpClient httpClient = new HttpClient
+                {
+                    BaseAddress = new Uri(Program.cfgjson.WorkerLinks.BaseUrl)
+                };
+
+                HttpRequestMessage request;
+
+                if (key == "null" || key == "random" || key == "gen")
+                {
+                    request = new HttpRequestMessage(HttpMethod.Post, "") { };
+                } else
+                {
+                    request = new HttpRequestMessage(HttpMethod.Put, key) { };
+                }
+                    
+
+                request.Headers.Add("Authorization", Program.cfgjson.WorkerLinks.Secret);
+                request.Headers.Add("URL", url);
+
+                HttpResponseMessage response = await httpClient.SendAsync(request);
+                int httpStatusCode = (int)response.StatusCode;
+                string httpStatus = response.StatusCode.ToString();
+                string responseText = await response.Content.ReadAsStringAsync();
+                if (responseText.Length > 1940)
+                {
+                    HasteBinResult hasteURL = await Program.hasteUploader.Post(responseText);
+                    if (hasteURL.IsSuccess)
+                    {
+                        // responseText = hasteURL.FullUrl;
+                        await ctx.RespondAsync($"Worker responded with code: `{httpStatusCode}` (`{httpStatus}`)\n{hasteURL.FullUrl}");
+                        return;
+                    }
+                    else
+                    {
+                        responseText = "Error occured during upload to hastebin. Action was executed regardless, though it's possible it didn't succeed.";
+                    }
+                }
+                await ctx.RespondAsync($"Worker responded with code: `{httpStatusCode}` (`{httpStatus}`)\n```json\n{responseText}\n```");
+            }
+
 
             // https://github.com/Sankra/cloudflare-cache-purger/blob/master/main.csx#L197
             readonly struct CloudflareContent

@@ -4,7 +4,6 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
 namespace Lykos.Modules
