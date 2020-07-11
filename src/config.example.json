@@ -29,6 +29,6 @@
   "hastebinEndpoint": "https://paste.erisa.moe",
   "workerLinks": {
     "baseUrl": "https://erisa.link",
-    "secret" = "AAAAAAAAAAAAAAAAAAAAAA"
+    "secret": "AAAAAAAAAAAAAAAAAAAAAA"
   }
 }
