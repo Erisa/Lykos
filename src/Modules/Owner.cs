@@ -132,7 +132,8 @@ namespace Lykos.Modules
                     }
                     else
                     {
-                        await msg.ModifyAsync("Error occured during upload to hastebin. Action was executed regardless, exit code was `{proc.ExitCode}`");
+                        Console.WriteLine(finishedShell.result);
+                        await msg.ModifyAsync($"Error occured during upload to Hastebin.\nAction was executed regardless, shell exit code was `{finishedShell.proc.ExitCode}`. Hastebin status code is `{hasteURL.StatusCode}`.\nPlease check the console/log for the command output.");
                     }
                 }
                 else
@@ -298,7 +299,8 @@ namespace Lykos.Modules
                     }
                     else
                     {
-                        responseText = "Error occured during upload to hastebin. Action was executed regardless, though it's possible it didn't succeed.";
+                        Console.WriteLine(responseText);
+                        responseText = "Error occured during upload to Hastebin. Please check the console/logs for the output.";
                     }
                 }
                 await ctx.RespondAsync($"Worker responded with code: `{httpStatusCode}` (`{httpStatus}`)\n```json\n{responseText}\n```");
