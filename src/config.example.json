@@ -12,7 +12,8 @@
     "bucket": "cdn.erisa.moe",
     "accessKey": "SCWBLAHBLAHBLAH",
     "secretKey": "very-secure-secret",
-    "providerDisplayName": "Scaleway"
+    "providerDisplayName": "Scaleway",
+    "public-read-acl": true
   },
   "cloudflare": {
     "apiToken": "blah",
