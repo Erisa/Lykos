@@ -198,11 +198,13 @@ namespace Lykos.Modules
 
                     try
                     {
-                        Dictionary<string, string> meta = new Dictionary<string, string>
-                        {
-                            { "x-amz-acl", "public-read" }
-                        };
+                        Dictionary<string, string> meta = new Dictionary<string, string>{ };
 
+                        if (Program.cfgjson.S3.PublicReadAcl)
+                        {
+                            meta["x-amz-acl"] = "public-read";
+                        }
+                        
                         await Program.minio.PutObjectAsync(Program.cfgjson.S3.Bucket, objectName, memStream, memStream.Length, "image/png", meta);
                     }
                     catch (MinioException e)

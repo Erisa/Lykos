@@ -87,6 +87,9 @@ namespace Lykos
 
             [JsonProperty("providerDisplayName")]
             public string DisplayName { get; private set; }
+
+            [JsonProperty("public-read-acl")]
+            public bool PublicReadAcl { get; private set; }
         }
 
         public class GravatarConfig
