@@ -1,0 +1,25 @@
+name: Docker test build
+
+on:
+    push:
+      branches: [ master ]
+    pull_request:
+      branches: [ master ]
+
+jobs:
+  test-build-latest:
+    if: "!contains(github.event.commits[0].message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v1
+        with:
+          repository: yuukibot/yuukichan
+          tag_with_ref: true
+          add_git_labels: true
+          push: false
