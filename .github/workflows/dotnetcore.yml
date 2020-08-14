@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  build-standalone:
     if: "!contains(github.event.commits[0].message, '[skip ci]')"
     strategy:
       matrix:
