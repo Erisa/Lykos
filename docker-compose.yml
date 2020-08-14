@@ -1,7 +1,7 @@
 version: '2.3'
 services:
   bot:
-    build: .
+    image: erisamoe/lykos
     restart: on-failure
     volumes:
       - type: bind
