@@ -51,8 +51,7 @@ namespace Lykos
             {
                 Token = cfgjson.Token,
                 TokenType = TokenType.Bot,
-                UseInternalLogHandler = true,
-                LogLevel = LogLevel.Debug,
+                MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.Debug
             });
 
             interactivity = discord.UseInteractivity(new InteractivityConfiguration
