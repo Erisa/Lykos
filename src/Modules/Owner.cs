@@ -198,13 +198,13 @@ namespace Lykos.Modules
 
                     try
                     {
-                        Dictionary<string, string> meta = new Dictionary<string, string>{ };
+                        Dictionary<string, string> meta = new Dictionary<string, string> { };
 
                         if (Program.cfgjson.S3.PublicReadAcl)
                         {
                             meta["x-amz-acl"] = "public-read";
                         }
-                        
+
                         await Program.minio.PutObjectAsync(Program.cfgjson.S3.Bucket, objectName, memStream, memStream.Length, "image/png", meta);
                     }
                     catch (MinioException e)
@@ -277,11 +277,12 @@ namespace Lykos.Modules
                 if (key == "null" || key == "random" || key == "gen")
                 {
                     request = new HttpRequestMessage(HttpMethod.Post, "") { };
-                } else
+                }
+                else
                 {
                     request = new HttpRequestMessage(HttpMethod.Put, key) { };
                 }
-                    
+
 
                 request.Headers.Add("Authorization", Program.cfgjson.WorkerLinks.Secret);
                 request.Headers.Add("URL", url);

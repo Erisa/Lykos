@@ -1,6 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using Lykos.Modules;
 using Minio;
@@ -21,7 +22,6 @@ namespace Lykos
         public static Random rnd = new Random();
         public static ConfigJson cfgjson;
         public static HasteBinClient hasteUploader;
-        public static InteractivityExtension interactivity;
         public static MinioClient minio;
 
         static void Main()
@@ -54,14 +54,9 @@ namespace Lykos
                 MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.Debug
             });
 
-            interactivity = discord.UseInteractivity(new InteractivityConfiguration
+            Task OnReady(DiscordClient client, ReadyEventArgs e)
             {
-                Timeout = new System.TimeSpan(60)
-            });
-
-            discord.Ready += e =>
-            {
-                Console.WriteLine($"Logged in as {e.Client.CurrentUser.Username}#{e.Client.CurrentUser.Discriminator}");
+                Console.WriteLine($"Logged in as {client.CurrentUser.Username}#{client.CurrentUser.Discriminator}");
                 return Task.CompletedTask;
             };
 
@@ -72,7 +67,7 @@ namespace Lykos
 
             });
 
-            commands.CommandErrored += async e =>
+            async Task CommandErrored(CommandsNextExtension cnext, CommandErrorEventArgs e)
             {
                 CommandContext ctx = e.Context;
                 // This is a fairly ugly workaround but, it does appear to be stable for this command at least.
@@ -98,7 +93,7 @@ namespace Lykos
                 commands.RegisterCommands(cmdClass);
             }
 
-            discord.MessageCreated += async e =>
+            async Task MessageCreated(DiscordClient client, MessageCreateEventArgs e)
             {
                 // gallery
                 if (e.Channel.Id == 671182122429710346)
@@ -107,7 +102,7 @@ namespace Lykos
                     if (e.Message.Attachments.Count == 0 && !(e.Message.Content.Contains("http")))
                     {
                         await e.Message.DeleteAsync();
-                        DSharpPlus.Entities.DiscordChannel log = await e.Client.GetChannelAsync(671183700448509962);
+                        DSharpPlus.Entities.DiscordChannel log = await client.GetChannelAsync(671183700448509962);
                         await log.SendMessageAsync($"{e.Author.Mention}:\n>>> {e.Message.Content}");
                     }
                 }
@@ -117,7 +112,7 @@ namespace Lykos
                 {
                     System.Collections.Generic.IReadOnlyList<DSharpPlus.Entities.DiscordMessage> prevMsgs = await e.Channel.GetMessagesBeforeAsync(e.Message.Id, 1);
                     DSharpPlus.Entities.DiscordMessage prevMsg = prevMsgs[0];
-                    DSharpPlus.Entities.DiscordChannel log = await e.Client.GetChannelAsync(695636452804919297);
+                    DSharpPlus.Entities.DiscordChannel log = await client.GetChannelAsync(695636452804919297);
                     if (e.Message.Content.Contains(" "))
                     {
                         await e.Message.DeleteAsync();
@@ -134,8 +129,8 @@ namespace Lykos
                 // Prefix query handling
                 if
                 (
-                  e.Message.Content.ToLower() == $"what prefix <@{e.Client.CurrentUser.Id}>" ||
-                  e.Message.Content.ToLower() == $"what prefix <@!{e.Client.CurrentUser.Id}>"
+                  e.Message.Content.ToLower() == $"what prefix <@{client.CurrentUser.Id}>" ||
+                  e.Message.Content.ToLower() == $"what prefix <@!{client.CurrentUser.Id}>"
                 )
                 {
                     await e.Channel.SendMessageAsync($"My prefixes are: ```json\n" +
@@ -162,7 +157,7 @@ namespace Lykos
             };
 
             // Gallery edit handling
-            discord.MessageUpdated += async e =>
+            async Task MessageUpdated(DiscordClient client, MessageUpdateEventArgs e)
             {
                 // #gallery
                 if (e.Channel.Id == 671182122429710346)
@@ -171,33 +166,33 @@ namespace Lykos
                     if (e.Message.Attachments.Count == 0 && !(e.Message.Content.Contains("http")))
                     {
                         await e.Message.DeleteAsync();
-                        DSharpPlus.Entities.DiscordChannel log = await e.Client.GetChannelAsync(671183700448509962);
+                        DSharpPlus.Entities.DiscordChannel log = await client.GetChannelAsync(671183700448509962);
                         await log.SendMessageAsync($"[EDIT] {e.Author.Mention}:\n>>> {e.Message.Content}");
                     }
                 }
             };
 
             // Leave event handling, for my servers
-            discord.GuildMemberRemoved += async e =>
+            async Task GuildMemberRemoved(DiscordClient client, GuildMemberRemoveEventArgs e)
             {
                 DSharpPlus.Entities.DiscordChannel channel = null;
                 // Erisa's Corner
                 if (e.Guild.Id == 228625269101953035)
                 {
                     // #general-chat
-                    channel = await e.Client.GetChannelAsync(228625269101953035);
+                    channel = await client.GetChannelAsync(228625269101953035);
                 }
                 // Erisa Lobby
                 else if (e.Guild.Id == 239828629662466058)
                 {
                     // #chat
-                    channel = await e.Client.GetChannelAsync(701782247233159190);
+                    channel = await client.GetChannelAsync(701782247233159190);
                 }
                 // Project Evenfall
                 else if (e.Guild.Id == 535688189659316245)
                 {
                     // #greetings
-                    channel = await e.Client.GetChannelAsync(542497115583283220);
+                    channel = await client.GetChannelAsync(542497115583283220);
                 }
 
                 if (channel != null)
@@ -205,6 +200,12 @@ namespace Lykos
                     await channel.SendMessageAsync($"**{e.Member.Username}** has left us 😔");
                 }
             };
+
+            discord.Ready += OnReady;
+            discord.MessageCreated += MessageCreated;
+            discord.MessageUpdated += MessageUpdated;
+            discord.GuildMemberRemoved += GuildMemberRemoved;
+            commands.CommandErrored += CommandErrored;
 
             await discord.ConnectAsync();
             await Task.Delay(-1);
