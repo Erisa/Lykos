@@ -262,6 +262,8 @@ __pycache__/
 
 # Lykos files
 src/config.json
+config.json
+config/config.json
 
 Release/*
 Publish/*
