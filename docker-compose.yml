@@ -7,3 +7,6 @@ services:
       - type: bind
         source: ./src/config.json
         target: /app/config.json
+        #Windows
+        #source: ./config
+        #target: C:/app/config
