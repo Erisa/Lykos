@@ -11,11 +11,14 @@ Refer to question 1
 ### 3. Can I host a public version?
 No.
 
-### 4. How do I run Lykos?
+### 4. Can I host a private version?
+Sure, why not.
+
+### 5. How do I run Lykos?
 `docker-compose up`
 
-### 5. How do I compile Lykos from source?
+### 6. How do I compile Lykos from source?
 `cd src && dotnet build` or `docker build .`
 
-### 6. Can I use ideas from this bot in my own?
+### 7. Can I use ideas from this bot in my own?
 Yes, as long as you don't copy/paste whole modules to achieve this.
