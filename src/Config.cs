@@ -22,8 +22,8 @@ namespace Lykos
             [JsonProperty("owners")]
             public List<ulong> Owners { get; private set; }
 
-            [JsonProperty("cloudflare")]
-            public CloudflareConfig Cloudflare { get; private set; }
+            [JsonProperty("bunnyConfig")]
+            public BunnyConfig BunnyCDN { get; private set; }
 
             [JsonProperty("emoji")]
             public EmojiConfig Emoji { get; private set; }
@@ -35,13 +35,10 @@ namespace Lykos
             public WorkerLinksConfig WorkerLinks { get; private set; }
         }
 
-        public class CloudflareConfig
+        public class BunnyConfig
         {
             [JsonProperty("apiToken")]
             public string Token { get; private set; }
-
-            [JsonProperty("zoneID")]
-            public string ZoneID { get; private set; }
 
             [JsonProperty("urlPrefix")]
             public string UrlPrefix { get; private set; }
