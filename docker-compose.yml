@@ -1,7 +1,7 @@
 version: '2.3'
 services:
   bot:
-    image: erisamoe/lykos
+    image: ghcr.io/erisa/lykos
     restart: on-failure
     volumes:
       - type: bind
