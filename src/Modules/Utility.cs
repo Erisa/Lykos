@@ -105,7 +105,7 @@ namespace Lykos.Modules
                 avatarUrl
             );
 
-            await ctx.RespondAsync(null, false, embed);
+            await ctx.RespondAsync(null, embed);
         }
 
         [Command("prefix")]

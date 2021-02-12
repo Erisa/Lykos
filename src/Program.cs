@@ -2,7 +2,6 @@
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.EventArgs;
-using DSharpPlus.Interactivity;
 using Lykos.Modules;
 using Minio;
 using Newtonsoft.Json;
