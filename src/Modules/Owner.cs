@@ -9,7 +9,6 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using System.Web;
 using static Lykos.Modules.Helpers;
 
 namespace Lykos.Modules
@@ -185,7 +184,7 @@ namespace Lykos.Modules
                     string objectName;
 
                     msg = await ctx.RespondAsync($"Selected name: `{name}`\n{Program.cfgjson.Emoji.Loading} - Uploading to {Program.cfgjson.S3.DisplayName}...\n" +
-                        $"🔲 - Waiting to purge Bunny cache.");
+                        $"🔲 - Waiting to purge Cloudflare cache.");
                     objectName = $"avatars/{name}.png";
 
                     string avatarUrl = $"https://cdn.discordapp.com/avatars/{ctx.User.Id}/{ctx.User.AvatarHash}.png?size=4096";
@@ -221,20 +220,23 @@ namespace Lykos.Modules
 
                     await msg.ModifyAsync($"Selected name: `{name}`\n" +
                         $"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!\n" +
-                        $"{Program.cfgjson.Emoji.Loading} Purging the Bunny cache...");
+                        $"{Program.cfgjson.Emoji.Loading} Purging the Cloudflare cache...");
 
+                    // https://github.com/Sankra/cloudflare-cache-purger/blob/master/main.csx#L113
+                    CloudflareContent content = new CloudflareContent(new List<string>() { Program.cfgjson.Cloudflare.UrlPrefix + objectName });
+                    string cloudflareContentString = JsonConvert.SerializeObject(content);
                     try
                     {
-                        var baseAddress = new Uri("https://bunnycdn.com/");
-                        var httpClient = new HttpClient { BaseAddress = baseAddress };
-                        httpClient.DefaultRequestHeaders.TryAddWithoutValidation("accept", "application/json");
+                        using HttpClient httpClient = new HttpClient
+                        {
+                            BaseAddress = new Uri("https://api.cloudflare.com/")
+                        };
 
-                        var query = HttpUtility.ParseQueryString(string.Empty);
-                        query["url"] = Program.cfgjson.BunnyCDN.UrlPrefix + objectName;
-                        string queryString = query.ToString();
-
-                        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"api/purge?{queryString}");
-                        request.Headers.Add("AccessKey", $"{Program.cfgjson.BunnyCDN.Token}");
+                        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, "client/v4/zones/" + Program.cfgjson.Cloudflare.ZoneID + "/purge_cache")
+                        {
+                            Content = new StringContent(cloudflareContentString, Encoding.UTF8, "application/json")
+                        };
+                        request.Headers.Add("Authorization", $"Bearer {Program.cfgjson.Cloudflare.Token}");
 
                         HttpResponseMessage response = await httpClient.SendAsync(request);
                         string responseText = await response.Content.ReadAsStringAsync();
@@ -242,18 +244,18 @@ namespace Lykos.Modules
                         if (response.IsSuccessStatusCode)
                         {
                             await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!" +
-                                $"\n{Program.cfgjson.Emoji.Check} - Successsfully purged the Bunny cache for `{objectName}`!");
+                                $"\n{Program.cfgjson.Emoji.Check} - Successsfully purged the Cloudflare cache for `{objectName}`!");
                         }
                         else
                         {
                             await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!" +
-                                $"\n{Program.cfgjson.Emoji.Xmark} - An API error occured when purging the Bunny cache: ```json\n{responseText}```");
+                                $"\n{Program.cfgjson.Emoji.Xmark} - An API error occured when purging the Cloudflare cache: ```json\n{responseText}```");
                         }
                     }
                     catch (Exception e)
                     {
                         await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!\n" +
-                                $"{Program.cfgjson.Emoji.Xmark} - An unexpected error occured when purging the Bunny cache: ```json\n" +
+                                $"{Program.cfgjson.Emoji.Xmark} - An unexpected error occured when purging the Cloudflare cache: ```json\n" +
                                 $"{e.Message}```");
                     }
 
@@ -305,6 +307,17 @@ namespace Lykos.Modules
                 await ctx.RespondAsync($"Worker responded with code: `{httpStatusCode}` (`{httpStatus}`)\n```json\n{responseText}\n```");
             }
 
+
+            // https://github.com/Sankra/cloudflare-cache-purger/blob/master/main.csx#L197
+            readonly struct CloudflareContent
+            {
+                public CloudflareContent(List<string> urls)
+                {
+                    Files = urls;
+                }
+
+                public List<string> Files { get; }
+            }
 
         }
 

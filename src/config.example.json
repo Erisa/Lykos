@@ -15,8 +15,9 @@
     "providerDisplayName": "Scaleway",
     "public-read-acl": true
   },
-  "bunnyConfig": {
+  "cloudflare": {
     "apiToken": "blah",
+    "zoneID": "bbbbbb",
     "urlPrefix": "https://cdn.erisa.moe/"
   },
   "emoji": {
