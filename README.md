@@ -18,7 +18,7 @@ Sure, why not.
 `docker-compose up`
 
 ### 6. How do I compile Lykos from source?
-`cd src && dotnet build` or `docker build .`
+`cd src && dotnet build` or `docker buildx build .`
 
 ### 7. Can I use ideas from this bot in my own?
 Yes, as long as you don't copy/paste whole modules to achieve this.
