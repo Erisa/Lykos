@@ -119,7 +119,7 @@ namespace Lykos
                         .WithAuthor(
                             e.Author.Username,
                             null,
-                            $"https://cdn.discordapp.com/avatars/{e.Author.Id}/{e.Author.AvatarHash}.png?size=512"
+                            $"https://cdn.discordapp.com/avatars/{e.Author.Id}/{e.Author.AvatarHash}.png?size=128"
                         );
 
                         await log.SendMessageAsync(null, embed);
