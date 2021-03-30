@@ -1,6 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Lykos.Modules;
 using Minio;
@@ -107,8 +108,21 @@ namespace Lykos
                     if (e.Message.Attachments.Count == 0 && !(e.Message.Content.Contains("http")))
                     {
                         await e.Message.DeleteAsync();
-                        DSharpPlus.Entities.DiscordChannel log = await client.GetChannelAsync(671183700448509962);
-                        await log.SendMessageAsync($"{e.Author.Mention}:\n>>> {e.Message.Content}");
+                        DiscordChannel log = await client.GetChannelAsync(671183700448509962);
+                        var embed = new DiscordEmbedBuilder()
+                        .WithDescription(e.Message.Content)
+                        .WithTimestamp(DateTime.Now)
+                        .WithFooter(
+                            "Relayed from #gallery",
+                            null
+                        )
+                        .WithAuthor(
+                            e.Author.Username,
+                            null,
+                            $"https://cdn.discordapp.com/avatars/{e.Author.Id}/{e.Author.AvatarHash}.png?size=512"
+                        );
+
+                        await log.SendMessageAsync(null, embed);
                     }
                 }
 
@@ -185,13 +199,7 @@ namespace Lykos
                 if (e.Guild.Id == 228625269101953035)
                 {
                     // #general-chat
-                    channel = await client.GetChannelAsync(228625269101953035);
-                }
-                // Erisa Lobby
-                else if (e.Guild.Id == 239828629662466058)
-                {
-                    // #chat
-                    channel = await client.GetChannelAsync(701782247233159190);
+                    channel = await client.GetChannelAsync(751534914469363832);
                 }
                 // Project Evenfall
                 else if (e.Guild.Id == 535688189659316245)
