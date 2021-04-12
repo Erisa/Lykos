@@ -6,9 +6,6 @@
     <RootNamespace>Lykos</RootNamespace>
     <ApplicationIcon />
     <StartupObject />
-    <RestoreAdditionalProjectSources>
-      https://nuget.emzi0767.com/api/v3/index.json
-    </RestoreAdditionalProjectSources>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -18,9 +15,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DSharpPlus" Version="4.0.0-rc2" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-rc2" />
-    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-rc2" />
+    <PackageReference Include="DSharpPlus" Version="4.0.0" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0" />
     <PackageReference Include="ini" Version="1.0.7" />
     <PackageReference Include="Minio" Version="3.1.13" />
   </ItemGroup>
