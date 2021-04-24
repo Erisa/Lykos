@@ -20,7 +20,7 @@ namespace Lykos.Modules
         [Description("( ﾉ⊙︵⊙）ﾉ︵┻━┻")]
         public async Task Tableflip(CommandContext ctx)
         {
-            await ctx.RespondAsync(flips[Program.rnd.Next(0, flips.Count)]);
+            await ctx.Channel.SendMessageAsync(flips[Program.rnd.Next(0, flips.Count)]);
         }
 
         [Command("headpat")]
@@ -32,11 +32,11 @@ namespace Lykos.Modules
 
             if (target == null || target == "me" || target == ctx.User.Username || target == ctx.Member.Nickname || target == ctx.Member.Mention)
             {
-                await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobPats} \\*gives a big headpat to {ctx.User.Mention}\\*");
+                await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.BlobPats} \\*gives a big headpat to {ctx.User.Mention}\\*");
             }
             else
             {
-                await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobPats} {target} was given a big headpat by {ctx.User.Username}!");
+                await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.BlobPats} {target} was given a big headpat by {ctx.User.Username}!");
             }
         }
 
@@ -48,11 +48,11 @@ namespace Lykos.Modules
 
             if (target == null || target == "me" || target == ctx.User.Username || target == ctx.Member.Nickname || target == ctx.Member.Mention)
             {
-                await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobHug} \\*gives a tight hug to {ctx.User.Mention}\\*");
+                await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.BlobHug} \\*gives a tight hug to {ctx.User.Mention}\\*");
             }
             else
             {
-                await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobHug} {target} was given a tight hug by {ctx.User.Username}!");
+                await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.BlobHug} {target} was given a tight hug by {ctx.User.Username}!");
             }
         }
 
@@ -64,11 +64,11 @@ namespace Lykos.Modules
 
             if (target == null || target == "me" || target == ctx.User.Username || target == ctx.Member.Nickname || target == ctx.Member.Mention)
             {
-                await ctx.RespondAsync("😳");
+                await ctx.Channel.SendMessageAsync("😳");
             }
             else
             {
-                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Kiss} {target} was given a deep and meaningful kiss by {ctx.User.Username}! ❤️");
+                await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.Kiss} {target} was given a deep and meaningful kiss by {ctx.User.Username}! ❤️");
             }
         }
 
@@ -76,40 +76,40 @@ namespace Lykos.Modules
         [Description("Pong!")]
         public async Task Pingeri(CommandContext ctx)
         {
-            await ctx.RespondAsync("<@228574821590499329>");
+            await ctx.Channel.SendMessageAsync("<@228574821590499329>");
         }
 
         [Command("whenissarahsbirthday")]
         public async Task Whenissarahsbirthday(CommandContext ctx)
         {
-            await ctx.RespondAsync($"Today.");
+            await ctx.Channel.SendMessageAsync($"Today.");
         }
 
         [Command("cotd")]
         public async Task Cotd(CommandContext ctx)
         {
             DSharpPlus.Entities.DiscordUser scat = await ctx.Client.GetUserAsync(103347843934212096);
-            await ctx.RespondAsync($"Todays cat of the day is **{scat.Username}#{scat.Discriminator}**!");
+            await ctx.Channel.SendMessageAsync($"Todays cat of the day is **{scat.Username}#{scat.Discriminator}**!");
         }
 
         [Command("gotd")]
         public async Task Gotd(CommandContext ctx)
         {
             DSharpPlus.Entities.DiscordUser circ = await ctx.Client.GetUserAsync(255114091360681986);
-            await ctx.RespondAsync($"Todays genius of the day is **{circ.Username}#{circ.Discriminator}**!");
+            await ctx.Channel.SendMessageAsync($"Todays genius of the day is **{circ.Username}#{circ.Discriminator}**!");
         }
 
         [Command("zotd")]
         public async Task Zotd(CommandContext ctx)
         {
             DSharpPlus.Entities.DiscordUser zeta = await ctx.Client.GetUserAsync(94129005791281152);
-            await ctx.RespondAsync($"Todays Zeta of the day is **{zeta.Username}#{zeta.Discriminator}**!");
+            await ctx.Channel.SendMessageAsync($"Todays Zeta of the day is **{zeta.Username}#{zeta.Discriminator}**!");
         }
 
         [Command("makura")]
         public async Task Makura(CommandContext ctx)
         {
-            await ctx.RespondAsync("makura gay lol");
+            await ctx.Channel.SendMessageAsync("makura gay lol");
         }
 
         [Command("chi")]
@@ -117,7 +117,7 @@ namespace Lykos.Modules
         public async Task Chi(CommandContext ctx)
         {
             DSharpPlus.Entities.DiscordUser chi = await ctx.Client.GetUserAsync(511966736744972309);
-            await ctx.RespondAsync($"Todays Hibiki of the day is **{chi.Username}#{chi.Discriminator}**!");
+            await ctx.Channel.SendMessageAsync($"Todays Hibiki of the day is **{chi.Username}#{chi.Discriminator}**!");
         }
 
 

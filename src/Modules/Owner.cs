@@ -39,7 +39,7 @@ namespace Lykos.Modules
 
                 bool allowed = Mod.AllowedToMod(firstMember, target);
 
-                await ctx.RespondAsync($"According to my calulcations, **{firstMember.Username}#{firstMember.Discriminator}** has a Role Hierachy of `{invoker_hier}`" +
+                await ctx.Channel.SendMessageAsync($"According to my calulcations, **{firstMember.Username}#{firstMember.Discriminator}** has a Role Hierachy of `{invoker_hier}`" +
                     $"and **{target.Username}#{target.Discriminator}** has `{target_hier}`.\nFrom this, I can conclude that the answer is `{allowed}`.");
             }
 
@@ -47,7 +47,7 @@ namespace Lykos.Modules
             [Description("Where am I running? Lets find out together!")]
             public async Task Sysinfo(CommandContext ctx)
             {
-                await ctx.RespondAsync($"🤔 Hmm, based on my research it seems that:\n" +
+                await ctx.Channel.SendMessageAsync($"🤔 Hmm, based on my research it seems that:\n" +
                     $"- This device is calling itself `{System.Environment.MachineName}`\n" +
                     $"- The OS platform is `{Helpers.GetOSPlatform()}`\n" +
                     $"- The OS describes itself as `{RuntimeInformation.OSDescription}`\n" +
@@ -66,7 +66,7 @@ namespace Lykos.Modules
             [Description("Goodbye, hello! This will reconnect my websocket connection.")]
             public async Task Reconnect(CommandContext ctx)
             {
-                DiscordMessage msg = await ctx.RespondAsync("Reconnecting to websocket...");
+                DiscordMessage msg = await ctx.Channel.SendMessageAsync("Reconnecting to websocket...");
                 System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                 await ctx.Client.ReconnectAsync();
                 watch.Stop();
@@ -77,7 +77,7 @@ namespace Lykos.Modules
             [Description("A soft exit. I will disconnect and then end my process.")]
             public async Task Shutdown(CommandContext ctx)
             {
-                DiscordMessage msg = await ctx.RespondAsync("Disonnecting from websocket...");
+                DiscordMessage msg = await ctx.Channel.SendMessageAsync("Disonnecting from websocket...");
                 System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                 await ctx.Client.DisconnectAsync();
                 watch.Stop();
@@ -96,7 +96,7 @@ namespace Lykos.Modules
                     return;
                 }
 
-                DiscordMessage msg = await ctx.RespondAsync("Disonnecting from websocket...");
+                DiscordMessage msg = await ctx.Channel.SendMessageAsync("Disonnecting from websocket...");
                 System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                 await ctx.Client.DisconnectAsync();
                 watch.Stop();
@@ -118,7 +118,7 @@ namespace Lykos.Modules
             [Description("Run shell commands! Bash for Linux/macOS, batch for Windows!")]
             public async Task Shell(CommandContext ctx, [RemainingText] string command)
             {
-                DiscordMessage msg = await ctx.RespondAsync("executing..");
+                DiscordMessage msg = await ctx.Channel.SendMessageAsync("executing..");
 
                 ShellResult finishedShell = Helpers.RunShellCommand(command);
 
@@ -146,7 +146,7 @@ namespace Lykos.Modules
             [Command("say"), Aliases("echo")]
             public async Task Say(CommandContext ctx, [RemainingText] string input)
             {
-                await ctx.RespondAsync(Helpers.SanitiseEveryone(input));
+                await ctx.Channel.SendMessageAsync(Helpers.SanitiseEveryone(input));
             }
 
         }
@@ -165,7 +165,7 @@ namespace Lykos.Modules
 
                 DiscordDmChannel chan = await ctx.Member.CreateDmChannelAsync();
                 await chan.SendMessageAsync($"Here's the invite you asked for: https://discord.gg/{inv.Code}");
-                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Check} I've DMed you an invite to **Erisa's Corner** with `{max_uses}` use(s) and an age of `{age}`!");
+                await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.Check} I've DMed you an invite to **Erisa's Corner** with `{max_uses}` use(s) and an age of `{age}`!");
 
             }
 
@@ -185,7 +185,7 @@ namespace Lykos.Modules
                     DiscordMessage msg;
                     string objectName;
 
-                    msg = await ctx.RespondAsync($"Selected name: `{name}`\n{Program.cfgjson.Emoji.Loading} - Uploading to {Program.cfgjson.S3.DisplayName}...\n" +
+                    msg = await ctx.Channel.SendMessageAsync($"Selected name: `{name}`\n{Program.cfgjson.Emoji.Loading} - Uploading to {Program.cfgjson.S3.DisplayName}...\n" +
                         $"🔲 - Waiting to purge Cloudflare cache.");
                     objectName = $"avatars/{name}.png";
 
@@ -297,7 +297,7 @@ namespace Lykos.Modules
                     if (hasteURL.IsSuccess)
                     {
                         // responseText = hasteURL.FullUrl;
-                        await ctx.RespondAsync($"Worker responded with code: `{httpStatusCode}` (`{httpStatus}`)\n{hasteURL.FullUrl}");
+                        await ctx.Channel.SendMessageAsync($"Worker responded with code: `{httpStatusCode}` (`{httpStatus}`)\n{hasteURL.FullUrl}");
                         return;
                     }
                     else
@@ -306,7 +306,7 @@ namespace Lykos.Modules
                         responseText = "Error occured during upload to Hastebin. Please check the console/logs for the output.";
                     }
                 }
-                await ctx.RespondAsync($"Worker responded with code: `{httpStatusCode}` (`{httpStatus}`)\n```json\n{responseText}\n```");
+                await ctx.Channel.SendMessageAsync($"Worker responded with code: `{httpStatusCode}` (`{httpStatus}`)\n```json\n{responseText}\n```");
             }
 
 

@@ -39,7 +39,7 @@ namespace Lykos.Modules
             if (ctx.Guild.GetMemberAsync(target.Id) == null)
             {
                 await ctx.Guild.BanMemberAsync(target.Id, 0, $"[Ban by {ctx.User.Username}#{ctx.User.Discriminator}] ${reason}");
-                await ctx.RespondAsync($"🔨 Succesfully bent **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
+                await ctx.Channel.SendMessageAsync($"🔨 Succesfully bent **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
                 return;
             }
             else
@@ -50,19 +50,19 @@ namespace Lykos.Modules
                     if (AllowedToMod(await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id), member))
                     {
                         await member.BanAsync(0, $"[Ban by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}");
-                        await ctx.RespondAsync($"🔨 Succesfully bent **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
+                        await ctx.Channel.SendMessageAsync($"🔨 Succesfully bent **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
                         return;
                     }
                     else
                     {
-                        await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} I don't have permission to ban **{target.Username}#{target.Discriminator}**!");
+                        await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.Xmark} I don't have permission to ban **{target.Username}#{target.Discriminator}**!");
                         return;
 
                     }
                 }
                 else
                 {
-                    await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} You aren't allowed to ban **{target.Username}#{target.Discriminator}**!");
+                    await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.Xmark} You aren't allowed to ban **{target.Username}#{target.Discriminator}**!");
                     return;
                 }
             }
@@ -74,7 +74,7 @@ namespace Lykos.Modules
         public async Task Unban(CommandContext ctx, DiscordUser target, string reason = "No reason provided.")
         {
             await target.UnbanAsync(ctx.Guild, $"[Unban by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}");
-            await ctx.RespondAsync($"Succesfully unbanned **{target.Username}#{target.Discriminator}** (`{target.Id}`)");
+            await ctx.Channel.SendMessageAsync($"Succesfully unbanned **{target.Username}#{target.Discriminator}** (`{target.Id}`)");
         }
 
         [Command("kick")]
@@ -89,18 +89,18 @@ namespace Lykos.Modules
                 if (AllowedToMod(await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id), member))
                 {
                     await member.RemoveAsync($"[Kick by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}");
-                    await ctx.RespondAsync($"\U0001f462 Succesfully ejected **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
+                    await ctx.Channel.SendMessageAsync($"\U0001f462 Succesfully ejected **{target.Username}#{target.Discriminator} (`{target.Id}`)**");
                     return;
                 }
                 else
                 {
-                    await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} I don't have permission to kick **{target.Username}#{target.Discriminator}**!");
+                    await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.Xmark} I don't have permission to kick **{target.Username}#{target.Discriminator}**!");
                     return;
                 }
             }
             else
             {
-                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} You aren't allowed to kick **{target.Username}#{target.Discriminator}**!");
+                await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.Xmark} You aren't allowed to kick **{target.Username}#{target.Discriminator}**!");
                 return;
             }
         }
@@ -144,12 +144,12 @@ namespace Lykos.Modules
                 }
                 else if (!targetUser.IsBot)
                 {
-                    await ctx.RespondAsync("That target is not a bot!");
+                    await ctx.Channel.SendMessageAsync("That target is not a bot!");
                     return;
                 }
                 else if (targetMember != null && targetMember.Roles.Contains(modRole))
                 {
-                    await ctx.RespondAsync("You can't take action on a Moderator bot!");
+                    await ctx.Channel.SendMessageAsync("You can't take action on a Moderator bot!");
                     return;
                 }
                 else
@@ -164,12 +164,12 @@ namespace Lykos.Modules
                 }
                 if (messagesToDelete.Count == 0)
                 {
-                    await ctx.RespondAsync("There were no messages that matched! Please don't waste my time :(");
+                    await ctx.Channel.SendMessageAsync("There were no messages that matched! Please don't waste my time :(");
                 }
                 else
                 {
                     await ctx.Channel.DeleteMessagesAsync((IEnumerable<DiscordMessage>)messagesToDelete, $"Prune by {ctx.User.Id}");
-                    var resp = await ctx.RespondAsync($"Okay! I deleted {messagesToDelete.Count} messages! Hope they were the right ones!");
+                    var resp = await ctx.Channel.SendMessageAsync($"Okay! I deleted {messagesToDelete.Count} messages! Hope they were the right ones!");
                     System.Threading.Thread.Sleep(6000);
                     await resp.DeleteAsync();
                 }

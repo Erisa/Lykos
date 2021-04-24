@@ -79,7 +79,7 @@ namespace Lykos
                 // This is a fairly ugly workaround but, it does appear to be stable for this command at least.
                 if (e.Command != null && e.Command.Name == "avatar" && e.Exception is System.ArgumentException)
                 {
-                    await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} User not found! " +
+                    await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.Xmark} User not found! " +
                         $"Only mentions, IDs and Usernames are accepted.\n" +
                         $"Note: It is not needed to specify `byid`, simply use the ID directly.");
                 }
@@ -120,7 +120,8 @@ namespace Lykos
                             e.Author.Username,
                             null,
                             $"https://cdn.discordapp.com/avatars/{e.Author.Id}/{e.Author.AvatarHash}.png?size=128"
-                        );
+                        )
+                        ;
 
                         await log.SendMessageAsync(null, embed);
                     }

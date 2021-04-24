@@ -38,7 +38,7 @@ namespace Lykos.Modules
                 }
                 catch
                 {
-                    await ctx.RespondAsync("This is where eri is supposed to put the url regex but she's too useless to bother yet.");
+                    await ctx.Channel.SendMessageAsync("This is where eri is supposed to put the url regex but she's too useless to bother yet.");
                     return;
                 }
             }
@@ -47,7 +47,7 @@ namespace Lykos.Modules
 
             if (matches.Count == 0)
             {
-                await ctx.RespondAsync("I couldn't find any custom emoji in that message!");
+                await ctx.Channel.SendMessageAsync("I couldn't find any custom emoji in that message!");
                 return;
             }
 
@@ -56,11 +56,11 @@ namespace Lykos.Modules
 
             if (groups[1].Value == "a")
             {
-                await ctx.RespondAsync($"{ctx.User.Mention}, Here's the emoji link you requested:\nhttps://cdn.discordapp.com/emojis/{groups[2].Value}.gif");
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention}, Here's the emoji link you requested:\nhttps://cdn.discordapp.com/emojis/{groups[2].Value}.gif");
             }
             else
             {
-                await ctx.RespondAsync($"{ctx.User.Mention}, Here's the emoji link you requested:\nhttps://cdn.discordapp.com/emojis/{groups[2].Value}.png");
+                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention}, Here's the emoji link you requested:\nhttps://cdn.discordapp.com/emojis/{groups[2].Value}.png");
             }
         }
 
@@ -80,13 +80,13 @@ namespace Lykos.Modules
             }
             else if (!validExts.Any(format.Contains))
             {
-                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} You supplied an invalid format, " +
+                await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.Xmark} You supplied an invalid format, " +
                     $"either give none or one of the following: `gif`, `png`, `jpg`, `webp`");
                 return;
             }
             else if (format == "gif" && !hash.StartsWith("a_"))
             {
-                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} The format of `gif` only applies to animated avatars.\n" +
+                await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.Xmark} The format of `gif` only applies to animated avatars.\n" +
                     $"The user you are trying to lookup does not have an animated avatar.");
                 return;
             }
@@ -105,7 +105,7 @@ namespace Lykos.Modules
                 avatarUrl
             );
 
-            await ctx.RespondAsync(null, embed);
+            await ctx.Channel.SendMessageAsync(null, embed);
         }
 
         [Command("prefix")]
@@ -113,7 +113,7 @@ namespace Lykos.Modules
         [Aliases("prefixes", "px", "h")]
         public async Task Prefix(CommandContext ctx)
         {
-            await ctx.RespondAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(Program.cfgjson.Prefixes)}```");
+            await ctx.Channel.SendMessageAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(Program.cfgjson.Prefixes)}```");
         }
 
 
@@ -140,7 +140,7 @@ namespace Lykos.Modules
                 DiscordUser user = await ctx.Client.GetUserAsync(id);
                 resp += $"- **{user.Username}#{user.Discriminator}** (`{user.Id}`)\n";
             }
-            await ctx.RespondAsync(resp);
+            await ctx.Channel.SendMessageAsync(resp);
         }
 
     }
