@@ -1,5 +1,4 @@
-FROM --platform=${BUILDPLATFORM} \
-  mcr.microsoft.com/dotnet/sdk:5.0.202 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:5.0.202 AS build-env
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers
