@@ -37,10 +37,15 @@ namespace Lykos
             if (!File.Exists(configFile))
                 configFile = "config/config.json";
 
-            using (FileStream fs = File.OpenRead(configFile))
-            using (StreamReader sr = new StreamReader(fs, new UTF8Encoding(false)))
-                json = await sr.ReadToEndAsync();
-
+            if (File.Exists(configFile))
+            {
+                using (FileStream fs = File.OpenRead(configFile))
+                using (StreamReader sr = new StreamReader(fs, new UTF8Encoding(false)))
+                    json = await sr.ReadToEndAsync();
+            } else
+            {
+                json = System.Environment.GetEnvironmentVariable("LYKOS_CONFIG");
+            }
 
             cfgjson = JsonConvert.DeserializeObject<ConfigJson>(json);
             hasteUploader = new HasteBinClient(cfgjson.HastebinEndpoint);
