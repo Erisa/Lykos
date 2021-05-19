@@ -86,7 +86,7 @@ namespace Lykos.Modules
         }
 
         [Command("pingtodd")]
-        public async Task Pingfleuron(CommandContext ctx)
+        public async Task Pingtodd(CommandContext ctx)
         {
             await ctx.Channel.SendMessageAsync("<@461265486655520788>");
         }
