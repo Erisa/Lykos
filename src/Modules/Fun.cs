@@ -79,6 +79,20 @@ namespace Lykos.Modules
             await ctx.Channel.SendMessageAsync("<@228574821590499329>");
         }
 
+        [Command("pingfleuron")]
+        public async Task Pingfleuron(CommandContext ctx)
+        {
+            await ctx.Channel.SendMessageAsync("<@188482204601548800>");
+        }
+
+        [Command("pingtodd")]
+        public async Task Pingfleuron(CommandContext ctx)
+        {
+            await ctx.Channel.SendMessageAsync("<@461265486655520788>");
+        }
+
+
+
         [Command("whenissarahsbirthday")]
         public async Task Whenissarahsbirthday(CommandContext ctx)
         {
