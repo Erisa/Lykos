@@ -12,7 +12,7 @@ namespace Lykos.Modules
     class Utility : BaseCommandModule
     {
         readonly string[] validExts = { "gif", "png", "jpg", "webp" };
-        readonly Regex emoji_rx = new Regex("<(a?):\\w*:(\\d*)>");
+        readonly Regex emoji_rx = new("<(a?):\\w*:(\\d*)>");
 
         [Command("bigmoji")]
         [Aliases("steal", "bm")]

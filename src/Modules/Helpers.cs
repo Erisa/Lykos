@@ -55,7 +55,7 @@ namespace Lykos.Modules
             }
 
 
-            Process proc = new Process
+            Process proc = new()
             {
                 StartInfo = new ProcessStartInfo
                 {
@@ -101,7 +101,7 @@ namespace Lykos.Modules
             byte[] hash = md5.ComputeHash(inputBytes);
 
             // step 2, convert byte array to hex string
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             for (int i = 0; i < hash.Length; i++)
             {
                 sb.Append(hash[i].ToString("x2"));

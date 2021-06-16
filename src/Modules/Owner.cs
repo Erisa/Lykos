@@ -191,14 +191,14 @@ namespace Lykos.Modules
 
                     string avatarUrl = $"https://cdn.discordapp.com/avatars/{ctx.User.Id}/{ctx.User.AvatarHash}.png?size=4096";
                     MemoryStream memStream;
-                    using (WebClient client = new WebClient())
+                    using (WebClient client = new())
                     {
                         memStream = new MemoryStream(client.DownloadData(avatarUrl));
                     }
 
                     try
                     {
-                        Dictionary<string, string> meta = new Dictionary<string, string> { };
+                        Dictionary<string, string> meta = new() { };
 
                         if (Program.cfgjson.S3.PublicReadAcl)
                         {
@@ -225,16 +225,16 @@ namespace Lykos.Modules
                         $"{Program.cfgjson.Emoji.Loading} Purging the Cloudflare cache...");
 
                     // https://github.com/Sankra/cloudflare-cache-purger/blob/master/main.csx#L113
-                    CloudflareContent content = new CloudflareContent(new List<string>() { Program.cfgjson.Cloudflare.UrlPrefix + objectName });
+                    CloudflareContent content = new(new List<string>() { Program.cfgjson.Cloudflare.UrlPrefix + objectName });
                     string cloudflareContentString = JsonConvert.SerializeObject(content);
                     try
                     {
-                        using HttpClient httpClient = new HttpClient
+                        using HttpClient httpClient = new()
                         {
                             BaseAddress = new Uri("https://api.cloudflare.com/")
                         };
 
-                        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, "client/v4/zones/" + Program.cfgjson.Cloudflare.ZoneID + "/purge_cache")
+                        HttpRequestMessage request = new(HttpMethod.Delete, "client/v4/zones/" + Program.cfgjson.Cloudflare.ZoneID + "/purge_cache")
                         {
                             Content = new StringContent(cloudflareContentString, Encoding.UTF8, "application/json")
                         };
@@ -267,7 +267,7 @@ namespace Lykos.Modules
             [Command("link")]
             public async Task Link(CommandContext ctx, string key, string url)
             {
-                using HttpClient httpClient = new HttpClient
+                using HttpClient httpClient = new()
                 {
                     BaseAddress = new Uri(Program.cfgjson.WorkerLinks.BaseUrl)
                 };
