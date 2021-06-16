@@ -19,7 +19,7 @@ namespace Lykos
     {
         static DiscordClient discord;
         static CommandsNextExtension commands;
-        public static Random rnd = new Random();
+        public static Random rnd = new();
         public static ConfigJson cfgjson;
         public static HasteBinClient hasteUploader;
         public static MinioClient minio;
@@ -39,10 +39,11 @@ namespace Lykos
 
             if (File.Exists(configFile))
             {
-                using (FileStream fs = File.OpenRead(configFile))
-                using (StreamReader sr = new StreamReader(fs, new UTF8Encoding(false)))
-                    json = await sr.ReadToEndAsync();
-            } else
+                using FileStream fs = File.OpenRead(configFile);
+                using StreamReader sr = new(fs, new UTF8Encoding(false));
+                json = await sr.ReadToEndAsync();
+            }
+            else
             {
                 json = System.Environment.GetEnvironmentVariable("LYKOS_CONFIG");
             }

@@ -121,7 +121,7 @@ namespace Lykos.Modules
 
             }
 
-            System.Collections.ObjectModel.Collection<DiscordMessage> messagesToDelete = new System.Collections.ObjectModel.Collection<DiscordMessage> { };
+            System.Collections.ObjectModel.Collection<DiscordMessage> messagesToDelete = new() { };
             var messagesToConsider = await ctx.Channel.GetMessagesAsync(50);
             if (helperRole == null)
             {
@@ -184,7 +184,7 @@ namespace Lykos.Modules
 
         public static int GetHier(DiscordMember target)
         {
-            return target.IsOwner ? int.MaxValue : (target.Roles.Count() == 0 ? 0 : target.Roles.Max(x => x.Position));
+            return target.IsOwner ? int.MaxValue : (!target.Roles.Any() ? 0 : target.Roles.Max(x => x.Position));
         }
 
     }
