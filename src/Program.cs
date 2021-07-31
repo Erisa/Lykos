@@ -63,7 +63,7 @@ namespace Lykos
             {
                 Token = cfgjson.Token,
                 TokenType = TokenType.Bot,
-                MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.Debug
+                MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.Information
             });
 
             Task OnReady(DiscordClient client, ReadyEventArgs e)
