@@ -1,12 +1,16 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.SlashCommands;
 using Lykos.Modules;
+using Microsoft.Extensions.Logging;
 using Minio;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,6 +27,7 @@ namespace Lykos
         public static ConfigJson cfgjson;
         public static HasteBinClient hasteUploader;
         public static MinioClient minio;
+        internal static EventId EventID { get; } = new EventId(1000, "Bot");
 
         static void Main()
         {
@@ -78,19 +83,6 @@ namespace Lykos
                 StringPrefixes = cfgjson.Prefixes,
 
             });
-
-            async Task CommandErrored(CommandsNextExtension cnext, CommandErrorEventArgs e)
-            {
-                CommandContext ctx = e.Context;
-                // This is a fairly ugly workaround but, it does appear to be stable for this command at least.
-                if (e.Command != null && e.Command.Name == "avatar" && e.Exception is System.ArgumentException)
-                {
-                    await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.Xmark} User not found! " +
-                        $"Only mentions, IDs and Usernames are accepted.\n" +
-                        $"Note: It is not needed to specify `byid`, simply use the ID directly.");
-                }
-
-            };
 
             Type[] commandClasses =
             {
@@ -221,11 +213,107 @@ namespace Lykos
                 }
             };
 
+
+            async Task CommandsNextService_CommandErrored(CommandsNextExtension cnext, CommandErrorEventArgs e)
+            {
+                if (e.Exception is CommandNotFoundException && (e.Command == null || e.Command.QualifiedName != "help"))
+                    return;
+
+                CommandContext ctx = e.Context;
+                // This is a fairly ugly workaround but, it does appear to be stable for this command at least.
+                if (e.Command != null && e.Command.Name == "avatar" && e.Exception is System.ArgumentException)
+                {
+                    await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.Xmark} User not found! " +
+                        $"Only mentions, IDs and Usernames are accepted.\n" +
+                        $"Note: It is not needed to specify `byid`, simply use the ID directly.");
+                }
+
+                e.Context.Client.Logger.LogError(EventID, e.Exception, "Exception occurred during {0}'s invocation of '{1}'", e.Context.User.Username, e.Context.Command.QualifiedName);
+
+                var exs = new List<Exception>();
+                if (e.Exception is AggregateException ae)
+                    exs.AddRange(ae.InnerExceptions);
+                else
+                    exs.Add(e.Exception);
+
+                foreach (var ex in exs)
+                {
+                    if (ex is CommandNotFoundException && (e.Command == null || e.Command.QualifiedName != "help"))
+                        return;
+
+                    if (ex is ChecksFailedException && (e.Command.Name != "help"))
+                        return;
+
+                    var embed = new DiscordEmbedBuilder
+                    {
+                        Color = new DiscordColor("#FF0000"),
+                        Title = "An exception occurred when executing a command",
+                        Description = $"`{e.Exception.GetType()}` occurred when executing `{e.Command.QualifiedName}`.",
+                        Timestamp = DateTime.UtcNow
+                    };
+                    embed.WithFooter(discord.CurrentUser.Username, discord.CurrentUser.AvatarUrl)
+                        .AddField("Message", ex.Message);
+                    if (e.Exception.GetType().ToString() == "System.ArgumentException")
+                        embed.AddField("Note", "This usually means that you used the command incorrectly.\n" +
+                            "Please double-check how to use this command.");
+                    await e.Context.RespondAsync(embed: embed.Build()).ConfigureAwait(false);
+                }
+            }
+
+            Task Discord_ThreadCreated(DiscordClient client, ThreadCreateEventArgs e)
+            {
+                client.Logger.LogDebug(eventId: EventID, $"Thread created in {e.Guild.Name}. Thread Name: {e.Thread.Name}");
+                return Task.CompletedTask;
+            }
+
+            Task Discord_ThreadUpdated(DiscordClient client, ThreadUpdateEventArgs e)
+            {
+                client.Logger.LogDebug(eventId: EventID, $"Thread updated in {e.Guild.Name}. New Thread Name: {e.ThreadAfter.Name}");
+                return Task.CompletedTask;
+            }
+
+            Task Discord_ThreadDeleted(DiscordClient client, ThreadDeleteEventArgs e)
+            {
+                client.Logger.LogDebug(eventId: EventID, $"Thread deleted in {e.Guild.Name}. Thread Name: {e.Thread.Name ?? "Unknown"}");
+                return Task.CompletedTask;
+            }
+
+            Task Discord_ThreadListSynced(DiscordClient client, ThreadListSyncEventArgs e)
+            {
+                client.Logger.LogDebug(eventId: EventID, $"Threads synced in {e.Guild.Name}.");
+                return Task.CompletedTask;
+            }
+
+            Task Discord_ThreadMemberUpdated(DiscordClient client, ThreadMemberUpdateEventArgs e)
+            {
+                client.Logger.LogDebug(eventId: EventID, $"Thread member updated.");
+                Console.WriteLine($"Discord_ThreadMemberUpdated fired for thread {e.ThreadMember.ThreadId}. User ID {e.ThreadMember.Id}.");
+                return Task.CompletedTask;
+            }
+
+            Task Discord_ThreadMembersUpdated(DiscordClient client, ThreadMembersUpdateEventArgs e)
+            {
+                client.Logger.LogDebug(eventId: EventID, $"Thread members updated in {e.Guild.Name}.");
+                return Task.CompletedTask;
+            }
+
             discord.Ready += OnReady;
             discord.MessageCreated += MessageCreated;
             discord.MessageUpdated += MessageUpdated;
             discord.GuildMemberRemoved += GuildMemberRemoved;
-            commands.CommandErrored += CommandErrored;
+            commands.CommandErrored += CommandsNextService_CommandErrored;
+            discord.ThreadCreated += Discord_ThreadCreated;
+            discord.ThreadUpdated += Discord_ThreadUpdated;
+            discord.ThreadDeleted += Discord_ThreadDeleted;
+            discord.ThreadListSynced += Discord_ThreadListSynced;
+            discord.ThreadMemberUpdated += Discord_ThreadMemberUpdated;
+            discord.ThreadMembersUpdated += Discord_ThreadMembersUpdated;
+
+
+            var slash = discord.UseSlashCommands();
+
+            slash.RegisterCommands<SlashCommands>(438781053675634713);
+            slash.RegisterCommands<SlashCommands>(228625269101953035);
 
             await discord.ConnectAsync();
             await Task.Delay(-1);

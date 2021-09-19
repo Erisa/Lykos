@@ -18,8 +18,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-		<PackageReference Include="DSharpPlus" Version="4.1.1-nightly-eri-from-dwaffles-threads-d47d52733de5af557bc79fd295e48076957c26c2-patch1" />
-		<PackageReference Include="DSharpPlus.CommandsNext" Version="4.1.1-nightly-eri-from-dwaffles-threads-d47d52733de5af557bc79fd295e48076957c26c2-patch1" />
+		<PackageReference Include="DSharpPlus" Version="4.2.2-nightly-eri-from-dwaffles-threads-1a58c1d9dede0f29dd7492350b5e40116c1c7602-patch3" />
+		<PackageReference Include="DSharpPlus.CommandsNext" Version="4.2.2-nightly-eri-from-dwaffles-threads-1a58c1d9dede0f29dd7492350b5e40116c1c7602-patch3" />
+		<PackageReference Include="IDoEverything.DSharpPlus.SlashCommands" Version="2.0.0.2-eri-patch3" />
     <PackageReference Include="ini" Version="1.0.7" />
     <PackageReference Include="Minio" Version="3.1.13" />
   </ItemGroup>
