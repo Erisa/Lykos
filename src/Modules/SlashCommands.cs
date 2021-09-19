@@ -58,6 +58,7 @@ namespace Lykos.Modules
 
     class SlashCommands : ApplicationCommandModule
     {
+        readonly string[] validExts = { "gif", "png", "jpg", "webp" };
         [SlashCommand("hug", "Hug someone!")]
         public async Task HugSlashCommand(InteractionContext ctx,
          [Option("user", "The user to hug")] DiscordUser target = default
@@ -86,6 +87,80 @@ namespace Lykos.Modules
             {
                 await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobPats} {target.Mention} was given a big headpat by {ctx.User.Mention}!");
             }
+        }
+
+        [SlashCommand("avatar", "Show the avatar of a user")]
+        public async Task AvatarSlashCommand(InteractionContext ctx,
+            [Option("user", "The person you want to see the avatar of")] DiscordUser target,
+            [Choice("default", "default")]
+            [Choice("jpg", "jpg")]
+            [Choice("png", "png")]
+            [Choice("gif", "gif")]
+            [Choice("webp", "webp")]
+            [Option("format", "The format of image you want to see.")] string format = "default"
+        )
+        {
+            string hash = target.AvatarHash;
+
+
+            if (format == "default" || format == "png or gif")
+            {
+                format = hash.StartsWith("a_") ? "gif" : "png";
+            }
+            else if (!validExts.Any(format.Contains))
+            {
+                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} You supplied an invalid format, " +
+                    $"either give none or one of the following: `gif`, `png`, `jpg`, `webp`");
+                return;
+            }
+            else if (format == "gif" && !hash.StartsWith("a_"))
+            {
+                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} The format of `gif` only applies to animated avatars.\n" +
+                    $"The user you are trying to lookup does not have an animated avatar.");
+                return;
+            }
+
+            string avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{hash}.{format}?size=4096";
+            DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
+            .WithColor(new DiscordColor(0xC63B68))
+            .WithTimestamp(DateTime.UtcNow)
+            .WithFooter(
+                $"Called by {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})",
+                ctx.User.AvatarUrl
+            )
+            .WithImageUrl(avatarUrl)
+            .WithAuthor(
+                $"Avatar for {target.Username} (Click to open in browser)",
+                avatarUrl
+            );
+
+            await ctx.RespondAsync(null, embed);
+        }
+
+        [ContextMenu(ApplicationCommandType.UserContextMenu, "Show Avatar")]
+        public async Task ContextAvatar(ContextMenuContext ctx)
+        {
+            var target = ctx.TargetUser;
+
+            string hash = target.AvatarHash;
+
+            var format = hash.StartsWith("a_") ? "gif" : "png";
+
+            string avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{hash}.{format}?size=4096";
+            DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
+            .WithColor(new DiscordColor(0xC63B68))
+            .WithTimestamp(DateTime.UtcNow)
+            .WithFooter(
+                $"Called by {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})",
+                ctx.User.AvatarUrl
+            )
+            .WithImageUrl(avatarUrl)
+            .WithAuthor(
+                $"Avatar for {target.Username} (Click to open in browser)",
+                avatarUrl
+            );
+
+            await ctx.RespondAsync(null, embed, ephemeral: true);
         }
 
         [ContextMenu(ApplicationCommandType.UserContextMenu, "lk hug")]
