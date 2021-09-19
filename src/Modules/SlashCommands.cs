@@ -91,7 +91,7 @@ namespace Lykos.Modules
         [ContextMenu(ApplicationCommandType.UserContextMenu, "lk hug")]
         public async Task ContextHug(ContextMenuContext ctx)
         {
-            await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobPats} {ctx.TargetUser.Mention} was given a tight hug by {ctx.User.Mention}!");
+            await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobHug} {ctx.TargetUser.Mention} was given a tight hug by {ctx.User.Mention}!");
         }
 
         [ContextMenu(ApplicationCommandType.UserContextMenu, "lk pat")]
