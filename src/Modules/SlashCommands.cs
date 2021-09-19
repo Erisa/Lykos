@@ -97,7 +97,7 @@ namespace Lykos.Modules
         [ContextMenu(ApplicationCommandType.UserContextMenu, "lk pat")]
         public async Task ContextPat(ContextMenuContext ctx)
         {
-            await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobPats} {ctx.TargetUser.Mention} was given a tight hug by {ctx.User.Mention}!");
+            await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobPats} {ctx.TargetUser.Mention} was given a big headpat by {ctx.User.Mention}!");
         }
     }
 }
