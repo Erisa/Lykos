@@ -125,25 +125,6 @@ namespace Lykos
                     }
                 }
 
-                // story 2
-                if (e.Channel.Id == 695636314959118376)
-                {
-                    System.Collections.Generic.IReadOnlyList<DSharpPlus.Entities.DiscordMessage> prevMsgs = await e.Channel.GetMessagesBeforeAsync(e.Message.Id, 1);
-                    DSharpPlus.Entities.DiscordMessage prevMsg = prevMsgs[0];
-                    DSharpPlus.Entities.DiscordChannel log = await client.GetChannelAsync(695636452804919297);
-                    if (e.Message.Content.Contains(" "))
-                    {
-                        await e.Message.DeleteAsync();
-                        await log.SendMessageAsync($"{e.Author.Mention}:\n>>> {e.Message.Content}");
-                    }
-                    else if (e.Message.Author.Id == prevMsg.Author.Id)
-                    {
-                        await e.Message.DeleteAsync();
-                        await log.SendMessageAsync($"(SAMEAUTHOR) {e.Author.Mention}:\n>>> {e.Message.Content}");
-                    }
-
-                }
-
                 // Prefix query handling
                 if
                 (
@@ -184,35 +165,11 @@ namespace Lykos
                     if (e.Message.Attachments.Count == 0 && !(e.Message.Content.Contains("http")))
                     {
                         await e.Message.DeleteAsync();
-                        DSharpPlus.Entities.DiscordChannel log = await client.GetChannelAsync(671183700448509962);
+                        DiscordChannel log = await client.GetChannelAsync(671183700448509962);
                         await log.SendMessageAsync($"[EDIT] {e.Author.Mention}:\n>>> {e.Message.Content}");
                     }
                 }
             };
-
-            // Leave event handling, for my servers
-            async Task GuildMemberRemoved(DiscordClient client, GuildMemberRemoveEventArgs e)
-            {
-                DSharpPlus.Entities.DiscordChannel channel = null;
-                // Erisa's Corner
-                if (e.Guild.Id == 228625269101953035)
-                {
-                    // #general-chat
-                    channel = await client.GetChannelAsync(751534914469363832);
-                }
-                // Project Evenfall
-                else if (e.Guild.Id == 535688189659316245)
-                {
-                    // #greetings
-                    channel = await client.GetChannelAsync(542497115583283220);
-                }
-
-                if (channel != null)
-                {
-                    await channel.SendMessageAsync($"**{e.Member.Username}** has left us 😔");
-                }
-            };
-
 
             async Task CommandsNextService_CommandErrored(CommandsNextExtension cnext, CommandErrorEventArgs e)
             {
@@ -300,7 +257,6 @@ namespace Lykos
             discord.Ready += OnReady;
             discord.MessageCreated += MessageCreated;
             discord.MessageUpdated += MessageUpdated;
-            discord.GuildMemberRemoved += GuildMemberRemoved;
             commands.CommandErrored += CommandsNextService_CommandErrored;
             discord.ThreadCreated += Discord_ThreadCreated;
             discord.ThreadUpdated += Discord_ThreadUpdated;

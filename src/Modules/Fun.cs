@@ -91,8 +91,6 @@ namespace Lykos.Modules
             await ctx.Channel.SendMessageAsync("<@461265486655520788>");
         }
 
-
-
         [Command("whenissarahsbirthday")]
         public async Task Whenissarahsbirthday(CommandContext ctx)
         {
@@ -119,21 +117,6 @@ namespace Lykos.Modules
             DSharpPlus.Entities.DiscordUser zeta = await ctx.Client.GetUserAsync(94129005791281152);
             await ctx.Channel.SendMessageAsync($"Todays Zeta of the day is **{zeta.Username}#{zeta.Discriminator}**!");
         }
-
-        [Command("makura")]
-        public async Task Makura(CommandContext ctx)
-        {
-            await ctx.Channel.SendMessageAsync("makura gay lol");
-        }
-
-        [Command("chi")]
-        [Aliases("hotd")]
-        public async Task Chi(CommandContext ctx)
-        {
-            DSharpPlus.Entities.DiscordUser chi = await ctx.Client.GetUserAsync(511966736744972309);
-            await ctx.Channel.SendMessageAsync($"Todays Hibiki of the day is **{chi.Username}#{chi.Discriminator}**!");
-        }
-
 
     }
 }
