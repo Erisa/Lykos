@@ -95,10 +95,12 @@ namespace Lykos.Modules
             [Choice("png", "png")]
             [Choice("gif", "gif")]
             [Choice("webp", "webp")]
-            [Option("format", "The format of image you want to see.")] string format = "default"
+            [Option("format", "The format of image you want to see.")] string format = "default",
+            [Option("showGuildAvatar", "Whether to show the Guild avatar. Default is true.")] bool showGuildAvatar = true
         )
         {
-            string hash = target.AvatarHash;
+            var member = await ctx.Guild.GetMemberAsync(target.Id);
+            var hash = member.GuildAvatarHash;
 
 
             if (format == "default" || format == "png or gif")
@@ -118,7 +120,12 @@ namespace Lykos.Modules
                 return;
             }
 
-            string avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{hash}.{format}?size=4096";
+            string avatarUrl;
+            if (member.GuildAvatarHash != target.AvatarHash && showGuildAvatar)
+                avatarUrl = $"https://cdn.discordapp.com/guilds/{ctx.Guild.Id}/users/{target.Id}/avatars/{hash}.{format}?size=4096";
+            else
+                avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{member.AvatarHash}.{format}?size=4096";
+
             DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
             .WithColor(new DiscordColor(0xC63B68))
             .WithTimestamp(DateTime.UtcNow)
@@ -139,12 +146,18 @@ namespace Lykos.Modules
         public async Task ContextAvatar(ContextMenuContext ctx)
         {
             var target = ctx.TargetUser;
+            var member = await ctx.Guild.GetMemberAsync(target.Id);
 
-            string hash = target.AvatarHash;
+            string hash = member.GuildAvatarHash;
 
             var format = hash.StartsWith("a_") ? "gif" : "png";
 
-            string avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{hash}.{format}?size=4096";
+            string avatarUrl;
+            if (member.GuildAvatarHash != target.AvatarHash)
+                avatarUrl = $"https://cdn.discordapp.com/guilds/{ctx.Guild.Id}/users/{target.Id}/avatars/{hash}.{format}?size=4096";
+            else
+                avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{member.AvatarHash}.{format}?size=4096";
+
             DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
             .WithColor(new DiscordColor(0xC63B68))
             .WithTimestamp(DateTime.UtcNow)

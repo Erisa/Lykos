@@ -66,13 +66,12 @@ namespace Lykos.Modules
 
         [Command("avatar"), Aliases("avy")]
         [Description("Shows the avatar of a user.")]
-        public async Task Avatar(CommandContext ctx, [Description("The user whose avatar will be shown.")] DiscordMember target = null, [Description("The format of the resulting image (jpg, png, gif, webp).")] string format = "png or gif")
+        public async Task Avatar(CommandContext ctx, [Description("The user whose avatar will be shown.")] DiscordMember target = null, [Description("The format of the resulting image (jpg, png, gif, webp).")] string format = "png or gif", [Description("Whether to show the guild avatar.")] bool showGuildAvatar = true)
         {
             if (target == null)
                 target = ctx.Member;
 
-            string hash = target.AvatarHash;
-
+            string hash = target.GuildAvatarHash;
 
             if (format == null || format == "png or gif")
             {
@@ -91,7 +90,12 @@ namespace Lykos.Modules
                 return;
             }
 
-            string avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{hash}.{format}?size=4096";
+            string avatarUrl;
+            if (target.GuildAvatarHash != target.AvatarHash && showGuildAvatar)
+                avatarUrl = $"https://cdn.discordapp.com/guilds/{ctx.Guild.Id}/users/{target.Id}/avatars/{hash}.{format}?size=4096";
+            else
+                avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{target.AvatarHash}.{format}?size=4096";
+
             DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
             .WithColor(new DiscordColor(0xC63B68))
             .WithTimestamp(DateTime.UtcNow)
