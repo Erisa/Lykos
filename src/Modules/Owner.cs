@@ -189,7 +189,12 @@ namespace Lykos.Modules
                         $"🔲 - Waiting to purge Cloudflare cache.");
                     objectName = $"avatars/{name}.png";
 
-                    string avatarUrl = $"https://cdn.discordapp.com/avatars/{ctx.User.Id}/{ctx.User.AvatarHash}.png?size=4096";
+                    string avatarUrl;
+                    if (ctx.Member.GuildAvatarHash != ctx.Member.AvatarHash)
+                        avatarUrl = $"https://cdn.discordapp.com/guilds/{ctx.Guild.Id}/users/{ctx.Member.Id}/avatars/{ctx.Member.GuildAvatarHash}.png?size=4096";
+                    else
+                        avatarUrl = $"https://cdn.discordapp.com/avatars/{ctx.Member.Id}/{ctx.Member.AvatarHash}.png?size=4096";
+
                     MemoryStream memStream;
                     using (WebClient client = new())
                     {
