@@ -56,11 +56,11 @@ namespace Lykos.Modules
 
             if (groups[1].Value == "a")
             {
-                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention}, Here's the emoji link you requested:\nhttps://cdn.discordapp.com/emojis/{groups[2].Value}.gif");
+                await ctx.RespondAsync($"Here's the emoji link you requested:\nhttps://cdn.discordapp.com/emojis/{groups[2].Value}.gif");
             }
             else
             {
-                await ctx.Channel.SendMessageAsync($"{ctx.User.Mention}, Here's the emoji link you requested:\nhttps://cdn.discordapp.com/emojis/{groups[2].Value}.png");
+                await ctx.RespondAsync($"Here's the emoji link you requested:\nhttps://cdn.discordapp.com/emojis/{groups[2].Value}.png");
             }
         }
 
@@ -117,7 +117,7 @@ namespace Lykos.Modules
         [Aliases("prefixes", "px", "h")]
         public async Task Prefix(CommandContext ctx)
         {
-            await ctx.Channel.SendMessageAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(Program.cfgjson.Prefixes)}```");
+            await ctx.RespondAsync($"My prefixes are: ```json\n{JsonConvert.SerializeObject(Program.cfgjson.Prefixes)}```");
         }
 
 
@@ -125,7 +125,7 @@ namespace Lykos.Modules
         [Description("Pong? This command lets you know whether I'm working well.")]
         public async Task Ping(CommandContext ctx)
         {
-            DSharpPlus.Entities.DiscordMessage return_message = await ctx.Message.RespondAsync("Pinging...");
+            DSharpPlus.Entities.DiscordMessage return_message = await ctx.RespondAsync("Pinging...");
             ulong ping = (return_message.Id - ctx.Message.Id) >> 22;
             Char[] choices = new Char[] { 'a', 'e', 'o', 'u', 'i', 'y' };
             Char letter = choices[Program.rnd.Next(0, choices.Length)];
@@ -144,7 +144,7 @@ namespace Lykos.Modules
                 DiscordUser user = await ctx.Client.GetUserAsync(id);
                 resp += $"- **{user.Username}#{user.Discriminator}** (`{user.Id}`)\n";
             }
-            await ctx.Channel.SendMessageAsync(resp);
+            await ctx.RespondAsync(resp);
         }
 
     }
