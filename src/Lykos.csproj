@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>Lykos</RootNamespace>
     <RestoreAdditionalProjectSources>
       https://nuget.emzi0767.com/api/v3/index.json
@@ -18,11 +18,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+		<PackageReference Include="Abyssal.HumanDateParser" Version="2.0.0-20191113.1" />
 		<PackageReference Include="DSharpPlus" Version="4.2.0-nightly-01022" />
 		<PackageReference Include="DSharpPlus.CommandsNext" Version="4.2.0-nightly-01022" />
 		<PackageReference Include="DSharpPlus.SlashCommands" Version="4.2.0-nightly-01022" />
     <PackageReference Include="ini" Version="1.0.7" />
     <PackageReference Include="Minio" Version="3.1.13" />
+    <PackageReference Include="StackExchange.Redis" Version="2.2.79" />
   </ItemGroup>
 
   <ItemGroup>
