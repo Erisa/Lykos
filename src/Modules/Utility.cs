@@ -4,6 +4,7 @@ using DSharpPlus.Entities;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -145,6 +146,186 @@ namespace Lykos.Modules
                 resp += $"- **{user.Username}#{user.Discriminator}** (`{user.Id}`)\n";
             }
             await ctx.RespondAsync(resp);
+        }
+
+        public class Reminder
+        {
+            [JsonProperty("userID")]
+            public ulong UserID { get; set; }
+
+            [JsonProperty("channelID")]
+            public ulong ChannelID { get; set; }
+
+            [JsonProperty("messageID")]
+            public ulong MessageID { get; set; }
+
+            [JsonProperty("messageLink")]
+            public string MessageLink { get; set; }
+
+            [JsonProperty("reminderText")]
+            public string ReminderText { get; set; }
+
+            [JsonProperty("reminderTime")]
+            public DateTime ReminderTime { get; set; }
+
+            [JsonProperty("originalTime")]
+            public DateTime OriginalTime { get; set; }
+        }
+
+        [Command("remindme")]
+        [Aliases("reminder", "rember", "wemember", "remember")]
+        public async Task RemindMe(CommandContext ctx, string timetoParse, [RemainingText] string reminder)
+        {
+            DateTime t = HumanDateParser.HumanDateParser.Parse(timetoParse);
+            if (t <= DateTime.Now)
+            {
+                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} Time can't be in the past!");
+                return;
+            }
+#if !DEBUG
+            else if (t < (DateTime.Now + TimeSpan.FromSeconds(59)))
+            {
+                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Error} Time must be at least a minute in the future!");
+                return;
+            }
+#endif
+            string guildId;
+
+            if (ctx.Channel.IsPrivate)
+                guildId = "@me";
+            else
+                guildId = ctx.Guild.Id.ToString();
+
+            var reminderObject = new Reminder()
+            {
+                UserID = ctx.User.Id,
+                ChannelID = ctx.Channel.Id,
+                MessageID = ctx.Message.Id,
+                MessageLink = $"https://discord.com/channels/{guildId}/{ctx.Channel.Id}/{ctx.Message.Id}",
+                ReminderText = reminder,
+                ReminderTime = t,
+                OriginalTime = DateTime.Now
+            };
+
+            await Program.db.ListRightPushAsync("reminders", JsonConvert.SerializeObject(reminderObject));
+            await ctx.RespondAsync($"{Program.cfgjson.Emoji.Check} I'll try my best to remind you about that on <t:{ToUnixTimestamp(t)}:f> (<t:{ToUnixTimestamp(t)}:R>)"); // (In roughly **{Warnings.TimeToPrettyFormat(t.Subtract(ctx.Message.Timestamp.DateTime), false)}**)");
+        }
+
+        public static long ToUnixTimestamp(DateTime? dateTime)
+        {
+            return ((DateTimeOffset)dateTime).ToUnixTimeSeconds();
+        }
+
+        public static async Task<bool> CheckRemindersAsync()
+        {
+            bool success = false;
+            foreach (var reminder in Program.db.ListRange("reminders", 0, -1))
+            {
+                bool DmFallback = false;
+                var reminderObject = JsonConvert.DeserializeObject<Reminder>(reminder);
+                if (reminderObject.ReminderTime <= DateTime.Now)
+                {
+                    var user = await Program.discord.GetUserAsync(reminderObject.UserID);
+                    DiscordChannel channel = null;
+                    try
+                    {
+                        channel = await Program.discord.GetChannelAsync(reminderObject.ChannelID);
+                    }
+                    catch
+                    {
+                        // channel likely doesnt exist
+                    }
+                    if (channel == null)
+                    {
+                        var member = await channel.Guild.GetMemberAsync(user.Id);
+                        channel = await member.CreateDmChannelAsync();
+                        DmFallback = true;
+                    }
+
+                    await Program.db.ListRemoveAsync("reminders", reminder);
+                    success = true;
+
+                    var embed = new DiscordEmbedBuilder()
+                    .WithDescription(reminderObject.ReminderText)
+                    .WithColor(new DiscordColor(0xD084))
+                    .WithFooter(
+                        "Reminder was set",
+                        null
+                    )
+                    .WithTimestamp(reminderObject.OriginalTime)
+                    .WithAuthor(
+                        $"Reminder from {TimeToPrettyFormat(DateTime.Now.Subtract(reminderObject.OriginalTime), true)}",
+                        null,
+                        user.AvatarUrl
+                    )
+                    .AddField("Context", $"[`Jump to context`]({reminderObject.MessageLink})", true);
+
+                    var msg = new DiscordMessageBuilder()
+                        .WithEmbed(embed)
+                        .WithContent($"<@!{reminderObject.UserID}>, you asked to be reminded of something:");
+
+                    if (DmFallback)
+                    {
+                        msg.WithContent("You asked to be reminded of something:");
+                        await channel.SendMessageAsync(msg);
+                    }
+                    else if (reminderObject.MessageID != default)
+                    {
+                        try
+                        {
+                            msg.WithReply(reminderObject.MessageID, mention: true, failOnInvalidReply: true)
+                                .WithContent("You asked to be reminded of something:");
+                            await channel.SendMessageAsync(msg);
+                        }
+                        catch (DSharpPlus.Exceptions.BadRequestException)
+                        {
+                            msg.WithContent($"<@!{reminderObject.UserID}>, you asked to be reminded of something:");
+                            msg.WithReply(null, false, false);
+                            await channel.SendMessageAsync(msg);
+                        }
+                    }
+                    else
+                    {
+                        await channel.SendMessageAsync(msg);
+                    }
+                }
+
+            }
+            return success;
+        }
+
+        public static string TimeToPrettyFormat(TimeSpan span, bool ago = true)
+        {
+
+            if (span == TimeSpan.Zero) return "0 seconds";
+
+            if (span.Days > 3649)
+                return "a long time";
+
+            var sb = new StringBuilder();
+            if (span.Days > 365)
+            {
+                int years = (int)(span.Days / 365);
+                sb.AppendFormat("{0} year{1}", years, years > 1 ? "s" : String.Empty);
+                int remDays = (int)(span.Days - (365 * years));
+                int months = remDays / 30;
+                if (months > 0)
+                    sb.AppendFormat(", {0} month{1}", months, months > 1 ? "s" : String.Empty);
+                // sb.AppendFormat(" ago");
+            }
+            else if (span.Days > 0)
+                sb.AppendFormat("{0} day{1}", span.Days, span.Days > 1 ? "s" : String.Empty);
+            else if (span.Hours > 0)
+                sb.AppendFormat("{0} hour{1}", span.Hours, span.Hours > 1 ? "s" : String.Empty);
+            else if (span.Minutes > 0)
+                sb.AppendFormat("{0} minute{1}", span.Minutes, span.Minutes > 1 ? "s" : String.Empty);
+            else
+                sb.AppendFormat("{0} second{1}", span.Seconds, (span.Seconds > 1 || span.Seconds == 0) ? "s" : String.Empty);
+
+            string output = sb.ToString();
+            if (ago)
+                output += " ago";
+            return output;
         }
 
     }

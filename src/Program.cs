@@ -5,6 +5,7 @@ using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.SlashCommands;
+using StackExchange.Redis;
 using Lykos.Modules;
 using Microsoft.Extensions.Logging;
 using Minio;
@@ -21,10 +22,12 @@ namespace Lykos
 {
     class Program
     {
-        static DiscordClient discord;
+        public static DiscordClient discord;
         static CommandsNextExtension commands;
         public static Random rnd = new();
         public static ConfigJson cfgjson;
+        public static ConnectionMultiplexer redis;
+        public static IDatabase db;
         public static HasteBinClient hasteUploader;
         public static MinioClient minio;
         internal static EventId EventID { get; } = new EventId(1000, "Bot");
@@ -36,6 +39,12 @@ namespace Lykos
 
         static async Task MainAsync()
         {
+            // improve on later
+            string redisHost = "redis";
+            redis = ConnectionMultiplexer.Connect($"{redisHost}");
+
+            db = redis.GetDatabase();
+
             string configFile = "config.json";
             string json = "";
 
@@ -272,7 +281,12 @@ namespace Lykos
             slash.RegisterCommands<SlashCommands>(228625269101953035);
 
             await discord.ConnectAsync();
-            await Task.Delay(-1);
+
+            while (true)
+            {
+                await Task.Delay(10000);
+                Utility.CheckRemindersAsync();
+            }
         }
     }
 

@@ -10,3 +10,9 @@ services:
         #Windows
         #source: ./config
         #target: C:/app/config
+  redis:
+    image: redis:alpiine
+    volumes:
+      - type: bind
+        source: ./data
+        target: /data
