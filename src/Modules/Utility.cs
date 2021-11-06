@@ -185,7 +185,7 @@ namespace Lykos.Modules
 #if !DEBUG
             else if (t < (DateTime.Now + TimeSpan.FromSeconds(59)))
             {
-                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Error} Time must be at least a minute in the future!");
+                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} Time must be at least a minute in the future!");
                 return;
             }
 #endif
