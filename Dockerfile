@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0.100-rc.2 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:6.0.100 AS build-env
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers
@@ -10,7 +10,7 @@ COPY src ./
 RUN dotnet build -c Release -o out
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/runtime:6.0.0-rc.2-alpine3.14
+FROM mcr.microsoft.com/dotnet/runtime:6.0.0-alpine3.14
 WORKDIR /app
 COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "Lykos.dll"]
