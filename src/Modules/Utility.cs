@@ -266,7 +266,7 @@ namespace Lykos.Modules
                 {
                     await Program.db.ListRightPushAsync($"colourRoles-{ctx.Guild.Id}", role.Id);
                     await ctx.RespondAsync($"Okay, I added role `{role.Id}` (`{role.Name}`) to the colourme list.\n" +
-                        $"Anyone with that role as their top coloured role can use a command like `colourme #ffff` to change their colour, hopefully.");
+                        $"Anyone with that role as their top coloured role can use a command like `colourme #cf9ace` or `colourme random` to change their colour, hopefully.");
                 }
             }
 
