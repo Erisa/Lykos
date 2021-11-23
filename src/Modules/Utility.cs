@@ -20,7 +20,6 @@ namespace Lykos.Modules
         [Description("Steals the first custom emoji in a given message. Mostly for mobile users!")]
         public async Task Bigmoji(CommandContext ctx, [Description("A message ID containing the custom emoji you want to steal, or the emoji itself.")] string messageId)
         {
-
             DiscordMessage msg = null;
             try
             {
@@ -210,6 +209,116 @@ namespace Lykos.Modules
             await Program.db.ListRightPushAsync("reminders", JsonConvert.SerializeObject(reminderObject));
             await ctx.RespondAsync($"{Program.cfgjson.Emoji.Check} I'll try my best to remind you about that on <t:{ToUnixTimestamp(t)}:f> (<t:{ToUnixTimestamp(t)}:R>)"); // (In roughly **{Warnings.TimeToPrettyFormat(t.Subtract(ctx.Message.Timestamp.DateTime), false)}**)");
         }
+
+        [Group("colourme")]
+        [Aliases("colorme", "color", "colour")]
+        class ColourmeCommands : BaseCommandModule
+        {
+            [GroupCommand]
+            [Aliases("set")]
+            [Description("Sets a role colour you specify, or a random one.")]
+            public async Task ColourmeSet(CommandContext ctx, string colourString)
+            {
+                DiscordColor newColour;
+                var pickedRole = ctx.Member.Roles.OrderByDescending(xr => xr.Position).FirstOrDefault(xr => xr.Color.Value != 0);
+                var configuredRoleIDs = Program.db.ListRange($"colourRoles-{ctx.Guild.Id}", 0, -1);
+
+                if (pickedRole == null)
+                {
+                    await ctx.RespondAsync(":x: You have no roles with colours! So this command won't work.");
+                }else if (configuredRoleIDs.Contains(pickedRole.Id))
+                {
+                    if (colourString == "random")
+                    {
+                        newColour = new DiscordColor(Program.rnd.Next(1, 16777215));
+                        await pickedRole.ModifyAsync(color: newColour);
+                        await ctx.RespondAsync($"Okay I changed the colour of the role `{pickedRole.Name}` to a completely random colour.\n" +
+                            $"Feel free to try again if it's rubbish.");
+                    } else
+                    {
+                        newColour = new DiscordColor(colourString);
+                        if (newColour.Value == 0)
+                        {
+                            await ctx.RespondAsync(":x: You can't have no colour, sorry. It breaks things.");
+                        } else
+                        {
+                            await pickedRole.ModifyAsync(color: newColour);
+                            await ctx.RespondAsync($"Okay I changed the colour of the role `{pickedRole.Name}` to `{colourString}`");
+                        }
+                    }
+                } else
+                {
+                    await ctx.RespondAsync($":x: Your highest colour role, `{pickedRole.Name}`, is not configured for colourme.");
+                }
+            }
+
+            [Command("add")]
+            [RequireUserPermissions(DSharpPlus.Permissions.ManageRoles)]
+            public async Task ColourmeAdd(CommandContext ctx, DiscordRole role)
+            {
+                var configuredRoleIDs = Program.db.ListRange($"colourRoles-{ctx.Guild.Id}", 0, -1);
+                var foundID = configuredRoleIDs.FirstOrDefault(x => x == role.Id);
+
+                if (foundID != default)
+                {
+                    await ctx.RespondAsync(":x: Already added that role.");
+                } else
+                {
+                    await Program.db.ListRightPushAsync($"colourRoles-{ctx.Guild.Id}", role.Id);
+                    await ctx.RespondAsync($"Okay, I added role `{role.Id}` (`{role.Name}`) to the colourme list.\n" +
+                        $"Anyone with that role as their top coloured role can use a command like `colourme #ffff` to change their colour, hopefully.");
+                }
+            }
+
+            [Command("remove")]
+            [RequireUserPermissions(DSharpPlus.Permissions.ManageRoles)]
+            public async Task ColourmeRemove(CommandContext ctx, DiscordRole role)
+            {
+                var configuredRoleIDs = Program.db.ListRange($"colourRoles-{ctx.Guild.Id}", 0, -1);
+                var foundID = configuredRoleIDs.FirstOrDefault(x => x == role.Id);
+
+                if (foundID == default)
+                {
+                    await ctx.RespondAsync(":x: That role wasn't added, so I can't remove it.");
+                }
+                else
+                {
+                    await Program.db.ListRemoveAsync($"colourRoles-{ctx.Guild.Id}", foundID);
+                    await ctx.RespondAsync($"Okay, I removed `{role.Id}` (`{role.Name}`) from the colourme list.");
+                }
+            }
+
+            [Command("list")]
+            [RequireUserPermissions(DSharpPlus.Permissions.ManageRoles)]
+            public async Task ColourmeList(CommandContext ctx)
+            {
+                var configuredRoleIDs = Program.db.ListRange($"colourRoles-{ctx.Guild.Id}", 0, -1);
+
+                string dsc = "";
+
+                foreach(var id in configuredRoleIDs)
+                {
+                    DiscordRole role;
+                    try
+                    {
+                        role = ctx.Guild.GetRole((ulong)id);
+                    } catch
+                    {
+                        continue;
+                    }
+                    
+                    dsc += $" {role.Mention}";
+                }
+
+                var embed = new DiscordEmbedBuilder()
+                    .WithTitle("List of enabled roles")
+                    .WithDescription(dsc);
+
+                await ctx.RespondAsync(embed);
+            }
+        }
+
+
 
         public static long ToUnixTimestamp(DateTime? dateTime)
         {

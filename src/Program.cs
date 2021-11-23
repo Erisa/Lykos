@@ -40,7 +40,7 @@ namespace Lykos
         static async Task MainAsync()
         {
             // improve on later
-            string redisHost = "redis";
+            string redisHost = "127.0.0.1";
             redis = ConnectionMultiplexer.Connect($"{redisHost}");
 
             db = redis.GetDatabase();
