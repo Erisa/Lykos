@@ -299,14 +299,10 @@ namespace Lykos.Modules
                 foreach(var id in configuredRoleIDs)
                 {
                     DiscordRole role;
-                    try
-                    {
-                        role = ctx.Guild.GetRole((ulong)id);
-                    } catch
-                    {
+                    role = ctx.Guild.GetRole((ulong)id);
+                    if (role is null)
                         continue;
-                    }
-                    
+
                     dsc += $" {role.Mention}";
                 }
 
