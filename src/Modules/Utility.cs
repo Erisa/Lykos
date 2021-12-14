@@ -172,7 +172,7 @@ namespace Lykos.Modules
         }
 
         [Command("remindme")]
-        [Aliases("reminder", "rember", "wemember", "remember")]
+        [Aliases("reminder", "rember", "wemember", "remember", "remind")]
         public async Task RemindMe(CommandContext ctx, string timetoParse, [RemainingText] string reminder)
         {
             DateTime t = HumanDateParser.HumanDateParser.Parse(timetoParse);
