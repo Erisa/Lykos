@@ -99,32 +99,16 @@ namespace Lykos.Modules
             [Option("showGuildAvatar", "Whether to show the Guild avatar. Default is true.")] bool showGuildAvatar = true
         )
         {
-            var member = await ctx.Guild.GetMemberAsync(target.Id);
-            var hash = member.GuildAvatarHash;
+            string avatarUrl = "";
 
-
-            if (format == "default" || format == "png or gif")
+            try
             {
-                format = hash.StartsWith("a_") ? "gif" : "png";
-            }
-            else if (!validExts.Any(format.Contains))
+                avatarUrl = await Helpers.UserOrMemberAvatarURL(target, ctx.Guild, format);
+            } catch (ArgumentException e)
             {
-                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} You supplied an invalid format, " +
-                    $"either give none or one of the following: `gif`, `png`, `jpg`, `webp`");
+                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} {e.Message}", ephemeral: true);
                 return;
             }
-            else if (format == "gif" && !hash.StartsWith("a_"))
-            {
-                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} The format of `gif` only applies to animated avatars.\n" +
-                    $"The user you are trying to lookup does not have an animated avatar.");
-                return;
-            }
-
-            string avatarUrl;
-            if (member.GuildAvatarHash != target.AvatarHash && showGuildAvatar)
-                avatarUrl = $"https://cdn.discordapp.com/guilds/{ctx.Guild.Id}/users/{target.Id}/avatars/{hash}.{format}?size=4096";
-            else
-                avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{member.AvatarHash}.{format}?size=4096";
 
             DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
             .WithColor(new DiscordColor(0xC63B68))
@@ -145,18 +129,17 @@ namespace Lykos.Modules
         [ContextMenu(ApplicationCommandType.UserContextMenu, "Show Avatar")]
         public async Task ContextAvatar(ContextMenuContext ctx)
         {
-            var target = ctx.TargetUser;
-            var member = await ctx.Guild.GetMemberAsync(target.Id);
+            string avatarUrl = "";
 
-            string hash = member.GuildAvatarHash;
-
-            var format = hash.StartsWith("a_") ? "gif" : "png";
-
-            string avatarUrl;
-            if (member.GuildAvatarHash != target.AvatarHash)
-                avatarUrl = $"https://cdn.discordapp.com/guilds/{ctx.Guild.Id}/users/{target.Id}/avatars/{hash}.{format}?size=4096";
-            else
-                avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{member.AvatarHash}.{format}?size=4096";
+            try
+            {
+                avatarUrl = await Helpers.UserOrMemberAvatarURL(ctx.TargetUser, ctx.Guild);
+            }
+            catch (ArgumentException e)
+            {
+                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} {e.Message}", ephemeral: true);
+                return;
+            }
 
             DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
             .WithColor(new DiscordColor(0xC63B68))
@@ -167,7 +150,7 @@ namespace Lykos.Modules
             )
             .WithImageUrl(avatarUrl)
             .WithAuthor(
-                $"Avatar for {target.Username} (Click to open in browser)",
+                $"Avatar for {ctx.TargetUser.Username} (Click to open in browser)",
                 avatarUrl
             );
 

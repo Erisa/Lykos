@@ -130,7 +130,7 @@ namespace Lykos
                         .WithAuthor(
                             e.Author.Username,
                             null,
-                            $"https://cdn.discordapp.com/avatars/{e.Author.Id}/{e.Author.AvatarHash}.png?size=128"
+                            await Helpers.UserOrMemberAvatarURL(e.Author, e.Guild, "png", 128)
                         )
                         ;
 
