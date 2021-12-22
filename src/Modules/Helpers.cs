@@ -117,6 +117,9 @@ namespace Lykos.Modules
         public static string MemberAvatarURL(DiscordMember member, string format = "default", int size = 4096)
         {
             var hash = member.GuildAvatarHash;
+            if (hash == null)
+                return member.DefaultAvatarUrl;
+
             if (format == "default" || format == "png or gif")
             {
                 format = hash.StartsWith("a_") ? "gif" : "png";
@@ -152,6 +155,9 @@ namespace Lykos.Modules
             } catch (DSharpPlus.Exceptions.NotFoundException)
             {
                 string hash = user.AvatarHash;
+
+                if (hash == null)
+                    return user.DefaultAvatarUrl;
 
                 if (format == "default" || format == "png or gif")
                 {
