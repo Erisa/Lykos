@@ -314,7 +314,13 @@ namespace Lykos.Modules
             }
         }
 
+        [Command("choose")]
+        public async Task ChooseCommand(CommandContext ctx, params string[] choices)
+        {
+            var choice = choices[Program.rnd.Next(choices.Count())];
 
+            await ctx.RespondAsync($"I choose **{choice}**!");
+        }
 
         public static long ToUnixTimestamp(DateTime? dateTime)
         {
