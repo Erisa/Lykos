@@ -22,6 +22,8 @@ namespace Lykos.Modules
             if (embed != null) response.AddEmbed(embed);
             if (components.Length != 0) response.AddComponents(components);
 
+            response.AddMentions(Mentions.All);
+
             response.AsEphemeral(ephemeral);
 
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, response);
