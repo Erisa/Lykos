@@ -274,7 +274,6 @@ namespace Lykos
             discord.ThreadMemberUpdated += Discord_ThreadMemberUpdated;
             discord.ThreadMembersUpdated += Discord_ThreadMembersUpdated;
 
-
             var slash = discord.UseSlashCommands();
 
             slash.RegisterCommands<SlashCommands>(438781053675634713);
