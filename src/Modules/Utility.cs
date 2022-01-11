@@ -71,30 +71,11 @@ namespace Lykos.Modules
             if (target == null)
                 target = ctx.Member;
 
-            string hash = target.GuildAvatarHash;
-
-            if (format == null || format == "png or gif")
-            {
-                format = hash.StartsWith("a_") ? "gif" : "png";
-            }
-            else if (!validExts.Any(format.Contains))
-            {
-                await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.Xmark} You supplied an invalid format, " +
-                    $"either give none or one of the following: `gif`, `png`, `jpg`, `webp`");
-                return;
-            }
-            else if (format == "gif" && !hash.StartsWith("a_"))
-            {
-                await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.Xmark} The format of `gif` only applies to animated avatars.\n" +
-                    $"The user you are trying to lookup does not have an animated avatar.");
-                return;
-            }
-
             string avatarUrl;
-            if (target.GuildAvatarHash != target.AvatarHash && showGuildAvatar)
-                avatarUrl = $"https://cdn.discordapp.com/guilds/{ctx.Guild.Id}/users/{target.Id}/avatars/{hash}.{format}?size=4096";
+            if (showGuildAvatar)
+                avatarUrl = await Helpers.UserOrMemberAvatarURL(target, ctx.Guild, format);
             else
-                avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{target.AvatarHash}.{format}?size=4096";
+                avatarUrl = Helpers.UserAvatarURL(target, format, 4096);
 
             DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
             .WithColor(new DiscordColor(0xC63B68))
@@ -109,7 +90,7 @@ namespace Lykos.Modules
                 avatarUrl
             );
 
-            await ctx.Channel.SendMessageAsync(null, embed);
+            await ctx.RespondAsync(null, embed);
         }
 
         [Command("prefix")]

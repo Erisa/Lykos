@@ -159,24 +159,29 @@ namespace Lykos.Modules
                 return MemberAvatarURL(await guild.GetMemberAsync(user.Id), format);
             } catch (DSharpPlus.Exceptions.NotFoundException)
             {
-                string hash = user.AvatarHash;
-
-                if (hash == null)
-                    return user.DefaultAvatarUrl;
-
-                if (format == "default" || format == "png or gif")
-                {
-                    format = hash.StartsWith("a_") ? "gif" : "png";
-                }
-                else if (format == "gif" && !hash.StartsWith("a_"))
-                {
-                    throw new ArgumentException("The format of `gif` only applies to animated avatars.\n" +
-                        "The user you are trying to lookup does not have an animated avatar.");
-                }
-
-                return $"https://cdn.discordapp.com/avatars/{user.Id}/{user.AvatarHash}.{format}?size=4096";
+                return UserAvatarURL(user, format, size);
             }
 
+        }
+
+        public static string UserAvatarURL(DiscordUser user, string format = "default", int size = 4096)
+        {
+            string hash = user.AvatarHash;
+
+            if (hash == null)
+                return user.DefaultAvatarUrl;
+
+            if (format == "default" || format == "png or gif")
+            {
+                format = hash.StartsWith("a_") ? "gif" : "png";
+            }
+            else if (format == "gif" && !hash.StartsWith("a_"))
+            {
+                throw new ArgumentException("The format of `gif` only applies to animated avatars.\n" +
+                    "The user you are trying to lookup does not have an animated avatar.");
+            }
+
+            return $"https://cdn.discordapp.com/avatars/{user.Id}/{user.AvatarHash}.{format}?size=4096";
         }
 
     }

@@ -190,14 +190,6 @@ namespace Lykos
                     return;
 
                 CommandContext ctx = e.Context;
-                // This is a fairly ugly workaround but, it does appear to be stable for this command at least.
-                if (e.Command != null && e.Command.Name == "avatar" && e.Exception is System.ArgumentException)
-                {
-                    await ctx.Channel.SendMessageAsync($"{Program.cfgjson.Emoji.Xmark} User not found! " +
-                        $"Only mentions, IDs and Usernames are accepted.\n" +
-                        $"Note: It is not needed to specify `byid`, simply use the ID directly.");
-                }
-
                 e.Context.Client.Logger.LogError(EventID, e.Exception, "Exception occurred during {0}'s invocation of '{1}'", e.Context.User.Username, e.Context.Command.QualifiedName);
 
                 var exs = new List<Exception>();
@@ -223,9 +215,13 @@ namespace Lykos
                     };
                     embed.WithFooter(discord.CurrentUser.Username, discord.CurrentUser.AvatarUrl)
                         .AddField("Message", ex.Message);
-                    if (e.Exception.GetType().ToString() == "System.ArgumentException")
-                        embed.AddField("Note", "This usually means that you used the command incorrectly.\n" +
-                            "Please double-check how to use this command.");
+                    if (e.Command != null && e.Command.Name == "avatar" && e.Exception is System.ArgumentException
+                        && ex.Message != "The format of `gif` only applies to animated avatars.\nThe user you are trying to lookup does not have an animated avatar.")
+                    {
+                        embed.AddField("Hint", $"This might mean the user is not found.\n" +
+                            $"Only mentions, IDs and Usernames are accepted.\n" +
+                            $"Note: It is not needed to specify `byid`, simply use the ID directly.");
+                    }
                     await e.Context.RespondAsync(embed: embed.Build()).ConfigureAwait(false);
                 }
             }
