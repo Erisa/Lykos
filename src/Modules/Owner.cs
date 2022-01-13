@@ -265,49 +265,95 @@ namespace Lykos.Modules
                 }
             }
 
-            [Command("link")]
-            public async Task Link(CommandContext ctx, string key, string url)
+            [Group("link")]
+            partial class LinkCmds : BaseCommandModule
             {
-                using HttpClient httpClient = new()
+                [GroupCommand]
+                public async Task Link(CommandContext ctx, string key, string url)
                 {
-                    BaseAddress = new Uri(Program.cfgjson.WorkerLinks.BaseUrl)
-                };
-
-                HttpRequestMessage request;
-
-                if (key == "null" || key == "random" || key == "gen")
-                {
-                    request = new HttpRequestMessage(HttpMethod.Post, "") { };
-                }
-                else
-                {
-                    request = new HttpRequestMessage(HttpMethod.Put, key) { };
-                }
-
-
-                request.Headers.Add("Authorization", Program.cfgjson.WorkerLinks.Secret);
-                request.Headers.Add("URL", url);
-
-                HttpResponseMessage response = await httpClient.SendAsync(request);
-                int httpStatusCode = (int)response.StatusCode;
-                string httpStatus = response.StatusCode.ToString();
-                string responseText = await response.Content.ReadAsStringAsync();
-                if (responseText.Length > 1940)
-                {
-                    HasteBinResult hasteURL = await Program.hasteUploader.Post(responseText);
-                    if (hasteURL.IsSuccess)
+                    using HttpClient httpClient = new()
                     {
-                        // responseText = hasteURL.FullUrl;
-                        await ctx.Channel.SendMessageAsync($"Worker responded with code: `{httpStatusCode}` (`{httpStatus}`)\n{hasteURL.FullUrl}");
-                        return;
+                        BaseAddress = new Uri(Program.cfgjson.WorkerLinks.BaseUrl)
+                    };
+
+                    HttpRequestMessage request;
+
+                    if (key == "null" || key == "random" || key == "gen")
+                    {
+                        request = new HttpRequestMessage(HttpMethod.Post, "") { };
                     }
                     else
                     {
-                        Console.WriteLine(responseText);
-                        responseText = "Error occured during upload to Hastebin. Please check the console/logs for the output.";
+                        request = new HttpRequestMessage(HttpMethod.Put, key) { };
                     }
+
+                    request.Headers.Add("Authorization", Program.cfgjson.WorkerLinks.Secret);
+                    request.Headers.Add("URL", url);
+
+                    HttpResponseMessage response = await httpClient.SendAsync(request);
+                    int httpStatusCode = (int)response.StatusCode;
+                    string httpStatus = response.StatusCode.ToString();
+                    string responseText = await response.Content.ReadAsStringAsync();
+                    if (responseText.Length > 1940)
+                    {
+                        HasteBinResult hasteURL = await Program.hasteUploader.Post(responseText);
+                        if (hasteURL.IsSuccess)
+                        {
+                            // responseText = hasteURL.FullUrl;
+                            await ctx.RespondAsync($"Worker responded with code: `{httpStatusCode}` (`{httpStatus}`)\n{hasteURL.FullUrl}");
+                            return;
+                        }
+                        else
+                        {
+                            Console.WriteLine(responseText);
+                            responseText = "Error occured during upload to Hastebin. Please check the console/logs for the output.";
+                        }
+                    }
+                    await ctx.RespondAsync($"Worker responded with code: `{httpStatusCode}` (`{httpStatus}`)\n```json\n{responseText}\n```");
                 }
-                await ctx.Channel.SendMessageAsync($"Worker responded with code: `{httpStatusCode}` (`{httpStatus}`)\n```json\n{responseText}\n```");
+
+                [Command("delete")]
+                public async Task DeleteLink(CommandContext ctx, string key = "")
+                {
+                    // handle root, also handled with no args
+                    if (key == "/")
+                        key = "";
+
+                    // create http client with base url e.g. https://erisa.link
+                    using HttpClient httpClient = new()
+                    {
+                        BaseAddress = new Uri(Program.cfgjson.WorkerLinks.BaseUrl)
+                    };
+
+                    // create request object
+                    HttpRequestMessage request;
+                    request = new HttpRequestMessage(HttpMethod.Delete, key) { };
+                    request.Headers.Add("Authorization", Program.cfgjson.WorkerLinks.Secret);
+
+                    // fire off and handle the request
+                    HttpResponseMessage response = await httpClient.SendAsync(request);
+                    int httpStatusCode = (int)response.StatusCode;
+                    string httpStatus = response.StatusCode.ToString();
+                    string responseText = await response.Content.ReadAsStringAsync();
+                    if (responseText.Length > 1940)
+                    {
+                        HasteBinResult hasteURL = await Program.hasteUploader.Post(responseText);
+                        if (hasteURL.IsSuccess)
+                        {
+                            // responseText = hasteURL.FullUrl;
+                            await ctx.RespondAsync($"Worker responded with code: `{httpStatusCode}` (`{httpStatus}`)\n{hasteURL.FullUrl}");
+                            return;
+                        }
+                        else
+                        {
+                            Console.WriteLine(responseText);
+                            responseText = "Error occured during upload to Hastebin. Please check the console/logs for the output.";
+                        }
+                    }
+                    await ctx.RespondAsync($"Worker responded with code: `{httpStatusCode}` (`{httpStatus}`)\n```json\n{responseText}\n```");
+
+                }
+
             }
 
 
