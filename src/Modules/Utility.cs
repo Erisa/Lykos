@@ -213,8 +213,8 @@ namespace Lykos.Modules
                     {
                         newColour = new DiscordColor(Program.rnd.Next(1, 16777215));
                         await pickedRole.ModifyAsync(color: newColour);
-                        await ctx.RespondAsync($"Okay I changed the colour of the role `{pickedRole.Name}` to a completely random colour.\n" +
-                            $"Feel free to try again if it's rubbish.");
+                        await ctx.RespondAsync(new DiscordMessageBuilder().WithContent($"Okay I changed the colour of the role `{pickedRole.Mention}` to a completely random colour.\n" +
+                            $"Feel free to try again if it's rubbish.").WithAllowedMentions(Mentions.None));
                     } else
                     {
                         newColour = new DiscordColor(colourString);
@@ -224,12 +224,12 @@ namespace Lykos.Modules
                         } else
                         {
                             await pickedRole.ModifyAsync(color: newColour);
-                            await ctx.RespondAsync($"Okay I changed the colour of the role `{pickedRole.Name}` to `{colourString}`");
+                            await ctx.RespondAsync(new DiscordMessageBuilder().WithContent($"Okay I changed the colour of the role `{pickedRole.Mention}` to `{colourString}`").WithAllowedMentions(Mentions.None));
                         }
                     }
                 } else
                 {
-                    await ctx.RespondAsync($":x: Your highest colour role, `{pickedRole.Name}`, is not configured for colourme.");
+                    await ctx.RespondAsync(new DiscordMessageBuilder().WithContent($":x: Your highest colour role, `{pickedRole.Mention}`, is not configured for colourme.").WithAllowedMentions(Mentions.None));
                 }
             }
 
@@ -246,8 +246,8 @@ namespace Lykos.Modules
                 } else
                 {
                     await Program.db.ListRightPushAsync($"colourRoles-{ctx.Guild.Id}", role.Id);
-                    await ctx.RespondAsync($"Okay, I added role `{role.Id}` (`{role.Name}`) to the colourme list.\n" +
-                        $"Anyone with that role as their top coloured role can use a command like `colourme #cf9ace` or `colourme random` to change their colour, hopefully.");
+                    await ctx.RespondAsync(new DiscordMessageBuilder().WithContent($"Okay, I added {role.Mention} to the colourme list.\n" +
+                        $"Anyone with that role as their top coloured role can use a command like `colourme #cf9ace` or `colourme random` to change their colour, hopefully.").WithAllowedMentions(Mentions.None));
                 }
             }
 
@@ -265,7 +265,7 @@ namespace Lykos.Modules
                 else
                 {
                     await Program.db.ListRemoveAsync($"colourRoles-{ctx.Guild.Id}", foundID);
-                    await ctx.RespondAsync($"Okay, I removed `{role.Id}` (`{role.Name}`) from the colourme list.");
+                    await ctx.RespondAsync(new DiscordMessageBuilder().WithContent($"Okay, I removed {role.Mention} from the colourme list.").WithAllowedMentions(Mentions.None));
                 }
             }
 
