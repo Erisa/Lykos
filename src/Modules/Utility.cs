@@ -213,7 +213,7 @@ namespace Lykos.Modules
                     {
                         newColour = new DiscordColor(Program.rnd.Next(1, 16777215));
                         await pickedRole.ModifyAsync(color: newColour);
-                        await ctx.RespondAsync(new DiscordMessageBuilder().WithContent($"Okay I changed the colour of the role `{pickedRole.Mention}` to a completely random colour.\n" +
+                        await ctx.RespondAsync(new DiscordMessageBuilder().WithContent($"Okay I changed the colour of the role {pickedRole.Mention} to a completely random colour.\n" +
                             $"Feel free to try again if it's rubbish.").WithAllowedMentions(Mentions.None));
                     } else
                     {
@@ -224,12 +224,12 @@ namespace Lykos.Modules
                         } else
                         {
                             await pickedRole.ModifyAsync(color: newColour);
-                            await ctx.RespondAsync(new DiscordMessageBuilder().WithContent($"Okay I changed the colour of the role `{pickedRole.Mention}` to `{colourString}`").WithAllowedMentions(Mentions.None));
+                            await ctx.RespondAsync(new DiscordMessageBuilder().WithContent($"Okay I changed the colour of the role {pickedRole.Mention} to `{colourString}`").WithAllowedMentions(Mentions.None));
                         }
                     }
                 } else
                 {
-                    await ctx.RespondAsync(new DiscordMessageBuilder().WithContent($":x: Your highest colour role, `{pickedRole.Mention}`, is not configured for colourme.").WithAllowedMentions(Mentions.None));
+                    await ctx.RespondAsync(new DiscordMessageBuilder().WithContent($":x: Your highest colour role, {pickedRole.Mention}, is not configured for colourme.").WithAllowedMentions(Mentions.None));
                 }
             }
 
