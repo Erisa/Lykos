@@ -139,7 +139,12 @@ namespace Lykos
                                 .WithUrl($"https://discord.com/channels/{e.Guild.Id}/{e.Channel.Id}/{e.Message.ReferencedMessage.Id}");
 
                             if (e.Message.ReferencedMessage.Attachments.Count > 0)
+                            {
                                 embed.WithThumbnail(e.Message.ReferencedMessage.Attachments[0].Url);
+                            } else if (e.Message.ReferencedMessage.Embeds.Count > 0 && e.Message.ReferencedMessage.Embeds[0].Image != null)
+                            {
+                                embed.WithThumbnail(e.Message.ReferencedMessage.Embeds[0].Image.Url.ToString());
+                            }
                         }
 
                         await log.SendMessageAsync(null, embed);
