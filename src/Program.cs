@@ -137,6 +137,9 @@ namespace Lykos
                         {
                             embed.WithTitle($"Replying to {e.Message.ReferencedMessage.Author.Username}")
                                 .WithUrl($"https://discord.com/channels/{e.Guild.Id}/{e.Channel.Id}/{e.Message.ReferencedMessage.Id}");
+
+                            if (e.Message.ReferencedMessage.Attachments.Count > 0)
+                                embed.WithThumbnail(e.Message.ReferencedMessage.Attachments[0].Url);
                         }
 
                         await log.SendMessageAsync(null, embed);
