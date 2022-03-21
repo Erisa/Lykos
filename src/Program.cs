@@ -131,8 +131,13 @@ namespace Lykos
                             e.Author.Username,
                             null,
                             await Helpers.UserOrMemberAvatarURL(e.Author, e.Guild, "png", 128)
-                        )
-                        ;
+                        );
+
+                        if (e.Message.ReferencedMessage != null)
+                        {
+                            embed.WithTitle($"Replying to {e.Message.ReferencedMessage.Author.Username}")
+                                .WithUrl($"https://discord.com/channels/{e.Guild.Id}/{e.Channel.Id}/{e.Message.ReferencedMessage.Id}");
+                        }
 
                         await log.SendMessageAsync(null, embed);
                     }
