@@ -33,6 +33,24 @@ namespace Lykos
 
             [JsonProperty("workerLinks")]
             public WorkerLinksConfig WorkerLinks { get; private set; }
+
+            [JsonProperty("redis")]
+            public RedisConfig Redis { get; private set; }
+        }
+
+        public class RedisConfig
+        {
+            [JsonProperty("host")]
+            public string Host { get; private set; }
+
+            [JsonProperty("port")]
+            public int Port { get; private set; }
+
+            [JsonProperty("password")]
+            public string Password { get; private set; }
+
+            [JsonProperty("tls")]
+            public bool TLS { get; private set; }
         }
 
         public class CloudflareConfig

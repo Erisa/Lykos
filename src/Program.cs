@@ -39,16 +39,6 @@ namespace Lykos
 
         static async Task MainAsync()
         {
-            string redisHost = "redis";
-            // improve on later
-#if DEBUG
-            redisHost = "127.0.0.1";
-#endif
-
-            redis = ConnectionMultiplexer.Connect($"{redisHost}");
-
-            db = redis.GetDatabase();
-
             string configFile = "config.json";
             string json = "";
 
@@ -67,6 +57,21 @@ namespace Lykos
             }
 
             cfgjson = JsonConvert.DeserializeObject<ConfigJson>(json);
+
+            var redisConfigurationOptions = new ConfigurationOptions
+            {
+                AllowAdmin = false,
+                Ssl = cfgjson.Redis.TLS,
+                Password = cfgjson.Redis.Password,
+                EndPoints = {
+                    {  cfgjson.Redis.Host, cfgjson.Redis.Port }
+                }
+            };
+
+            redis = ConnectionMultiplexer.Connect(redisConfigurationOptions);
+
+            db = redis.GetDatabase();
+
             hasteUploader = new HasteBinClient(cfgjson.HastebinEndpoint);
 
             minio = new MinioClient
@@ -81,7 +86,7 @@ namespace Lykos
             {
                 Token = cfgjson.Token,
                 TokenType = TokenType.Bot,
-                MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.Information
+                MinimumLogLevel = LogLevel.Information
             });
 
             Task OnReady(DiscordClient client, ReadyEventArgs e)
