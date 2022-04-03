@@ -21,7 +21,7 @@
     <PackageReference Include="DSharpPlus.SlashCommands" Version="4.2.0-nightly-01105" />
     <PackageReference Include="ini" Version="1.0.7" />
     <PackageReference Include="Minio" Version="3.1.13" />
-    <PackageReference Include="StackExchange.Redis" Version="2.2.88" />
+    <PackageReference Include="StackExchange.Redis" Version="2.5.43" />
   </ItemGroup>
 
   <ItemGroup>
