@@ -74,13 +74,10 @@ namespace Lykos
 
             hasteUploader = new HasteBinClient(cfgjson.HastebinEndpoint);
 
-            minio = new MinioClient
-            (
-                cfgjson.S3.Endpoint,
-                cfgjson.S3.AccessKey,
-                cfgjson.S3.SecretKey,
-                cfgjson.S3.Region
-            ).WithSSL();
+            minio = new MinioClient()
+                .WithEndpoint(cfgjson.S3.Endpoint)
+                .WithCredentials(cfgjson.S3.AccessKey, cfgjson.S3.SecretKey)
+                .WithRegion(cfgjson.S3.Region).WithSSL();
 
             discord = new DiscordClient(new DiscordConfiguration
             {
