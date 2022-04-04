@@ -135,18 +135,28 @@ namespace Lykos
                             await Helpers.UserOrMemberAvatarURL(e.Author, e.Guild, "png", 128)
                         );
 
+                        DiscordMessage prevMsg;
+
                         if (e.Message.ReferencedMessage != null)
                         {
+                            prevMsg = e.Message.ReferencedMessage;
                             embed.WithTitle($"Replying to {e.Message.ReferencedMessage.Author.Username}")
                                 .WithUrl($"https://discord.com/channels/{e.Guild.Id}/{e.Channel.Id}/{e.Message.ReferencedMessage.Id}");
+                        }
+                        else
+                        {
+                            prevMsg = (await e.Channel.GetMessagesBeforeAsync(e.Message.Id, 1))[0];
+                            embed.WithTitle($"Likely replying to {prevMsg.Author.Username}")
+                                .WithUrl($"https://discord.com/channels/{e.Guild.Id}/{e.Channel.Id}/{prevMsg.Id}");
+                        }
 
-                            if (e.Message.ReferencedMessage.Attachments.Count > 0)
-                            {
-                                embed.WithThumbnail(e.Message.ReferencedMessage.Attachments[0].Url);
-                            } else if (e.Message.ReferencedMessage.Embeds.Count > 0 && e.Message.ReferencedMessage.Embeds[0].Image != null)
-                            {
-                                embed.WithThumbnail(e.Message.ReferencedMessage.Embeds[0].Image.Url.ToString());
-                            }
+                        if (prevMsg.Attachments.Count > 0)
+                        {
+                            embed.WithThumbnail(prevMsg.Attachments[0].Url);
+                        }
+                        else if (prevMsg.Embeds.Count > 0 && prevMsg.Embeds[0].Image != null)
+                        {
+                            embed.WithThumbnail(prevMsg.Embeds[0].Image.Url.ToString());
                         }
 
                         await log.SendMessageAsync(null, embed);
