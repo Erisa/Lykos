@@ -53,7 +53,7 @@ namespace Lykos
             }
             else
             {
-                json = System.Environment.GetEnvironmentVariable("LYKOS_CONFIG");
+                json = Environment.GetEnvironmentVariable("LYKOS_CONFIG");
             }
 
             cfgjson = JsonConvert.DeserializeObject<ConfigJson>(json);

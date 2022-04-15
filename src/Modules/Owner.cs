@@ -206,7 +206,15 @@ namespace Lykos.Modules
                             meta["x-amz-acl"] = "public-read";
                         }
 
-                        await Program.minio.PutObjectAsync(Program.cfgjson.S3.Bucket, objectName, memStream, memStream.Length, "image/png", meta);
+                        var putObject = new Minio.PutObjectArgs()
+                            .WithBucket(Program.cfgjson.S3.Bucket)
+                            .WithObject(objectName)
+                            .WithStreamData(memStream)
+                            .WithObjectSize(memStream.Length)
+                            .WithContentType("image/png")
+                            .WithHeaders(meta);
+
+                        await Program.minio.PutObjectAsync(putObject);
                     }
                     catch (MinioException e)
                     {
