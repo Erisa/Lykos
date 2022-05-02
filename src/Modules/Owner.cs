@@ -174,7 +174,7 @@ namespace Lykos.Modules
             {
 
                 [Command("avatar")]
-                [Description("Updates cdn.erisa.moe/avatars/current.png or any other filename.")]
+                [Description("Updates cdn.erisa.uk/avatars/current.png or any other filename.")]
                 public async Task Avatar(CommandContext ctx, string name = "current")
                 {
                     if (ctx.User.Id == 202122613118468097 && name == "current")
@@ -231,7 +231,7 @@ namespace Lykos.Modules
 
                     await msg.ModifyAsync($"Selected name: `{name}`\n" +
                         $"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!\n" +
-                        $"{Program.cfgjson.Emoji.Loading} Purging the Cloudflare cache...");
+                        $"{Program.cfgjson.Emoji.Loading} - Purging the Cloudflare cache...");
 
                     // https://github.com/Sankra/cloudflare-cache-purger/blob/master/main.csx#L113
                     CloudflareContent content = new(new List<string>() { Program.cfgjson.Cloudflare.UrlPrefix + objectName });
