@@ -37,6 +37,57 @@ namespace Lykos
             MainAsync().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
+        static async Task GalleryHandler(DiscordMessage message, DiscordClient client)
+        {
+            if (message.Channel.Id == 671182122429710346)
+            {
+                // Delete the message if there are no attachments, unless the message contains a URL.
+                if (message.Attachments.Count == 0 && !(message.Content.Contains("http")))
+                {
+                    await message.DeleteAsync();
+                    DiscordChannel log = await client.GetChannelAsync(671183700448509962);
+                    var embed = new DiscordEmbedBuilder()
+                    .WithDescription(message.Content)
+                    .WithTimestamp(DateTime.Now)
+                    .WithFooter(
+                        "Relayed from #gallery",
+                        null
+                    )
+                    .WithAuthor(
+                        message.Author.Username,
+                        null,
+                        await Helpers.UserOrMemberAvatarURL(message.Author, message.Channel.Guild, "png", 128)
+                    );
+
+                    DiscordMessage prevMsg;
+
+                    if (message.ReferencedMessage != null)
+                    {
+                        prevMsg = message.ReferencedMessage;
+                        embed.WithTitle($"Replying to {message.ReferencedMessage.Author.Username}")
+                            .WithUrl($"https://discord.com/channels/{message.Channel.Guild.Id}/{message.Channel.Id}/{message.ReferencedMessage.Id}");
+                    }
+                    else
+                    {
+                        prevMsg = (await message.Channel.GetMessagesBeforeAsync(message.Id, 1))[0];
+                        embed.WithTitle($"Likely replying to {prevMsg.Author.Username}")
+                            .WithUrl($"https://discord.com/channels/{message.Channel.Guild.Id}/{message.Channel.Id}/{prevMsg.Id}");
+                    }
+
+                    if (prevMsg.Attachments.Count > 0)
+                    {
+                        embed.WithThumbnail(prevMsg.Attachments[0].Url);
+                    }
+                    else if (prevMsg.Embeds.Count > 0 && prevMsg.Embeds[0].Image != null)
+                    {
+                        embed.WithThumbnail(prevMsg.Embeds[0].Image.Url.ToString());
+                    }
+
+                    await log.SendMessageAsync(null, embed);
+                }
+            }
+        }
+
         static async Task MainAsync()
         {
             string configFile = "config.json";
@@ -115,53 +166,7 @@ namespace Lykos
             async Task MessageCreated(DiscordClient client, MessageCreateEventArgs e)
             {
                 // gallery
-                if (e.Channel.Id == 671182122429710346)
-                {
-                    // Delete the message if there are no attachments, unless the message contains a URL.
-                    if (e.Message.Attachments.Count == 0 && !(e.Message.Content.Contains("http")))
-                    {
-                        await e.Message.DeleteAsync();
-                        DiscordChannel log = await client.GetChannelAsync(671183700448509962);
-                        var embed = new DiscordEmbedBuilder()
-                        .WithDescription(e.Message.Content)
-                        .WithTimestamp(DateTime.Now)
-                        .WithFooter(
-                            "Relayed from #gallery",
-                            null
-                        )
-                        .WithAuthor(
-                            e.Author.Username,
-                            null,
-                            await Helpers.UserOrMemberAvatarURL(e.Author, e.Guild, "png", 128)
-                        );
-
-                        DiscordMessage prevMsg;
-
-                        if (e.Message.ReferencedMessage != null)
-                        {
-                            prevMsg = e.Message.ReferencedMessage;
-                            embed.WithTitle($"Replying to {e.Message.ReferencedMessage.Author.Username}")
-                                .WithUrl($"https://discord.com/channels/{e.Guild.Id}/{e.Channel.Id}/{e.Message.ReferencedMessage.Id}");
-                        }
-                        else
-                        {
-                            prevMsg = (await e.Channel.GetMessagesBeforeAsync(e.Message.Id, 1))[0];
-                            embed.WithTitle($"Likely replying to {prevMsg.Author.Username}")
-                                .WithUrl($"https://discord.com/channels/{e.Guild.Id}/{e.Channel.Id}/{prevMsg.Id}");
-                        }
-
-                        if (prevMsg.Attachments.Count > 0)
-                        {
-                            embed.WithThumbnail(prevMsg.Attachments[0].Url);
-                        }
-                        else if (prevMsg.Embeds.Count > 0 && prevMsg.Embeds[0].Image != null)
-                        {
-                            embed.WithThumbnail(prevMsg.Embeds[0].Image.Url.ToString());
-                        }
-
-                        await log.SendMessageAsync(null, embed);
-                    }
-                }
+                GalleryHandler(e.Message, client);
 
                 // Prefix query handling
                 if
@@ -197,16 +202,7 @@ namespace Lykos
             async Task MessageUpdated(DiscordClient client, MessageUpdateEventArgs e)
             {
                 // #gallery
-                if (e.Channel.Id == 671182122429710346)
-                {
-                    // Delete the message if there are no attachments, unless the message contains a URL.
-                    if (e.Message.Attachments.Count == 0 && !(e.Message.Content.Contains("http")))
-                    {
-                        await e.Message.DeleteAsync();
-                        DiscordChannel log = await client.GetChannelAsync(671183700448509962);
-                        await log.SendMessageAsync($"[EDIT] {e.Author.Mention}:\n>>> {e.Message.Content}");
-                    }
-                }
+                GalleryHandler(e.Message, client);
             };
 
             async Task CommandsNextService_CommandErrored(CommandsNextExtension cnext, CommandErrorEventArgs e)
