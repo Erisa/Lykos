@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-
-namespace Lykos
+﻿namespace Lykos
 {
     class Config
     {

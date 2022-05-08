@@ -1,14 +1,4 @@
-﻿using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
-using Newtonsoft.Json;
-using System;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-namespace Lykos.Modules
+﻿namespace Lykos.Modules
 {
     class Utility : BaseCommandModule
     {

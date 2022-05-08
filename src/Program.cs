@@ -1,24 +1,4 @@
-﻿using DSharpPlus;
-using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.CommandsNext.Exceptions;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using DSharpPlus.SlashCommands;
-using StackExchange.Redis;
-using Lykos.Modules;
-using Microsoft.Extensions.Logging;
-using Minio;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Lykos.Config;
-
-namespace Lykos
+﻿namespace Lykos
 {
     class Program
     {

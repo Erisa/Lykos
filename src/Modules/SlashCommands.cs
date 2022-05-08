@@ -1,11 +1,4 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.SlashCommands;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Lykos.Modules
+﻿namespace Lykos.Modules
 {
     public static class BaseContextExtensions
     {

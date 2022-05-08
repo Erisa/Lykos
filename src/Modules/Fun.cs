@@ -1,10 +1,4 @@
-﻿using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace Lykos.Modules
+﻿namespace Lykos.Modules
 {
     class Fun : BaseCommandModule
     {
