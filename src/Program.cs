@@ -61,6 +61,9 @@
                     else if (prevMsg.Embeds.Count > 0 && prevMsg.Embeds[0].Image != null)
                     {
                         embed.WithThumbnail(prevMsg.Embeds[0].Image.Url.ToString());
+                    } else if (prevMsg.Embeds.Count > 0 && prevMsg.Embeds[0].Thumbnail != null)
+                    {
+                        embed.WithThumbnail(prevMsg.Embeds[0].Thumbnail.Url.ToString());
                     }
 
                     await log.SendMessageAsync(null, embed);
@@ -163,7 +166,7 @@
                 if (e.Message.Content.ToLower().StartsWith("ik "))
                 {
                     string potentialCmd = e.Message.Content.Split(' ')[1];
-                    foreach (System.Collections.Generic.KeyValuePair<string, Command> cmd in commands.RegisteredCommands)
+                    foreach (KeyValuePair<string, Command> cmd in commands.RegisteredCommands)
                     {
                         // Checks command name, display name and all aliases.
                         if (cmd.Key == potentialCmd || potentialCmd == cmd.Value.QualifiedName || cmd.Value.Aliases.Contains(potentialCmd))
