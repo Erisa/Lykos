@@ -98,7 +98,10 @@
 
             try
             {
-                avatarUrl = await Helpers.UserOrMemberAvatarURL(target, ctx.Guild, format);
+                if (showGuildAvatar)
+                    avatarUrl = await UserOrMemberAvatarURL(target, ctx.Guild, format);
+                else
+                    avatarUrl = UserAvatarURL(target, format);
             } catch (ArgumentException e)
             {
                 await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} {e.Message}", ephemeral: true);
