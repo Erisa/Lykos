@@ -264,10 +264,14 @@
                 [GroupCommand]
                 public async Task Link(CommandContext ctx, string key, string url)
                 {
-                    using HttpClient httpClient = new()
+                    using HttpClient httpClient = new();
+
+                    // add / if it doesnt exist
+                    string baseUrl = Program.cfgjson.WorkerLinks.BaseUrl;
+                    if (!baseUrl.EndsWith("/"))
                     {
-                        BaseAddress = new Uri(Program.cfgjson.WorkerLinks.BaseUrl)
-                    };
+                        baseUrl += "/";
+                    }
 
                     HttpRequestMessage request;
 
@@ -277,7 +281,7 @@
                     }
                     else
                     {
-                        request = new HttpRequestMessage(HttpMethod.Put, key) { };
+                        request = new HttpRequestMessage(HttpMethod.Put, baseUrl + key) { };
                     }
 
                     request.Headers.Add("Authorization", Program.cfgjson.WorkerLinks.Secret);
