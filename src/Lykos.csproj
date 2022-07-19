@@ -16,9 +16,9 @@
 
   <ItemGroup>
     <PackageReference Include="Abyssal.HumanDateParser" Version="2.0.0-20191113.1" />
-    <PackageReference Include="DSharpPlus" Version="4.3.0-nightly-01153" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.3.0-nightly-01153" />
-    <PackageReference Include="DSharpPlus.SlashCommands" Version="4.3.0-nightly-01153" />
+    <PackageReference Include="DSharpPlus" Version="4.3.0-nightly-01155" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.3.0-nightly-01155" />
+    <PackageReference Include="DSharpPlus.SlashCommands" Version="4.3.0-nightly-01155" />
     <PackageReference Include="ini" Version="1.0.7" />
     <PackageReference Include="Minio" Version="4.0.2" />
     <PackageReference Include="StackExchange.Redis" Version="2.5.61" />
