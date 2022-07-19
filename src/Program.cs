@@ -117,7 +117,8 @@
             {
                 Token = cfgjson.Token,
                 TokenType = TokenType.Bot,
-                MinimumLogLevel = LogLevel.Information
+                MinimumLogLevel = LogLevel.Information,
+                LogUnknownEvents = false
             });
 
             Task OnReady(DiscordClient client, ReadyEventArgs e)
