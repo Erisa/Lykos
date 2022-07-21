@@ -113,7 +113,7 @@
                     if (hasteURL.IsSuccess)
                     {
                         await msg.ModifyAsync($"Done, but output exceeded character limit! (`{finishedShell.result.Length}`/`1947`)\n" +
-                            $"Full output can be viewed here: https://paste.erisa.moe/raw/{hasteURL.Key}\nProcess exited with code `{finishedShell.proc.ExitCode}`.");
+                            $"Full output can be viewed here: {Program.cfgjson.HastebinEndpoint}/raw/{hasteURL.Key}\nProcess exited with code `{finishedShell.proc.ExitCode}`.");
                     }
                     else
                     {
