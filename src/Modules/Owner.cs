@@ -362,6 +362,7 @@
                     Files = urls;
                 }
 
+                [JsonProperty("files")]
                 public List<string> Files { get; }
             }
 
