@@ -283,6 +283,7 @@
 
             slash.RegisterCommands<SlashCommands>(438781053675634713);
             slash.RegisterCommands<SlashCommands>(228625269101953035);
+            slash.RegisterCommands<SlashCommands>(659616382165581824);
 
             await discord.ConnectAsync();
 
