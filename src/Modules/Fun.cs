@@ -113,7 +113,7 @@
         }
 
         [Command("kotd")]
-        public async Task Gotd(CommandContext ctx)
+        public async Task Kotd(CommandContext ctx)
         {
             DSharpPlus.Entities.DiscordUser kot = await ctx.Client.GetUserAsync(621929840710516736);
             await ctx.Channel.SendMessageAsync($"Todays Kot of the day is **{kot.Username}#{kot.Discriminator}**!");
