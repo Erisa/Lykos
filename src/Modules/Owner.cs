@@ -240,7 +240,7 @@
                         if (response.IsSuccessStatusCode)
                         {
                             await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!" +
-                                $"\n{Program.cfgjson.Emoji.Check} - Successsfully purged the Cloudflare cache for `{objectName}`!");
+                                $"\n{Program.cfgjson.Emoji.Check} - Successfully purged the Cloudflare cache for `{objectName}`!");
                         }
                         else
                         {
