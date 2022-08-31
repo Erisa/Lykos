@@ -97,7 +97,7 @@
             DSharpPlus.Entities.DiscordUser scat = await ctx.Client.GetUserAsync(103347843934212096);
             await ctx.Channel.SendMessageAsync($"Todays cat of the day is **{scat.Username}#{scat.Discriminator}**!");
         }
-
+        
         [Command("gotd")]
         public async Task Gotd(CommandContext ctx)
         {
@@ -110,6 +110,13 @@
         {
             DSharpPlus.Entities.DiscordUser zeta = await ctx.Client.GetUserAsync(94129005791281152);
             await ctx.Channel.SendMessageAsync($"Todays Zeta of the day is **{zeta.Username}#{zeta.Discriminator}**!");
+        }
+
+        [Command("kotd")]
+        public async Task Gotd(CommandContext ctx)
+        {
+            DSharpPlus.Entities.DiscordUser kot = await ctx.Client.GetUserAsync(621929840710516736);
+            await ctx.Channel.SendMessageAsync($"Todays Kot of the day is **{circ.Username}#{circ.Discriminator}**!");
         }
 
     }
