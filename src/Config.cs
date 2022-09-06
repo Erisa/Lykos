@@ -1,128 +1,128 @@
 ﻿namespace Lykos
 {
-    class Config
+    public sealed class Config
     {
-        public struct ConfigJson
+        public sealed class ConfigJson
         {
-            [JsonProperty("token")]
-            public string Token { get; private set; }
+            [ConfigurationKeyName("token")]
+            public string Token { get; set; }
 
-            [JsonProperty("prefixes")]
-            public string[] Prefixes { get; private set; }
+            [ConfigurationKeyName("prefixes")]
+            public string[] Prefixes { get; set; }
 
-            [JsonProperty("gravatar")]
-            public GravatarConfig Gravatar { get; private set; }
+            [ConfigurationKeyName("gravatar")]
+            public GravatarConfig Gravatar { get; set; }
 
-            [JsonProperty("s3")]
-            public JsonCfgS3 S3 { get; private set; }
+            [ConfigurationKeyName("s3")]
+            public JsonCfgS3 S3 { get; set; }
 
-            [JsonProperty("owners")]
-            public List<ulong> Owners { get; private set; }
+            [ConfigurationKeyName("owners")]
+            public List<ulong> Owners { get; set; }
 
-            [JsonProperty("cloudflare")]
-            public CloudflareConfig Cloudflare { get; private set; }
+            [ConfigurationKeyName("cloudflare")]
+            public CloudflareConfig Cloudflare { get; set; }
 
-            [JsonProperty("emoji")]
-            public EmojiConfig Emoji { get; private set; }
+            [ConfigurationKeyName("emoji")]
+            public EmojiConfig Emoji { get; set; }
 
-            [JsonProperty("hastebinEndpoint")]
-            public string HastebinEndpoint { get; private set; }
+            [ConfigurationKeyName("hastebinEndpoint")]
+            public string HastebinEndpoint { get; set; }
 
-            [JsonProperty("workerLinks")]
-            public WorkerLinksConfig WorkerLinks { get; private set; }
+            [ConfigurationKeyName("workerLinks")]
+            public WorkerLinksConfig WorkerLinks { get; set; }
 
-            [JsonProperty("redis")]
-            public RedisConfig Redis { get; private set; }
+            [ConfigurationKeyName("redis")]
+            public RedisConfig Redis { get; set; }
         }
 
-        public class RedisConfig
+        public sealed class RedisConfig
         {
-            [JsonProperty("host")]
-            public string Host { get; private set; }
+            [ConfigurationKeyName("host")]
+            public string Host { get; set; }
 
-            [JsonProperty("port")]
-            public int Port { get; private set; }
+            [ConfigurationKeyName("port")]
+            public int Port { get; set; }
 
-            [JsonProperty("password")]
-            public string Password { get; private set; }
+            [ConfigurationKeyName("password")]
+            public string Password { get; set; }
 
-            [JsonProperty("tls")]
-            public bool TLS { get; private set; }
+            [ConfigurationKeyName("tls")]
+            public bool TLS { get; set; }
         }
 
-        public class CloudflareConfig
+        public sealed class CloudflareConfig
         {
-            [JsonProperty("apiToken")]
-            public string Token { get; private set; }
+            [ConfigurationKeyName("apiToken")]
+            public string ApiToken { get; set; }
 
-            [JsonProperty("zoneID")]
-            public string ZoneID { get; private set; }
+            [ConfigurationKeyName("zoneID")]
+            public string ZoneID { get; set; }
 
-            [JsonProperty("urlPrefix")]
-            public string UrlPrefix { get; private set; }
+            [ConfigurationKeyName("urlPrefix")]
+            public string UrlPrefix { get; set; }
         }
 
-        public class EmojiConfig
+        public sealed class EmojiConfig
         {
-            [JsonProperty("blobpats")]
-            public string BlobPats { get; private set; }
+            [ConfigurationKeyName("blobpats")]
+            public string BlobPats { get; set; }
 
-            [JsonProperty("blobhug")]
-            public string BlobHug { get; private set; }
+            [ConfigurationKeyName("blobhug")]
+            public string BlobHug { get; set; }
 
-            [JsonProperty("xmark")]
-            public string Xmark { get; private set; }
+            [ConfigurationKeyName("xmark")]
+            public string Xmark { get; set; }
 
-            [JsonProperty("check")]
-            public string Check { get; private set; }
+            [ConfigurationKeyName("check")]
+            public string Check { get; set; }
 
-            [JsonProperty("loading")]
-            public string Loading { get; private set; }
+            [ConfigurationKeyName("loading")]
+            public string Loading { get; set; }
 
-            [JsonProperty("kiss")]
-            public string Kiss { get; private set; }
+            [ConfigurationKeyName("kiss")]
+            public string Kiss { get; set; }
         }
 
-        public class JsonCfgS3
+        public sealed class JsonCfgS3
         {
-            [JsonProperty("endpoint")]
-            public string Endpoint { get; private set; }
+            [ConfigurationKeyName("endpoint")]
+            public string Endpoint { get; set; }
 
-            [JsonProperty("region")]
-            public string Region { get; private set; }
+            [ConfigurationKeyName("region")]
+            public string Region { get; set; }
 
-            [JsonProperty("bucket")]
-            public string Bucket { get; private set; }
+            [ConfigurationKeyName("bucket")]
+            public string Bucket { get; set; }
 
-            [JsonProperty("accessKey")]
-            public string AccessKey { get; private set; }
+            [ConfigurationKeyName("accessKey")]
+            public string AccessKey { get; set; }
 
-            [JsonProperty("secretKey")]
-            public string SecretKey { get; private set; }
+            [ConfigurationKeyName("secretKey")]
+            public string SecretKey { get; set; }
 
-            [JsonProperty("providerDisplayName")]
-            public string DisplayName { get; private set; }
+            [ConfigurationKeyName("providerDisplayName")]
+            public string ProviderDisplayName { get; set; }
 
-            [JsonProperty("public-read-acl")]
-            public bool PublicReadAcl { get; private set; }
+            [ConfigurationKeyName("public-read-acl")]
+            public bool PublicReadAcl { get; set; }
         }
 
-        public class GravatarConfig
+        public sealed class GravatarConfig
         {
-            [JsonProperty("email")]
-            public string Email { get; private set; }
+            [ConfigurationKeyName("email")]
+            public string Email { get; set; }
 
-            [JsonProperty("password")]
-            public string Password { get; private set; }
+            [ConfigurationKeyName("password")]
+            public string Password { get; set; }
         }
 
-        public class WorkerLinksConfig
+        public sealed class WorkerLinksConfig
         {
-            [JsonProperty("baseUrl")]
-            public string BaseUrl { get; private set; }
+            [ConfigurationKeyName("baseUrl")]
+            public string BaseUrl { get; set; }
 
-            [JsonProperty("secret")]
-            public string Secret { get; private set; }
+            [ConfigurationKeyName("secret")]
+            public string Secret { get; set; }
         }
 
     }

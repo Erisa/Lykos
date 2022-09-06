@@ -267,3 +267,5 @@ config/config.json
 
 Release/*
 Publish/*
+
+src/Properties/*

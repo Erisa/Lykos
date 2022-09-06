@@ -170,7 +170,7 @@
                     DiscordMessage msg;
                     string objectName;
 
-                    msg = await ctx.RespondAsync($"Selected name: `{name}`\n{Program.cfgjson.Emoji.Loading} - Uploading to {Program.cfgjson.S3.DisplayName}...\n" +
+                    msg = await ctx.RespondAsync($"Selected name: `{name}`\n{Program.cfgjson.Emoji.Loading} - Uploading to {Program.cfgjson.S3.ProviderDisplayName}...\n" +
                         $"🔲 - Waiting to purge Cloudflare cache.");
                     objectName = $"avatars/{name}.png";
 
@@ -203,19 +203,19 @@
                     }
                     catch (MinioException e)
                     {
-                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Xmark} An API error occured while uploading to {Program.cfgjson.S3.DisplayName}:```\n" +
+                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Xmark} An API error occured while uploading to {Program.cfgjson.S3.ProviderDisplayName}:```\n" +
                             $"{e.Message}```");
                         return;
                     }
                     catch (Exception e)
                     {
-                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Xmark} An unexpected error occured while uploading to {Program.cfgjson.S3.DisplayName}:```\n" +
+                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Xmark} An unexpected error occured while uploading to {Program.cfgjson.S3.ProviderDisplayName}:```\n" +
                             $"{e.Message}```");
                         return;
                     }
 
                     await msg.ModifyAsync($"Selected name: `{name}`\n" +
-                        $"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!\n" +
+                        $"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.ProviderDisplayName}!\n" +
                         $"{Program.cfgjson.Emoji.Loading} - Purging the Cloudflare cache...");
 
                     // https://github.com/Sankra/cloudflare-cache-purger/blob/master/main.csx#L113
@@ -232,25 +232,25 @@
                         {
                             Content = new StringContent(cloudflareContentString, Encoding.UTF8, "application/json")
                         };
-                        request.Headers.Add("Authorization", $"Bearer {Program.cfgjson.Cloudflare.Token}");
+                        request.Headers.Add("Authorization", $"Bearer {Program.cfgjson.Cloudflare.ApiToken}");
 
                         HttpResponseMessage response = await httpClient.SendAsync(request);
                         string responseText = await response.Content.ReadAsStringAsync();
 
                         if (response.IsSuccessStatusCode)
                         {
-                            await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!" +
+                            await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.ProviderDisplayName}!" +
                                 $"\n{Program.cfgjson.Emoji.Check} - Successfully purged the Cloudflare cache for `{objectName}`!");
                         }
                         else
                         {
-                            await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!" +
+                            await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.ProviderDisplayName}!" +
                                 $"\n{Program.cfgjson.Emoji.Xmark} - An API error occured when purging the Cloudflare cache: ```json\n{responseText}```");
                         }
                     }
                     catch (Exception e)
                     {
-                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.DisplayName}!\n" +
+                        await msg.ModifyAsync($"{Program.cfgjson.Emoji.Check} - Uploaded `{objectName}` to {Program.cfgjson.S3.ProviderDisplayName}!\n" +
                                 $"{Program.cfgjson.Emoji.Xmark} - An unexpected error occured when purging the Cloudflare cache: ```json\n" +
                                 $"{e.Message}```");
                     }

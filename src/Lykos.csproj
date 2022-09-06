@@ -20,6 +20,10 @@
     <PackageReference Include="DSharpPlus.CommandsNext" Version="4.3.0-nightly-01155" />
     <PackageReference Include="DSharpPlus.SlashCommands" Version="4.3.0-nightly-01155" />
     <PackageReference Include="ini" Version="1.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Minio" Version="4.0.2" />
     <PackageReference Include="StackExchange.Redis" Version="2.5.61" />
   </ItemGroup>

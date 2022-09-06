@@ -1,16 +1,18 @@
-﻿namespace Lykos
+﻿using Microsoft.Extensions.Configuration;
+
+namespace Lykos
 {
     class Program
     {
         public static DiscordClient discord;
         static CommandsNextExtension commands;
         public static Random rnd = new();
-        public static ConfigJson cfgjson;
         public static ConnectionMultiplexer redis;
         public static IDatabase db;
         public static HasteBinClient hasteUploader;
         public static MinioClient minio;
         internal static EventId EventID { get; } = new EventId(1000, "Bot");
+        public static ConfigJson cfgjson;
 
         static void Main()
         {
@@ -79,18 +81,12 @@
             if (!File.Exists(configFile))
                 configFile = "config/config.json";
 
-            if (File.Exists(configFile))
-            {
-                using FileStream fs = File.OpenRead(configFile);
-                using StreamReader sr = new(fs, new UTF8Encoding(false));
-                json = await sr.ReadToEndAsync();
-            }
-            else
-            {
-                json = Environment.GetEnvironmentVariable("LYKOS_CONFIG");
-            }
+            IConfiguration config = new ConfigurationBuilder()
+                .AddJsonFile(configFile)
+                .AddEnvironmentVariables("LYKOS_")
+                .Build();
 
-            cfgjson = JsonConvert.DeserializeObject<ConfigJson>(json);
+            cfgjson = config.Get<ConfigJson>();
 
             var redisConfigurationOptions = new ConfigurationOptions
             {
@@ -150,7 +146,7 @@
             async Task MessageCreated(DiscordClient client, MessageCreateEventArgs e)
             {
                 // gallery
-                GalleryHandler(e.Message, client);
+                _ = GalleryHandler(e.Message, client);
 
                 // Prefix query handling
                 if
