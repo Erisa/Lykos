@@ -76,7 +76,6 @@ namespace Lykos
         static async Task MainAsync()
         {
             string configFile = "config.json";
-            string json = "";
 
             if (!File.Exists(configFile))
                 configFile = "config/config.json";
@@ -277,9 +276,8 @@ namespace Lykos
 
             var slash = discord.UseSlashCommands();
 
-            slash.RegisterCommands<SlashCommands>(438781053675634713);
-            slash.RegisterCommands<SlashCommands>(228625269101953035);
-            slash.RegisterCommands<SlashCommands>(659616382165581824);
+            foreach (ulong guildId in cfgjson.Guilds)
+                slash.RegisterCommands<SlashCommands>(guildId);
 
             await discord.ConnectAsync();
 

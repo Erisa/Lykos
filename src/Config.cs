@@ -33,6 +33,9 @@
 
             [ConfigurationKeyName("redis")]
             public RedisConfig Redis { get; set; }
+
+            [ConfigurationKeyName("guilds")]
+            public List<ulong> Guilds { get; set; }
         }
 
         public sealed class RedisConfig

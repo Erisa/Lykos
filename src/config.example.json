@@ -1,7 +1,17 @@
 ﻿{
   "token": "MzA2MTQyMjU3ODE4NjMyMTkz.EXAMPLETOKEN",
-  "prefixes": [ "lk " ],
-  "owners": [ 616122960599711744, 228574821590499329 ],
+  "prefixes": [
+    "lk "
+  ],
+  "owners": [
+    616122960599711744,
+    228574821590499329
+  ],
+  "guilds": [
+    438781053675634713,
+    228625269101953035,
+    659616382165581824
+  ],
   "s3": {
     "endpoint": "asdfgh.r2.cloudflarestorage.com",
     "region": "auto",
