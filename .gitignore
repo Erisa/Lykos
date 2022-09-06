@@ -260,12 +260,8 @@ paket-files/
 __pycache__/
 *.pyc
 
-# Lykos files
-src/config.json
-config.json
-config/config.json
-
 Release/*
 Publish/*
 
 src/Properties/*
+.env

@@ -1,11 +1,16 @@
 ﻿{
-  "token": "MzA2MTQyMjU3ODE4NjMyMTkz.EXAMPLETOKEN",
+  "token": "env",
   "prefixes": [
-    "lk "
+    "lk ",
+    "lk.",
+    "lykos",
+    "<@279811031805591555>",
+    "<@!279811031805591555>",
+    "<:Lykos:848328586120134686>"
   ],
   "owners": [
-    616122960599711744,
-    228574821590499329
+    228574821590499329,
+    317380306921455619
   ],
   "guilds": [
     438781053675634713,
@@ -13,17 +18,17 @@
     659616382165581824
   ],
   "s3": {
-    "endpoint": "asdfgh.r2.cloudflarestorage.com",
+    "endpoint": "env",
     "region": "auto",
     "bucket": "erisacdn",
-    "accessKey": "aaaaaaaa",
-    "secretKey": "bbbbbbbbbbb",
+    "accessKey": "env",
+    "secretKey": "env",
     "providerDisplayName": "Cloudflare R2",
     "public-read-acl": false
   },
   "cloudflare": {
-    "apiToken": "blah",
-    "zoneID": "bbbbbb",
+    "apiToken": "env",
+    "zoneID": "env",
     "urlPrefix": "https://cdn.erisa.uk/"
   },
   "emoji": {
@@ -37,12 +42,12 @@
   "hastebinEndpoint": "https://haste.erisa.uk",
   "workerLinks": {
     "baseUrl": "https://erisa.link",
-    "secret": "AAAAAAAAAAAAAAAAAAAAAA"
+    "secret": "env"
   },
   "redis": {
-    "host": "127.0.0.1",
-    "port": 6379,
-    "password": "",
-    "tls": false
+    "host": "env",
+    "port": 35190,
+    "password": "env",
+    "tls": true
   }
 }
