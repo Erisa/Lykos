@@ -95,28 +95,28 @@
         public async Task Cotd(CommandContext ctx)
         {
             DSharpPlus.Entities.DiscordUser scat = await ctx.Client.GetUserAsync(103347843934212096);
-            await ctx.Channel.SendMessageAsync($"Todays cat of the day is **{scat.Username}#{scat.Discriminator}**!");
+            await ctx.Channel.SendMessageAsync($"Today's cat of the day is **{scat.Username}#{scat.Discriminator}**!");
         }
 
         [Command("gotd")]
         public async Task Gotd(CommandContext ctx)
         {
             DSharpPlus.Entities.DiscordUser circ = await ctx.Client.GetUserAsync(255114091360681986);
-            await ctx.Channel.SendMessageAsync($"Todays genius of the day is **{circ.Username}#{circ.Discriminator}**!");
+            await ctx.Channel.SendMessageAsync($"Today's genius of the day is **{circ.Username}#{circ.Discriminator}**!");
         }
 
         [Command("zotd")]
         public async Task Zotd(CommandContext ctx)
         {
             DSharpPlus.Entities.DiscordUser zeta = await ctx.Client.GetUserAsync(94129005791281152);
-            await ctx.Channel.SendMessageAsync($"Todays Zeta of the day is **{zeta.Username}#{zeta.Discriminator}**!");
+            await ctx.Channel.SendMessageAsync($"Today's Zeta of the day is **{zeta.Username}#{zeta.Discriminator}**!");
         }
 
         [Command("kotd")]
         public async Task Kotd(CommandContext ctx)
         {
             DSharpPlus.Entities.DiscordUser kot = await ctx.Client.GetUserAsync(621929840710516736);
-            await ctx.Channel.SendMessageAsync($"Todays Kot of the day is **{kot.Username}#{kot.Discriminator}**!");
+            await ctx.Channel.SendMessageAsync($"Today's Kot of the day is **{kot.Username}#{kot.Discriminator}**!");
         }
 
     }
