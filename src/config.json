@@ -41,7 +41,7 @@
   },
   "hastebinEndpoint": "https://haste.erisa.uk",
   "workerLinks": {
-    "baseUrl": "https://erisa.link",
+    "baseUrl": "https://erisa.link/",
     "secret": "env"
   },
   "redis": {

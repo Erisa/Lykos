@@ -277,7 +277,7 @@
 
                     if (key == "null" || key == "random" || key == "gen")
                     {
-                        request = new HttpRequestMessage(HttpMethod.Post, "") { };
+                        request = new HttpRequestMessage(HttpMethod.Post, baseUrl) { };
                     }
                     else
                     {
