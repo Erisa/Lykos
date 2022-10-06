@@ -7,6 +7,9 @@ processes = []
 
 [env]
 
+[deploy]
+  strategy = "rolling"
+
 [experimental]
   allowed_public_ports = []
   auto_rollback = true
