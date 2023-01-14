@@ -106,7 +106,8 @@ namespace Lykos
             minio = new MinioClient()
                 .WithEndpoint(cfgjson.S3.Endpoint)
                 .WithCredentials(cfgjson.S3.AccessKey, cfgjson.S3.SecretKey)
-                .WithRegion(cfgjson.S3.Region).WithSSL();
+                .WithRegion(cfgjson.S3.Region).WithSSL()
+                .WithHttpClient(new HttpClient());
 
             discord = new DiscordClient(new DiscordConfiguration
             {
