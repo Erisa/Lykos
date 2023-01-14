@@ -80,6 +80,8 @@ namespace Lykos
             if (!File.Exists(configFile))
                 configFile = "config/config.json";
 
+            DotEnv.Load(Path.Combine(Directory.GetCurrentDirectory(), ".env"));
+
             IConfiguration config = new ConfigurationBuilder()
                 .AddJsonFile(configFile)
                 .AddEnvironmentVariables("LYKOS_")
