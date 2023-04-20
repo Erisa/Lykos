@@ -1,16 +1,15 @@
-# fly.toml file generated for lykos on 2022-08-02T13:37:10+01:00
+# fly.toml app configuration file generated for lykos on 2023-04-20T21:48:12+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
 app = "lykos"
+primary_region = "iad"
 kill_signal = "SIGINT"
 kill_timeout = 5
-processes = []
 
-[env]
+[experimental]
+  auto_rollback = true
 
 [deploy]
   strategy = "rolling"
-
-[experimental]
-  allowed_public_ports = []
-  auto_rollback = true
-
