@@ -2,6 +2,14 @@
 {
     class Utility : BaseCommandModule
     {
+        [Command("gptreset")]
+
+        public async Task GptReset(CommandContext ctx)
+        {
+            Program.conversations.Remove(ctx.Channel.Id);
+            await ctx.RespondAsync("done bestie!");
+        }
+
         readonly string[] validExts = { "gif", "png", "jpg", "webp" };
         readonly Regex emoji_rx = new("<(a?):\\w*:(\\d*)>");
 

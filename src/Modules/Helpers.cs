@@ -4,6 +4,22 @@
     {
         readonly static string[] validExts = { "default", "png or gif", "gif", "png", "jpg", "webp" };
 
+        public static string UniqueUsername(DiscordUser user)
+        {
+            if (user.Discriminator == "0")
+                return user.Username;
+            else
+                return $"{user.Username}#{user.Discriminator}";
+        }
+
+        public static async Task<string> DisplayName(DiscordUser user)
+        {
+            if (user.GlobalName is not null && user.GlobalName.Length > 0)
+                return  user.GlobalName;
+            else
+                return user.Username;
+        }
+
         public static OSPlatform GetOSPlatform()
         {
             // Default to "Unknown" platform.

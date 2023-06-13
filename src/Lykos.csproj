@@ -6,6 +6,9 @@
     <RootNamespace>Lykos</RootNamespace>
     <ApplicationIcon />
     <StartupObject />
+      <RestoreAdditionalProjectSources>
+		  	https://www.myget.org/F/erisa/api/v3/index.json
+		  </RestoreAdditionalProjectSources>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -16,16 +19,17 @@
 
   <ItemGroup>
     <PackageReference Include="Abyssal.HumanDateParser" Version="2.0.0-20191113.1" />
-    <PackageReference Include="DSharpPlus" Version="4.3.0-nightly-01173" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.3.0-nightly-01173" />
-    <PackageReference Include="DSharpPlus.SlashCommands" Version="4.3.0-nightly-01173" />
+    <PackageReference Include="DSharpPlus" Version="5.0.0-erisa-11969" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="5.0.0-erisa-11969" />
+    <PackageReference Include="DSharpPlus.SlashCommands" Version="5.0.0-erisa-11969" />
     <PackageReference Include="ini" Version="1.0.7" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
     <PackageReference Include="Minio" Version="4.0.7" />
-    <PackageReference Include="StackExchange.Redis" Version="2.6.90" />
+    <PackageReference Include="OpenAI" Version="1.7.2" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.104" />
   </ItemGroup>
 
   <ItemGroup>

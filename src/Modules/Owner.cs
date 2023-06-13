@@ -8,6 +8,27 @@
         [RequireOwner]
         class DebugCmds : BaseCommandModule
         {
+            [Command("displayname")]
+            [Description("what.")]
+            public async Task Displayname(CommandContext ctx, DiscordUser user)
+            {
+                await ctx.RespondAsync(user.GlobalName);
+            }
+
+            [Command("displayname_message")]
+            [Description("what.")]
+            public async Task Displayname(CommandContext ctx)
+            {
+                await ctx.RespondAsync(await DisplayName(ctx.Message.Author));
+            }
+
+            [Command("displayname_member")]
+            [Description("what.")]
+            public async Task Displaynamemember(CommandContext ctx, DiscordUser user)
+            {
+                await ctx.RespondAsync(user.GlobalName);
+            }
+
             [Command("modcheck")]
             [Description("Check whether a user has permisssion to mod another user.")]
             [Aliases("mod")]

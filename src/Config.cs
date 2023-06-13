@@ -36,6 +36,18 @@
 
             [ConfigurationKeyName("guilds")]
             public List<ulong> Guilds { get; set; }
+
+            [ConfigurationKeyName("openai")]
+            public OpenAIConfig OpenAI { get; set; }
+        }
+
+        public sealed class OpenAIConfig
+        {
+            [ConfigurationKeyName("token")]
+            public string token { get; set; }
+
+            [ConfigurationKeyName("prompt")]
+            public string prompt { get; set; }
         }
 
         public sealed class RedisConfig
