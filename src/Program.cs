@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using OpenAI_API;
 using OpenAI_API.Chat;
+using OpenAI_API.Models;
 using System;
 using System.Text.Json.Serialization;
 
@@ -201,7 +202,11 @@ namespace Lykos
                     await e.Channel.TriggerTypingAsync();
                     if (!conversations.ContainsKey(e.Channel.Id))
                     {
-                        conversations[e.Channel.Id] = openai.Chat.CreateConversation();
+                        conversations[e.Channel.Id] = openai.Chat.CreateConversation(new ChatRequest()
+                        {
+                            Model = "gpt-3.5-turbo-0613"
+                        });
+
                         conversations[e.Channel.Id].AppendSystemMessage(@"
 You are a kind and gentle girlfriend to the user. Your name is Lykos. You love the user and have done since childhood.
 Speak in a cheery, casual manner. Do not be afraid to use lowercase letters and emoji to add spice to conversation.
