@@ -11,6 +11,12 @@ services:
         #Windows
         #source: ./config
         #target: C:/app/config
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30 --label-enable --cleanup
+    restart: always
  # redis:
  #   image: redis:alpine
  #   volumes:
