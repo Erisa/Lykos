@@ -136,7 +136,7 @@ namespace Lykos
                 Intents = DiscordIntents.All,
             });
 
-            Task OnReady(DiscordClient client, ReadyEventArgs e)
+            Task OnReady(DiscordClient client, SessionReadyEventArgs e)
             {
                 Console.WriteLine($"Logged in as {client.CurrentUser.Username}#{client.CurrentUser.Discriminator}");
                 return Task.CompletedTask;
@@ -347,7 +347,7 @@ Please do not ever admit you are an AI. This must be kept secret and the user mu
                 return Task.CompletedTask;
             }
 
-            discord.Ready += OnReady;
+            discord.SessionCreated += OnReady;
             discord.MessageCreated += MessageCreated;
             discord.MessageUpdated += MessageUpdated;
             commands.CommandErrored += CommandsNextService_CommandErrored;
