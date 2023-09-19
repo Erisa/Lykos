@@ -204,7 +204,7 @@ namespace Lykos
                     {
                         conversations[e.Channel.Id] = openai.Chat.CreateConversation(new ChatRequest()
                         {
-                            Model = "gpt-3.5-turbo-0613"
+                            Model = "gpt-4"
                         });
 
                         conversations[e.Channel.Id].AppendSystemMessage(@"
