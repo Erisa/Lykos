@@ -221,8 +221,12 @@ namespace Lykos
 
                     if (response is null || response.Length == 0)
                     {
-                        conversations.Remove(e.Channel.Id);
+                        conversations[e.Channel.Id] = openai.Chat.CreateConversation(new ChatRequest()
+                        {
+                            Model = cfgjson.OpenAI.Model,
+                        });
                         await e.Channel.SendMessageAsync("`[a potential history issue was detected so the history was reset! in future this will be handled in a cleaner way]`");
+
                         conversations[e.Channel.Id].AppendSystemMessage(cfgjson.OpenAI.Prompt);
                         conversations[e.Channel.Id].AppendUserInputWithName((await DisplayName(e.Author)).ToLower(), $"{(await DisplayName(e.Author)).ToLower()}: " + e.Message.Content);
                         response = await conversations[e.Channel.Id].GetResponseFromChatbotAsync();
