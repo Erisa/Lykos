@@ -200,9 +200,9 @@ namespace Lykos
                     }
                 }
 
-                // dm handling
+                // ai handling
 
-                if (e.Channel.IsPrivate && !e.Author.IsBot && !e.Message.Content.Contains("gptreset"))
+                if (e.Channel.IsPrivate || (e.Channel.Id == 1236484733362503751 && !e.Message.Content.StartsWith('.'))&& !e.Author.IsBot && !e.Message.Content.Contains("gptreset"))
                 {
                     await e.Channel.TriggerTypingAsync();
                     if (!conversations.ContainsKey(e.Channel.Id))
@@ -212,22 +212,33 @@ namespace Lykos
                             Model = cfgjson.OpenAI.Model,
                         });
 
-                        conversations[e.Channel.Id].AppendSystemMessage(cfgjson.OpenAI.Prompt + $"The name of the user is {(await DisplayName(e.Author)).ToLower()} and you must always address them as that name.\r\n");
+                        conversations[e.Channel.Id].AppendSystemMessage(cfgjson.OpenAI.Prompt);
                     }
-                    conversations[e.Channel.Id].AppendUserInput(e.Message.Content);
+
+                    conversations[e.Channel.Id].AppendUserInputWithName((await DisplayName(e.Author)).ToLower(), e.Message.Content);
                     string response = await conversations[e.Channel.Id].GetResponseFromChatbotAsync();
+
+                    DiscordMessageBuilder msg ;
 
                     if (response.Length > 4096)
                     {
                         var stream = new MemoryStream(Encoding.UTF8.GetBytes(response));
-                        await e.Channel.SendMessageAsync(new DiscordMessageBuilder().AddFile("error.txt", stream));
+                        msg = new DiscordMessageBuilder().AddFile("error.txt", stream);
                     }
                     else if (response.Length > 2000)
                     {
-                        await e.Channel.SendMessageAsync(new DiscordEmbedBuilder().WithDescription(response).Build());
+                        msg = new DiscordMessageBuilder().WithEmbed(new DiscordEmbedBuilder().WithDescription(response).Build());
                     } else
                     {
-                        await e.Channel.SendMessageAsync(response);
+                        msg = new DiscordMessageBuilder().WithContent(response);
+                    }
+
+                    if (e.Channel.IsPrivate)
+                    {
+                        await e.Channel.SendMessageAsync(msg);
+                    } else
+                    {
+                        await e.Channel.SendMessageAsync(msg.WithReply(e.Message.Id, true, false));
                     }
 
                 }
