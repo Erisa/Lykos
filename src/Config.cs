@@ -1,4 +1,6 @@
-﻿namespace Lykos
+﻿using static Lykos.DefaultPrompt;
+
+namespace Lykos
 {
     public sealed class Config
     {
@@ -44,10 +46,16 @@
         public sealed class OpenAIConfig
         {
             [ConfigurationKeyName("token")]
-            public string token { get; set; }
+            public string Token { get; set; }
 
             [ConfigurationKeyName("prompt")]
-            public string prompt { get; set; }
+            public string Prompt { get; set; } = prompt;
+
+            [ConfigurationKeyName("endpoint")]
+            public string Endpoint { get; set; } = "";
+
+            [ConfigurationKeyName("model")]
+            public string Model { get; set; } = "gpt-4-turbo";
         }
 
         public sealed class RedisConfig

@@ -49,5 +49,10 @@
     "port": 35190,
     "password": "env",
     "tls": true
+  },
+  "openai": {
+    "token": "env",
+    "endpoint": "https://openai-cf.erisa.workers.dev",
+    "model": "@cf/meta/llama-3-8b-instruct"
   }
 }
