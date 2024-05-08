@@ -202,7 +202,7 @@ namespace Lykos
 
                 // ai handling
 
-                if (e.Channel.IsPrivate || (e.Channel.Id == 1236484733362503751 && !e.Message.Content.StartsWith('.'))&& !e.Author.IsBot && !e.Message.Content.Contains("gptreset"))
+                if (!e.Author.IsBot && !e.Message.Content.Contains("gptreset") && (e.Channel.IsPrivate || (e.Channel.Id == 1236484733362503751 && !e.Message.Content.StartsWith('.'))))
                 {
                     await e.Channel.TriggerTypingAsync();
                     if (!conversations.ContainsKey(e.Channel.Id))
