@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using OpenAI_API;
 using OpenAI_API.Chat;
 using OpenAI_API.Models;
@@ -60,7 +61,7 @@ namespace Lykos
                     }
                     else
                     {
-                        prevMsg = (await message.Channel.GetMessagesBeforeAsync(message.Id, 1))[0];
+                        prevMsg = message.Channel.GetMessagesBeforeAsync(message.Id, 1).ToBlockingEnumerable().First();
                         embed.WithTitle($"Likely replying to {await DisplayName(prevMsg.Author)}")
                             .WithUrl($"https://discord.com/channels/{message.Channel.Guild.Id}/{message.Channel.Id}/{prevMsg.Id}");
                     }
@@ -127,26 +128,21 @@ namespace Lykos
                 .WithRegion(cfgjson.S3.Region).WithSSL()
                 .WithHttpClient(new HttpClient());
 
-            discord = new DiscordClient(new DiscordConfiguration
+            DiscordClientBuilder discordBuilder = DiscordClientBuilder.CreateDefault(cfgjson.Token, DiscordIntents.All);
+
+            discordBuilder.ConfigureGatewayClient(clientConfig =>
             {
-                Token = cfgjson.Token,
-                TokenType = TokenType.Bot,
-#if DEBUG
-                MinimumLogLevel = LogLevel.Debug,
-#else
-                MinimumLogLevel = LogLevel.Debug,
-#endif
-                LogUnknownEvents = false,
-                
-                Intents = DiscordIntents.All,
+                clientConfig.LogUnknownEvents = false;
+                clientConfig.LogUnknownAuditlogs = false;
             });
 
-            Task OnReady(DiscordClient client, SessionReadyEventArgs e)
+            discord = discordBuilder.Build();
+
+            Task OnReady(DiscordClient client, SessionCreatedEventArgs e)
             {
                 Console.WriteLine($"Logged in as {client.CurrentUser.Username}#{client.CurrentUser.Discriminator}");
                 return Task.CompletedTask;
             };
-
 
             commands = discord.UseCommandsNext(new CommandsNextConfiguration
             {
@@ -167,7 +163,7 @@ namespace Lykos
                 commands.RegisterCommands(cmdClass);
             }
 
-            async Task MessageCreated(DiscordClient client, MessageCreateEventArgs e)
+            async Task MessageCreated(DiscordClient client, MessageCreatedEventArgs e)
             {
                 // gallery
                 _ = GalleryHandler(e.Message, client);
@@ -241,7 +237,7 @@ namespace Lykos
                     }
                     else if (response.Length > 2000)
                     {
-                        msg = new DiscordMessageBuilder().WithEmbed(new DiscordEmbedBuilder().WithDescription(response).Build());
+                        msg = new DiscordMessageBuilder().AddEmbed(new DiscordEmbedBuilder().WithDescription(response).Build());
                     } else
                     {
                         msg = new DiscordMessageBuilder().WithContent(response);
@@ -260,7 +256,7 @@ namespace Lykos
             };
 
             // Gallery edit handling
-            async Task MessageUpdated(DiscordClient client, MessageUpdateEventArgs e)
+            async Task MessageUpdated(DiscordClient client, MessageUpdatedEventArgs e)
             {
                 // #gallery
                 GalleryHandler(e.Message, client);
@@ -308,38 +304,38 @@ namespace Lykos
                 }
             }
 
-            Task Discord_ThreadCreated(DiscordClient client, ThreadCreateEventArgs e)
+            Task Discord_ThreadCreated(DiscordClient client, ThreadCreatedEventArgs e)
             {
                 client.Logger.LogDebug(eventId: EventID, $"Thread created in {e.Guild.Name}. Thread Name: {e.Thread.Name}");
                 return Task.CompletedTask;
             }
 
-            Task Discord_ThreadUpdated(DiscordClient client, ThreadUpdateEventArgs e)
+            Task Discord_ThreadUpdated(DiscordClient client, ThreadUpdatedEventArgs e)
             {
                 client.Logger.LogDebug(eventId: EventID, $"Thread updated in {e.Guild.Name}. New Thread Name: {e.ThreadAfter.Name}");
                 return Task.CompletedTask;
             }
 
-            Task Discord_ThreadDeleted(DiscordClient client, ThreadDeleteEventArgs e)
+            Task Discord_ThreadDeleted(DiscordClient client, ThreadDeletedEventArgs e)
             {
                 client.Logger.LogDebug(eventId: EventID, $"Thread deleted in {e.Guild.Name}. Thread Name: {e.Thread.Name ?? "Unknown"}");
                 return Task.CompletedTask;
             }
 
-            Task Discord_ThreadListSynced(DiscordClient client, ThreadListSyncEventArgs e)
+            Task Discord_ThreadListSynced(DiscordClient client, ThreadListSyncedEventArgs e)
             {
                 client.Logger.LogDebug(eventId: EventID, $"Threads synced in {e.Guild.Name}.");
                 return Task.CompletedTask;
             }
 
-            Task Discord_ThreadMemberUpdated(DiscordClient client, ThreadMemberUpdateEventArgs e)
+            Task Discord_ThreadMemberUpdated(DiscordClient client, ThreadMemberUpdatedEventArgs e)
             {
                 client.Logger.LogDebug(eventId: EventID, $"Thread member updated.");
                 Console.WriteLine($"Discord_ThreadMemberUpdated fired for thread {e.ThreadMember.ThreadId}. User ID {e.ThreadMember.Id}.");
                 return Task.CompletedTask;
             }
 
-            Task Discord_ThreadMembersUpdated(DiscordClient client, ThreadMembersUpdateEventArgs e)
+            Task Discord_ThreadMembersUpdated(DiscordClient client, ThreadMembersUpdatedEventArgs e)
             {
                 client.Logger.LogDebug(eventId: EventID, $"Thread members updated in {e.Guild.Name}.");
                 return Task.CompletedTask;

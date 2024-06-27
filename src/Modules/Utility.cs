@@ -232,7 +232,7 @@
             }
 
             [Command("add")]
-            [RequireUserPermissions(DSharpPlus.Permissions.ManageRoles)]
+            [RequireUserPermissions(DiscordPermissions.ManageRoles)]
             public async Task ColourmeAdd(CommandContext ctx, DiscordRole role)
             {
                 var configuredRoleIDs = Program.db.ListRange($"colourRoles-{ctx.Guild.Id}", 0, -1);
@@ -250,7 +250,7 @@
             }
 
             [Command("remove")]
-            [RequireUserPermissions(DSharpPlus.Permissions.ManageRoles)]
+            [RequireUserPermissions(DiscordPermissions.ManageRoles)]
             public async Task ColourmeRemove(CommandContext ctx, DiscordRole role)
             {
                 var configuredRoleIDs = Program.db.ListRange($"colourRoles-{ctx.Guild.Id}", 0, -1);
@@ -268,7 +268,7 @@
             }
 
             [Command("list")]
-            [RequireUserPermissions(DSharpPlus.Permissions.ManageRoles)]
+            [RequireUserPermissions(DiscordPermissions.ManageRoles)]
             public async Task ColourmeList(CommandContext ctx)
             {
                 var configuredRoleIDs = Program.db.ListRange($"colourRoles-{ctx.Guild.Id}", 0, -1);
@@ -351,7 +351,7 @@
                     .AddField("Context", $"[`Jump to context`]({reminderObject.MessageLink})", true);
 
                     var msg = new DiscordMessageBuilder()
-                        .WithEmbed(embed)
+                        .AddEmbed(embed)
                         .WithContent($"<@!{reminderObject.UserID}>, you asked to be reminded of something:");
 
                     if (DmFallback)

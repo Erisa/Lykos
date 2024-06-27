@@ -4,7 +4,7 @@
     {
         public static async Task PrepareResponseAsync(this BaseContext ctx)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.CreateResponseAsync(DiscordInteractionResponseType.DeferredChannelMessageWithSource);
         }
 
         public static async Task RespondAsync(this BaseContext ctx, string text = null, DiscordEmbed embed = null, bool ephemeral = false, params DiscordComponent[] components)
@@ -19,7 +19,7 @@
 
             response.AsEphemeral(ephemeral);
 
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, response);
+            await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, response);
         }
 
         public static async Task EditAsync(this BaseContext ctx, string text = null, DiscordEmbed embed = null, params DiscordComponent[] components)
@@ -124,7 +124,7 @@
             await ctx.RespondAsync(null, embed);
         }
 
-        [ContextMenu(ApplicationCommandType.UserContextMenu, "Show Avatar")]
+        [ContextMenu(DiscordApplicationCommandType.UserContextMenu, "Show Avatar")]
         public async Task ContextAvatar(ContextMenuContext ctx)
         {
             string avatarUrl = "";
@@ -155,13 +155,13 @@
             await ctx.RespondAsync(null, embed, ephemeral: true);
         }
 
-        [ContextMenu(ApplicationCommandType.UserContextMenu, "lk hug")]
+        [ContextMenu(DiscordApplicationCommandType.UserContextMenu, "lk hug")]
         public async Task ContextHug(ContextMenuContext ctx)
         {
             await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobHug} {ctx.TargetUser.Mention} was given a tight hug by {ctx.User.Mention}!");
         }
 
-        [ContextMenu(ApplicationCommandType.UserContextMenu, "lk pat")]
+        [ContextMenu(DiscordApplicationCommandType.UserContextMenu, "lk pat")]
         public async Task ContextPat(ContextMenuContext ctx)
         {
             await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobPats} {ctx.TargetUser.Mention} was given a big headpat by {ctx.User.Mention}!");

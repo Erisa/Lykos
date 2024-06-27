@@ -19,12 +19,12 @@
 
   <ItemGroup>
     <PackageReference Include="Abyssal.HumanDateParser" Version="2.0.0-20191113.1" />
-    <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-01633" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="5.0.0-nightly-01633" />
-    <PackageReference Include="DSharpPlus.SlashCommands" Version="5.0.0-nightly-01633" />
+    <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-02298" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="5.0.0-nightly-02298" />
+    <PackageReference Include="DSharpPlus.SlashCommands" Version="5.0.0-nightly-02298" />
     <PackageReference Include="ini" Version="1.0.7" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <PackageReference Include="Minio" Version="4.0.7" />
