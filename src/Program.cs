@@ -1,10 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
-using OpenAI_API;
+﻿using OpenAI_API;
 using OpenAI_API.Chat;
-using OpenAI_API.Models;
-using System;
-using System.Text.Json.Serialization;
+using Microsoft.Extensions.Logging;
+using Serilog.Configuration;
+using Serilog.Sinks.SystemConsole.Themes;
+using Serilog;
+using System.Net.Http.Headers;
+using System.Net.Http;
 
 namespace Lykos
 {
@@ -82,9 +83,19 @@ namespace Lykos
                 }
             }
         }
-
         static async Task MainAsync()
         {
+            Console.OutputEncoding = Encoding.UTF8;
+
+            var logFormat = "[{Timestamp:yyyy-MM-dd HH:mm:ss zzz}] [{Level}] {Message}{NewLine}{Exception}";
+
+            var loggerConfig = new LoggerConfiguration()
+                .WriteTo.Console(outputTemplate: logFormat, theme: AnsiConsoleTheme.Literate)
+                .Filter.ByExcluding(log => { return log.ToString().Contains("DSharpPlus.Exceptions.NotFoundException: Not found: NotFound"); })
+                .MinimumLevel.Debug();
+
+            Log.Logger = loggerConfig.CreateLogger();
+
             string configFile = "config.json";
 
             if (!File.Exists(configFile))
@@ -128,7 +139,7 @@ namespace Lykos
                 .WithRegion(cfgjson.S3.Region).WithSSL()
                 .WithHttpClient(new HttpClient());
 
-            DiscordClientBuilder discordBuilder = DiscordClientBuilder.CreateDefault(cfgjson.Token, DiscordIntents.All);
+            DiscordClientBuilder discordBuilder = DiscordClientBuilder.CreateDefault(cfgjson.Token, DiscordIntents.All).SetLogLevel(LogLevel.Debug);
 
             discordBuilder.ConfigureGatewayClient(clientConfig =>
             {
@@ -136,11 +147,16 @@ namespace Lykos
                 clientConfig.LogUnknownAuditlogs = false;
             });
 
+            discordBuilder.ConfigureLogging(logging =>
+            {
+                logging.AddSerilog();
+            });
+
             discord = discordBuilder.Build();
 
             Task OnReady(DiscordClient client, SessionCreatedEventArgs e)
             {
-                Console.WriteLine($"Logged in as {client.CurrentUser.Username}#{client.CurrentUser.Discriminator}");
+                client.Logger.LogInformation("Logged in as {username}", $"{client.CurrentUser.Username}#{client.CurrentUser.Discriminator}");
                 return Task.CompletedTask;
             };
 
