@@ -35,7 +35,7 @@ namespace Lykos
             if (message.Channel.Id == 671182122429710346)
             {
                 // Delete the message if there are no attachments, unless the message contains a URL.
-                if (message.Attachments.Count == 0 && !(message.Content.Contains("http")))
+                if (message.Attachments.Count == 0 && message.Content != "" && !message.Content.Contains("http"))
                 {
                     await message.DeleteAsync();
                     DiscordChannel log = await client.GetChannelAsync(671183700448509962);
