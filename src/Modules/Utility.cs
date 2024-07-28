@@ -110,7 +110,7 @@
             Char letter = choices[Program.rnd.Next(0, choices.Length)];
             await return_message.ModifyAsync($"P{letter}ng! 🏓\n" +
                 $"• It took me `{ping}ms` to reply to your message!\n" +
-                $"• Last Websocket Heartbeat took `{ctx.Client.Ping}ms`!");
+                $"• Last Websocket Heartbeat took `{ctx.Client.GetConnectionLatency(0).TotalMilliseconds}ms`!");
         }
 
         [Command("owners")]

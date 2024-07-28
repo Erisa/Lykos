@@ -6,6 +6,7 @@ using Serilog.Sinks.SystemConsole.Themes;
 using Serilog;
 using System.Net.Http.Headers;
 using System.Net.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Lykos
 {
@@ -141,7 +142,7 @@ namespace Lykos
 
             DiscordClientBuilder discordBuilder = DiscordClientBuilder.CreateDefault(cfgjson.Token, DiscordIntents.All).SetLogLevel(LogLevel.Debug);
 
-            discordBuilder.ConfigureGatewayClient(clientConfig =>
+            discordBuilder.ConfigureExtraFeatures(clientConfig =>
             {
                 clientConfig.LogUnknownEvents = false;
                 clientConfig.LogUnknownAuditlogs = false;
@@ -153,6 +154,8 @@ namespace Lykos
             });
 
             discord = discordBuilder.Build();
+
+            IServiceProvider serviceProvider = new ServiceCollection().AddLogging(x => x.AddSerilog()).BuildServiceProvider();
 
             Task OnReady(DiscordClient client, SessionCreatedEventArgs e)
             {
