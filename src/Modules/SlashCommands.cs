@@ -124,7 +124,7 @@
             await ctx.RespondAsync(null, embed);
         }
 
-        [ContextMenu(DiscordApplicationCommandType.UserContextMenu, "Show Avatar")]
+        [ContextMenu(DiscordApplicationCommandType.UserContextMenu, "Show Avatar"), InteractionCommandInstallType(DiscordApplicationIntegrationType.UserInstall, DiscordApplicationIntegrationType.GuildInstall), InteractionCommandAllowedContexts(DiscordInteractionContextType.PrivateChannel, DiscordInteractionContextType.Guild)]
         public async Task ContextAvatar(ContextMenuContext ctx)
         {
             string avatarUrl = "";
@@ -155,16 +155,23 @@
             await ctx.RespondAsync(null, embed, ephemeral: true);
         }
 
-        [ContextMenu(DiscordApplicationCommandType.UserContextMenu, "lk hug")]
+        [ContextMenu(DiscordApplicationCommandType.UserContextMenu, "lk hug"), InteractionCommandInstallType(DiscordApplicationIntegrationType.UserInstall, DiscordApplicationIntegrationType.GuildInstall), InteractionCommandAllowedContexts(DiscordInteractionContextType.PrivateChannel, DiscordInteractionContextType.Guild)]
         public async Task ContextHug(ContextMenuContext ctx)
         {
             await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobHug} {ctx.TargetUser.Mention} was given a tight hug by {ctx.User.Mention}!");
         }
 
-        [ContextMenu(DiscordApplicationCommandType.UserContextMenu, "lk pat")]
+        [ContextMenu(DiscordApplicationCommandType.UserContextMenu, "lk pat"), InteractionCommandInstallType(DiscordApplicationIntegrationType.UserInstall, DiscordApplicationIntegrationType.GuildInstall), InteractionCommandAllowedContexts(DiscordInteractionContextType.PrivateChannel, DiscordInteractionContextType.Guild)]
         public async Task ContextPat(ContextMenuContext ctx)
         {
             await ctx.RespondAsync($"{Program.cfgjson.Emoji.BlobPats} {ctx.TargetUser.Mention} was given a big headpat by {ctx.User.Mention}!");
+        }
+
+        [ContextMenu(DiscordApplicationCommandType.MessageContextMenu, "Dump message data"), InteractionCommandInstallType(DiscordApplicationIntegrationType.UserInstall, DiscordApplicationIntegrationType.GuildInstall), InteractionCommandAllowedContexts(DiscordInteractionContextType.PrivateChannel, DiscordInteractionContextType.Guild)]
+        public async Task DumpMessage(ContextMenuContext ctx)
+        {
+            var rawMsgData = JsonConvert.SerializeObject(ctx.TargetMessage, Formatting.Indented);
+            await ctx.RespondAsync(await CodeOrHasteBinAsync(rawMsgData, "json"), ephemeral: true);
         }
     }
 }

@@ -373,8 +373,7 @@ namespace Lykos
 
             var slash = discord.UseSlashCommands();
 
-            foreach (ulong guildId in cfgjson.Guilds)
-                slash.RegisterCommands<SlashCommands>(guildId);
+            slash.RegisterCommands<SlashCommands>();
 
             await discord.ConnectAsync();
 
