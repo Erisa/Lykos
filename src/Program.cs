@@ -182,183 +182,6 @@ namespace Lykos
                 commands.RegisterCommands(cmdClass);
             }
 
-            async Task MessageCreated(DiscordClient client, MessageCreatedEventArgs e)
-            {
-                // gallery
-                _ = GalleryHandler(e.Message, client);
-
-                // Prefix query handling
-                if
-                (
-                  e.Message.Content.ToLower() == $"what prefix <@{client.CurrentUser.Id}>" ||
-                  e.Message.Content.ToLower() == $"what prefix <@!{client.CurrentUser.Id}>"
-                )
-                {
-                    await e.Channel.SendMessageAsync($"My prefixes are: ```json\n" +
-                        $"{JsonConvert.SerializeObject(cfgjson.Prefixes)}```");
-                }
-
-                // Yell at people who get the prefix wrong, but only if the argument is an actual command.
-                if (e.Message.Content.ToLower().StartsWith("ik "))
-                {
-                    string potentialCmd = e.Message.Content.Split(' ')[1];
-                    foreach (KeyValuePair<string, Command> cmd in commands.RegisteredCommands)
-                    {
-                        // Checks command name, display name and all aliases.
-                        if (cmd.Key == potentialCmd || potentialCmd == cmd.Value.QualifiedName || cmd.Value.Aliases.Contains(potentialCmd))
-                        {
-                            await e.Channel.SendMessageAsync("It looks like you misunderstood my prefix.\n" +
-                                "The main prefix for me is `lk`. The first letter is a lowercase `l`/`L`, not an uppercase `i`/`I\n`" +
-                                "The prefix is inspired by my name, **L**y**k**os.");
-                            break;
-                        }
-                    }
-                }
-
-                // ai handling
-
-                if (!e.Author.IsBot && !e.Message.Content.Contains("gptreset") && (e.Channel.IsPrivate || (e.Channel.Id == 1236484733362503751 && !e.Message.Content.StartsWith('.'))))
-                {
-                    await e.Channel.TriggerTypingAsync();
-                    if (!conversations.ContainsKey(e.Channel.Id))
-                    {
-                        conversations[e.Channel.Id] = openai.Chat.CreateConversation(new ChatRequest()
-                        {
-                            Model = cfgjson.OpenAI.Model,
-                        });
-
-                        conversations[e.Channel.Id].AppendSystemMessage(cfgjson.OpenAI.Prompt);
-                    }
-
-                    conversations[e.Channel.Id].AppendUserInputWithName((await DisplayName(e.Author)).ToLower(), $"{(await DisplayName(e.Author)).ToLower()}: " + e.Message.Content);
-                    
-                    string response = await conversations[e.Channel.Id].GetResponseFromChatbotAsync();
-
-                    if (response is null || response.Length == 0)
-                    {
-                        conversations[e.Channel.Id] = openai.Chat.CreateConversation(new ChatRequest()
-                        {
-                            Model = cfgjson.OpenAI.Model,
-                        });
-                        await e.Channel.SendMessageAsync("`[a potential history issue was detected so the history was reset! in future this will be handled in a cleaner way]`");
-
-                        conversations[e.Channel.Id].AppendSystemMessage(cfgjson.OpenAI.Prompt);
-                        conversations[e.Channel.Id].AppendUserInputWithName((await DisplayName(e.Author)).ToLower(), $"{(await DisplayName(e.Author)).ToLower()}: " + e.Message.Content);
-                        response = await conversations[e.Channel.Id].GetResponseFromChatbotAsync();
-                    }
-
-                    DiscordMessageBuilder msg;
-
-                    if (response.Length > 4096)
-                    {
-                        var stream = new MemoryStream(Encoding.UTF8.GetBytes(response));
-                        msg = new DiscordMessageBuilder().AddFile("message.txt", stream);
-                    }
-                    else if (response.Length > 2000)
-                    {
-                        msg = new DiscordMessageBuilder().AddEmbed(new DiscordEmbedBuilder().WithDescription(response).Build());
-                    } else
-                    {
-                        msg = new DiscordMessageBuilder().WithContent(response);
-                    }
-
-                    if (e.Channel.IsPrivate)
-                    {
-                        await e.Channel.SendMessageAsync(msg);
-                    } else
-                    {
-                        await e.Channel.SendMessageAsync(msg.WithReply(e.Message.Id, true, false));
-                    }
-
-                }
-
-            };
-
-            // Gallery edit handling
-            async Task MessageUpdated(DiscordClient client, MessageUpdatedEventArgs e)
-            {
-                // #gallery
-                GalleryHandler(e.Message, client);
-            };
-
-            async Task CommandsNextService_CommandErrored(CommandsNextExtension cnext, CommandErrorEventArgs e)
-            {
-                if (e.Exception is CommandNotFoundException && (e.Command == null || e.Command.QualifiedName != "help"))
-                    return;
-
-                CommandContext ctx = e.Context;
-                e.Context.Client.Logger.LogError(EventID, e.Exception, "Exception occurred during {0}'s invocation of '{1}'", e.Context.User.Username, e.Context.Command.QualifiedName);
-
-                var exs = new List<Exception>();
-                if (e.Exception is AggregateException ae)
-                    exs.AddRange(ae.InnerExceptions);
-                else
-                    exs.Add(e.Exception);
-
-                foreach (var ex in exs)
-                {
-                    if (ex is CommandNotFoundException && (e.Command == null || e.Command.QualifiedName != "help"))
-                        return;
-
-                    if (ex is ChecksFailedException && (e.Command.Name != "help"))
-                        return;
-
-                    var embed = new DiscordEmbedBuilder
-                    {
-                        Color = new DiscordColor("#FF0000"),
-                        Title = "An exception occurred when executing a command",
-                        Description = $"`{e.Exception.GetType()}` occurred when executing `{e.Command.QualifiedName}`.",
-                        Timestamp = DateTime.UtcNow
-                    };
-                    embed.WithFooter(discord.CurrentUser.Username, discord.CurrentUser.AvatarUrl)
-                        .AddField("Message", ex.Message);
-                    if (e.Command != null && e.Command.Name == "avatar" && e.Exception is System.ArgumentException
-                        && ex.Message != "The format of `gif` only applies to animated avatars.\nThe user you are trying to lookup does not have an animated avatar.")
-                    {
-                        embed.AddField("Hint", $"This might mean the user is not found.\n" +
-                            $"Only mentions, IDs and Usernames are accepted.\n" +
-                            $"Note: It is not needed to specify `byid`, simply use the ID directly.");
-                    }
-                    await e.Context.RespondAsync(embed: embed.Build()).ConfigureAwait(false);
-                }
-            }
-
-            Task Discord_ThreadCreated(DiscordClient client, ThreadCreatedEventArgs e)
-            {
-                client.Logger.LogDebug(eventId: EventID, $"Thread created in {e.Guild.Name}. Thread Name: {e.Thread.Name}");
-                return Task.CompletedTask;
-            }
-
-            Task Discord_ThreadUpdated(DiscordClient client, ThreadUpdatedEventArgs e)
-            {
-                client.Logger.LogDebug(eventId: EventID, $"Thread updated in {e.Guild.Name}. New Thread Name: {e.ThreadAfter.Name}");
-                return Task.CompletedTask;
-            }
-
-            Task Discord_ThreadDeleted(DiscordClient client, ThreadDeletedEventArgs e)
-            {
-                client.Logger.LogDebug(eventId: EventID, $"Thread deleted in {e.Guild.Name}. Thread Name: {e.Thread.Name ?? "Unknown"}");
-                return Task.CompletedTask;
-            }
-
-            Task Discord_ThreadListSynced(DiscordClient client, ThreadListSyncedEventArgs e)
-            {
-                client.Logger.LogDebug(eventId: EventID, $"Threads synced in {e.Guild.Name}.");
-                return Task.CompletedTask;
-            }
-
-            Task Discord_ThreadMemberUpdated(DiscordClient client, ThreadMemberUpdatedEventArgs e)
-            {
-                client.Logger.LogDebug(eventId: EventID, $"Thread member updated.");
-                Console.WriteLine($"Discord_ThreadMemberUpdated fired for thread {e.ThreadMember.ThreadId}. User ID {e.ThreadMember.Id}.");
-                return Task.CompletedTask;
-            }
-
-            Task Discord_ThreadMembersUpdated(DiscordClient client, ThreadMembersUpdatedEventArgs e)
-            {
-                client.Logger.LogDebug(eventId: EventID, $"Thread members updated in {e.Guild.Name}.");
-                return Task.CompletedTask;
-            }
 
             discord.SessionCreated += OnReady;
             discord.MessageCreated += MessageCreated;
@@ -383,6 +206,204 @@ namespace Lykos
                 Utility.CheckRemindersAsync();
             }
         }
+
+        public static async Task MessageCreated(DiscordClient client, MessageCreatedEventArgs e)
+        {
+            // gallery
+            _ = GalleryHandler(e.Message, client);
+
+            // Prefix query handling
+            if
+            (
+              e.Message.Content.ToLower() == $"what prefix <@{client.CurrentUser.Id}>" ||
+              e.Message.Content.ToLower() == $"what prefix <@!{client.CurrentUser.Id}>"
+            )
+            {
+                await e.Channel.SendMessageAsync($"My prefixes are: ```json\n" +
+                    $"{JsonConvert.SerializeObject(cfgjson.Prefixes)}```");
+            }
+
+            // Yell at people who get the prefix wrong, but only if the argument is an actual command.
+            if (e.Message.Content.ToLower().StartsWith("ik "))
+            {
+                string potentialCmd = e.Message.Content.Split(' ')[1];
+                foreach (KeyValuePair<string, Command> cmd in commands.RegisteredCommands)
+                {
+                    // Checks command name, display name and all aliases.
+                    if (cmd.Key == potentialCmd || potentialCmd == cmd.Value.QualifiedName || cmd.Value.Aliases.Contains(potentialCmd))
+                    {
+                        await e.Channel.SendMessageAsync("It looks like you misunderstood my prefix.\n" +
+                            "The main prefix for me is `lk`. The first letter is a lowercase `l`/`L`, not an uppercase `i`/`I\n`" +
+                            "The prefix is inspired by my name, **L**y**k**os.");
+                        break;
+                    }
+                }
+            }
+
+            // ai handling
+
+            if (!e.Author.IsBot && !e.Message.Content.Contains("gptreset") && (e.Channel.IsPrivate || (e.Channel.Id == 1236484733362503751 && !e.Message.Content.StartsWith('.'))))
+            {
+                await e.Channel.TriggerTypingAsync();
+
+                var msg = await ProcessAIMessage(e.Author, e.Channel, e.Message.Content, false);
+
+                if (e.Channel.IsPrivate)
+                {
+                    await e.Channel.SendMessageAsync(msg);
+                }
+                else
+                {
+                    await e.Channel.SendMessageAsync(msg.WithReply(e.Message.Id, true, false));
+                }
+
+            }
+
+        }
+
+        // Gallery edit handling
+        public static async Task MessageUpdated(DiscordClient client, MessageUpdatedEventArgs e)
+        {
+            // #gallery
+            GalleryHandler(e.Message, client);
+        }
+
+        public static async Task CommandsNextService_CommandErrored(CommandsNextExtension cnext, CommandErrorEventArgs e)
+        {
+            if (e.Exception is CommandNotFoundException && (e.Command == null || e.Command.QualifiedName != "help"))
+                return;
+
+            CommandContext ctx = e.Context;
+            e.Context.Client.Logger.LogError(EventID, e.Exception, "Exception occurred during {0}'s invocation of '{1}'", e.Context.User.Username, e.Context.Command.QualifiedName);
+
+            var exs = new List<Exception>();
+            if (e.Exception is AggregateException ae)
+                exs.AddRange(ae.InnerExceptions);
+            else
+                exs.Add(e.Exception);
+
+            foreach (var ex in exs)
+            {
+                if (ex is CommandNotFoundException && (e.Command == null || e.Command.QualifiedName != "help"))
+                    return;
+
+                if (ex is ChecksFailedException && (e.Command.Name != "help"))
+                    return;
+
+                var embed = new DiscordEmbedBuilder
+                {
+                    Color = new DiscordColor("#FF0000"),
+                    Title = "An exception occurred when executing a command",
+                    Description = $"`{e.Exception.GetType()}` occurred when executing `{e.Command.QualifiedName}`.",
+                    Timestamp = DateTime.UtcNow
+                };
+                embed.WithFooter(discord.CurrentUser.Username, discord.CurrentUser.AvatarUrl)
+                    .AddField("Message", ex.Message);
+                if (e.Command != null && e.Command.Name == "avatar" && e.Exception is System.ArgumentException
+                    && ex.Message != "The format of `gif` only applies to animated avatars.\nThe user you are trying to lookup does not have an animated avatar.")
+                {
+                    embed.AddField("Hint", $"This might mean the user is not found.\n" +
+                        $"Only mentions, IDs and Usernames are accepted.\n" +
+                        $"Note: It is not needed to specify `byid`, simply use the ID directly.");
+                }
+                await e.Context.RespondAsync(embed: embed.Build()).ConfigureAwait(false);
+            }
+        }
+
+        public static async Task Discord_ThreadCreated(DiscordClient client, ThreadCreatedEventArgs e)
+        {
+            client.Logger.LogDebug(eventId: EventID, $"Thread created in {e.Guild.Name}. Thread Name: {e.Thread.Name}");
+        }
+
+        public static async Task Discord_ThreadUpdated(DiscordClient client, ThreadUpdatedEventArgs e)
+        {
+            client.Logger.LogDebug(eventId: EventID, $"Thread updated in {e.Guild.Name}. New Thread Name: {e.ThreadAfter.Name}");
+        }
+
+        public static async Task Discord_ThreadDeleted(DiscordClient client, ThreadDeletedEventArgs e)
+        {
+            client.Logger.LogDebug(eventId: EventID, $"Thread deleted in {e.Guild.Name}. Thread Name: {e.Thread.Name ?? "Unknown"}");
+        }
+
+        public static async Task Discord_ThreadListSynced(DiscordClient client, ThreadListSyncedEventArgs e)
+        {
+            client.Logger.LogDebug(eventId: EventID, $"Threads synced in {e.Guild.Name}.");
+        }
+
+        public static async Task Discord_ThreadMemberUpdated(DiscordClient client, ThreadMemberUpdatedEventArgs e)
+        {
+            client.Logger.LogDebug(eventId: EventID, $"Thread member updated.");
+            Console.WriteLine($"Discord_ThreadMemberUpdated fired for thread {e.ThreadMember.ThreadId}. User ID {e.ThreadMember.Id}.");
+        }
+
+        public static async Task Discord_ThreadMembersUpdated(DiscordClient client, ThreadMembersUpdatedEventArgs e)
+        {
+            client.Logger.LogDebug(eventId: EventID, $"Thread members updated in {e.Guild.Name}.");
+        }
+
+        public static async Task<DiscordMessageBuilder> ProcessAIMessage(DiscordUser invoker, DiscordChannel channel, string input, bool includeQuote = false)
+        {
+            string name = (await DisplayName(invoker)).ToLower();
+
+            if (!conversations.ContainsKey(channel.Id))
+            {
+                conversations[channel.Id] = openai.Chat.CreateConversation(new ChatRequest()
+                {
+                    Model = cfgjson.OpenAI.Model,
+                });
+
+                conversations[channel.Id].AppendSystemMessage(cfgjson.OpenAI.Prompt);
+            }
+
+            conversations[channel.Id].AppendUserInputWithName(name, $"{name}: " + input);
+
+            string response = await conversations[channel.Id].GetResponseFromChatbotAsync();
+
+            if (response is null || response.Length == 0)
+            {
+                conversations[channel.Id] = openai.Chat.CreateConversation(new ChatRequest()
+                {
+                    Model = cfgjson.OpenAI.Model,
+                });
+                response = "`[a potential history issue was detected so the history was reset! in future this will be handled in a cleaner way]`\n";
+
+                conversations[channel.Id].AppendSystemMessage(cfgjson.OpenAI.Prompt);
+                conversations[channel.Id].AppendUserInputWithName((await DisplayName(invoker)).ToLower(), $"{(await DisplayName(invoker)).ToLower()}: " + input);
+                response += await conversations[channel.Id].GetResponseFromChatbotAsync();
+            }
+
+            DiscordMessageBuilder msg;
+
+            string msgContent = "";
+
+            if (includeQuote)
+                msgContent = $"> {input}\n";
+            else
+                msgContent = response;
+
+            if (response.Length > 4096)
+            {
+                var stream = new MemoryStream(Encoding.UTF8.GetBytes(response));
+                msg = new DiscordMessageBuilder().AddFile("message.txt", stream);
+                if (includeQuote)
+                    msg.WithContent(msgContent);
+            }
+            else if (msgContent.Length > 2000)
+            {
+                msg = new DiscordMessageBuilder().AddEmbed(new DiscordEmbedBuilder().WithDescription(response).Build());
+                if (includeQuote)
+                    msg.WithContent(msgContent);
+            }
+            else
+            {
+                if (includeQuote)
+                    msgContent = msgContent + response;
+                msg = new DiscordMessageBuilder().WithContent(msgContent);
+            }
+
+            return msg;
+        }
+
     }
 
     public class Require​Owner​Attribute : CheckBaseAttribute

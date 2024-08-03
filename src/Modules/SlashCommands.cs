@@ -82,6 +82,17 @@
             }
         }
 
+        [SlashCommand("chat", "Chat with Lykos"), InteractionCommandInstallType(DiscordApplicationIntegrationType.UserInstall, DiscordApplicationIntegrationType.GuildInstall), InteractionCommandAllowedContexts(DiscordInteractionContextType.PrivateChannel, DiscordInteractionContextType.Guild)]
+        public async Task AISlashCommand(InteractionContext ctx,
+         [Option("input", "Your message to Lykos")] string input
+        )
+        {
+            await ctx.PrepareResponseAsync();
+
+            var response = await Program.ProcessAIMessage(ctx.User, ctx.Channel, input, true);
+            await ctx.EditAsync(response.Content);
+        }
+
         [SlashCommand("avatar", "Show the avatar of a user")]
         public async Task AvatarSlashCommand(InteractionContext ctx,
             [Option("user", "The person you want to see the avatar of")] DiscordUser target,
@@ -173,5 +184,7 @@
             var rawMsgData = JsonConvert.SerializeObject(ctx.TargetMessage, Formatting.Indented);
             await ctx.RespondAsync(await CodeOrHasteBinAsync(rawMsgData, "json"), ephemeral: true);
         }
+
+
     }
 }
