@@ -29,11 +29,11 @@
     "urlPrefix": "https://cdn.erisa.uk/"
   },
   "emoji": {
-    "blobpats": "<:blobpats:691958091742445688>",
-    "blobhug": "<:blobhug:671023513347555329>",
-    "xmark": "<:xmark:663977222750601217>",
-    "check": "<:check:663977222864109587>",
-    "loading": "<a:loading:393841895794671616>",
+    "blobpats": "<:blobpats:1281025463577481269>",
+    "blobhug": "<:blobhug:1281024992456478814>",
+    "xmark": "<:xmark:1281025456484646975>",
+    "check": "<:check:1281025450247852104>",
+    "loading": "<a:loading:1281025442668744714>",
     "kiss": "😘"
   },
   "hastebinEndpoint": "https://haste.erisa.uk",
