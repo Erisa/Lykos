@@ -50,6 +50,6 @@
   "openai": {
     "token": "env",
     "endpoint": "https://api.cloudflare.com/client/v4/accounts/ece1d09b06af2ced51407c97505ea0cc/ai",
-    "model": "@cf/meta/llama-3.1-8b-instruct"
+    "model": "@cf/meta/llama-3.1-70b-instruct"
   }
 }
