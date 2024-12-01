@@ -141,7 +141,7 @@ namespace Lykos
                 .WithRegion(cfgjson.S3.Region).WithSSL()
                 .WithHttpClient(new HttpClient());
 
-            DiscordClientBuilder discordBuilder = DiscordClientBuilder.CreateDefault(cfgjson.Token, DiscordIntents.All).SetLogLevel(LogLevel.Debug);
+            DiscordClientBuilder discordBuilder = DiscordClientBuilder.CreateDefault(cfgjson.Token, (DiscordIntents)(DiscordIntents.All - DiscordIntents.GuildPresences)).SetLogLevel(LogLevel.Debug);
 
             discordBuilder.ConfigureExtraFeatures(clientConfig =>
             {
