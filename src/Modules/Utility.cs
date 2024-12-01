@@ -232,7 +232,7 @@
             }
 
             [Command("add")]
-            [RequireUserPermissions(DiscordPermissions.ManageRoles)]
+            [RequireUserPermissions(permissions: DiscordPermission.ManageRoles)]
             public async Task ColourmeAdd(CommandContext ctx, DiscordRole role)
             {
                 var configuredRoleIDs = Program.db.ListRange($"colourRoles-{ctx.Guild.Id}", 0, -1);
@@ -250,7 +250,7 @@
             }
 
             [Command("remove")]
-            [RequireUserPermissions(DiscordPermissions.ManageRoles)]
+            [RequireUserPermissions(permissions: DiscordPermission.ManageRoles)]
             public async Task ColourmeRemove(CommandContext ctx, DiscordRole role)
             {
                 var configuredRoleIDs = Program.db.ListRange($"colourRoles-{ctx.Guild.Id}", 0, -1);
@@ -268,7 +268,7 @@
             }
 
             [Command("list")]
-            [RequireUserPermissions(DiscordPermissions.ManageRoles)]
+            [RequireUserPermissions(permissions: DiscordPermission.ManageRoles)]
             public async Task ColourmeList(CommandContext ctx)
             {
                 var configuredRoleIDs = Program.db.ListRange($"colourRoles-{ctx.Guild.Id}", 0, -1);
@@ -278,7 +278,7 @@
                 foreach(var id in configuredRoleIDs)
                 {
                     DiscordRole role;
-                    role = ctx.Guild.GetRole((ulong)id);
+                    role = await ctx.Guild.GetRoleAsync((ulong)id);
                     if (role is null)
                         continue;
 

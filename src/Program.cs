@@ -13,7 +13,6 @@ namespace Lykos
     class Program
     {
         public static DiscordClient discord;
-        static CommandsNextExtension commands;
         public static Random rnd = new();
         public static ConnectionMultiplexer redis;
         public static IDatabase db;
@@ -25,6 +24,8 @@ namespace Lykos
         public static OpenAIAPI openai;
 
         public static Dictionary<ulong, Conversation> conversations = new();
+
+        public static Dictionary<string, Command> registeredCommands = new();
 
         static void Main()
         {
@@ -153,7 +154,15 @@ namespace Lykos
                 logging.AddSerilog();
             });
 
-            discord = discordBuilder.Build();
+            discordBuilder.ConfigureServices(services =>
+            {
+#pragma warning disable CS0618 // Type or member is obsolete
+                services.AddSlashCommandsExtension(slash =>
+                {
+                    slash.RegisterCommands<SlashCommands>();
+                });
+#pragma warning restore CS0618 // Type or member is obsolete
+            });
 
             IServiceProvider serviceProvider = new ServiceCollection().AddLogging(x => x.AddSerilog()).BuildServiceProvider();
 
@@ -163,12 +172,6 @@ namespace Lykos
                 return Task.CompletedTask;
             };
 
-            commands = discord.UseCommandsNext(new CommandsNextConfiguration
-            {
-                StringPrefixes = cfgjson.Prefixes,
-
-            });
-
             Type[] commandClasses =
             {
                 typeof(Utility),
@@ -177,26 +180,34 @@ namespace Lykos
                 typeof(Fun)
             };
 
-            foreach (Type cmdClass in commandClasses)
+            discordBuilder.UseCommandsNext(commands =>
             {
-                commands.RegisterCommands(cmdClass);
-            }
+                foreach (Type cmdClass in commandClasses)
+                {
+                    commands.RegisterCommands(cmdClass);
+                }
+                commands.CommandErrored += CommandsNextService_CommandErrored;
+
+                registeredCommands = (Dictionary<string, Command>)commands.RegisteredCommands;
+            }, new CommandsNextConfiguration
+            {
+                StringPrefixes = cfgjson.Prefixes,
+            });
 
 
-            discord.SessionCreated += OnReady;
-            discord.MessageCreated += MessageCreated;
-            discord.MessageUpdated += MessageUpdated;
-            commands.CommandErrored += CommandsNextService_CommandErrored;
-            discord.ThreadCreated += Discord_ThreadCreated;
-            discord.ThreadUpdated += Discord_ThreadUpdated;
-            discord.ThreadDeleted += Discord_ThreadDeleted;
-            discord.ThreadListSynced += Discord_ThreadListSynced;
-            discord.ThreadMemberUpdated += Discord_ThreadMemberUpdated;
-            discord.ThreadMembersUpdated += Discord_ThreadMembersUpdated;
+            discordBuilder.ConfigureEventHandlers(
+                builder => builder.HandleSessionCreated(OnReady)
+                .HandleMessageCreated(MessageCreated)
+                .HandleMessageUpdated(MessageUpdated)
+                .HandleThreadCreated(Discord_ThreadCreated)
+                .HandleThreadDeleted(Discord_ThreadDeleted)
+                .HandleThreadUpdated(Discord_ThreadUpdated)
+                .HandleThreadListSynced(Discord_ThreadListSynced)
+                .HandleThreadMemberUpdated(Discord_ThreadMemberUpdated)
+                .HandleThreadMembersUpdated(Discord_ThreadMembersUpdated)
+            );
 
-            var slash = discord.UseSlashCommands();
-
-            slash.RegisterCommands<SlashCommands>();
+            discord = discordBuilder.Build();
 
             await discord.ConnectAsync();
 
@@ -227,7 +238,7 @@ namespace Lykos
             if (e.Message.Content.ToLower().StartsWith("ik "))
             {
                 string potentialCmd = e.Message.Content.Split(' ')[1];
-                foreach (KeyValuePair<string, Command> cmd in commands.RegisteredCommands)
+                foreach (KeyValuePair<string, Command> cmd in registeredCommands)
                 {
                     // Checks command name, display name and all aliases.
                     if (cmd.Key == potentialCmd || potentialCmd == cmd.Value.QualifiedName || cmd.Value.Aliases.Contains(potentialCmd))

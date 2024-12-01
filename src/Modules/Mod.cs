@@ -4,7 +4,7 @@
     {
         [Command("delete")]
         [Description("Owner only, delete a message.")]
-        [RequireOwner, RequireBotPermissions(DiscordPermissions.ManageMessages)]
+        [RequireOwner, RequireBotPermissions(permissions: DiscordPermission.ManageMessages)]
         public async Task Delete(CommandContext ctx, [Description("ID of the message to delete")] ulong messageId)
         {
             await ctx.Message.DeleteAsync();
@@ -14,7 +14,7 @@
 
         [Command("yeet")]
         [Description("Deletes the embed on a given message.")]
-        [RequirePermissions(DiscordPermissions.ManageMessages)]
+        [RequirePermissions(permissions: DiscordPermission.ManageMessages)]
         public async Task Yeet(CommandContext ctx, [Description("ID of the message to delete an embed on")] ulong messageId)
         {
             await ctx.Message.DeleteAsync();
@@ -24,7 +24,7 @@
 
         [Command("ban")]
         [Description("Ban a user. If you can. Do it, I dare you.")]
-        [RequirePermissions(DiscordPermissions.BanMembers)]
+        [RequirePermissions(permissions: DiscordPermission.BanMembers)]
         public async Task Ban(CommandContext ctx, [Description("The user to ban. Must be below both you and the bot in role hierachy.")] DiscordUser target, [Description("The reason for banning the user.\n")] string reason = "No reason provided.")
         {
 
@@ -62,7 +62,7 @@
 
         [Command("unban")]
         [Description("Unban a user. If you can. Do it, I dare you.")]
-        [RequirePermissions(DiscordPermissions.BanMembers)]
+        [RequirePermissions(permissions: DiscordPermission.BanMembers)]
         public async Task Unban(CommandContext ctx, DiscordUser target, string reason = "No reason provided.")
         {
             await target.UnbanAsync(ctx.Guild, $"[Unban by {ctx.User.Username}#{ctx.User.Discriminator}] {reason}");
@@ -71,7 +71,7 @@
 
         [Command("kick")]
         [Description("Kick a user. If you can. Do it, I dare you.")]
-        [RequirePermissions(DiscordPermissions.KickMembers)]
+        [RequirePermissions(permissions: DiscordPermission.KickMembers)]
         public async Task Kick(CommandContext ctx, DiscordMember target, string reason = "No reason provided.")
         {
             DiscordMember member = await ctx.Guild.GetMemberAsync(target.Id);
