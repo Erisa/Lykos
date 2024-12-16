@@ -140,14 +140,20 @@
         {
             string avatarUrl = "";
 
-            try
+            if (ctx.Guild is null)
             {
-                avatarUrl = await Helpers.UserOrMemberAvatarURL(ctx.TargetUser, ctx.Guild);
-            }
-            catch (ArgumentException e)
+                avatarUrl = Helpers.UserAvatarURL(ctx.TargetUser);
+            } else
             {
-                await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} {e.Message}", ephemeral: true);
-                return;
+                try
+                {
+                    avatarUrl = await Helpers.UserOrMemberAvatarURL(ctx.TargetUser, ctx.Guild);
+                }
+                catch (ArgumentException e)
+                {
+                    await ctx.RespondAsync($"{Program.cfgjson.Emoji.Xmark} {e.Message}", ephemeral: true);
+                    return;
+                }
             }
 
             DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
