@@ -7,7 +7,7 @@ RUN dotnet restore
 
 # Copy everything else and build
 COPY src ./
-RUN dotnet publish src/Lykos.csproj -c Release --property:PublishDir=$PWD/out
+RUN dotnet publish Lykos.csproj -c Release --property:PublishDir=$PWD/out
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/runtime:9.0
