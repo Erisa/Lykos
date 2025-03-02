@@ -205,6 +205,7 @@ namespace Lykos
                 .HandleThreadListSynced(Discord_ThreadListSynced)
                 .HandleThreadMemberUpdated(Discord_ThreadMemberUpdated)
                 .HandleThreadMembersUpdated(Discord_ThreadMembersUpdated)
+                .HandleGuildMemberAdded(MemberJoined)
             );
 
             discord = discordBuilder.Build();
@@ -270,6 +271,14 @@ namespace Lykos
 
             }
 
+        }
+
+        public static async Task MemberJoined(DiscordClient client, GuildMemberAddedEventArgs e)
+        {
+            if (!e.Member.IsBot && e.Guild.Id == 228625269101953035)
+            {
+                await e.Member.GrantRoleAsync(await e.Guild.GetRoleAsync(279811031805591555));
+            }
         }
 
         // Gallery edit handling
