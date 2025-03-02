@@ -277,7 +277,7 @@ namespace Lykos
         {
             if (!e.Member.IsBot && e.Guild.Id == 228625269101953035)
             {
-                await e.Member.GrantRoleAsync(await e.Guild.GetRoleAsync(279811031805591555));
+                await e.Member.GrantRoleAsync(await e.Guild.GetRoleAsync(956193735044124712));
             }
         }
 
