@@ -17,11 +17,11 @@
   "s3": {
     "endpoint": "env",
     "region": "auto",
-    "bucket": "erisacdn",
+    "bucket": "cdn.erisa.uk",
     "accessKey": "env",
     "secretKey": "env",
-    "providerDisplayName": "Cloudflare R2",
-    "public-read-acl": false
+    "providerDisplayName": "Tigris",
+    "public-read-acl": true
   },
   "cloudflare": {
     "apiToken": "env",
