@@ -370,6 +370,7 @@ namespace Lykos
                 conversations[channel.Id] = openai.Chat.CreateConversation(new ChatRequest()
                 {
                     Model = cfgjson.OpenAI.Model,
+                    MaxTokens = 4096
                 });
 
                 conversations[channel.Id].AppendSystemMessage(cfgjson.OpenAI.Prompt);
@@ -384,7 +385,7 @@ namespace Lykos
                 conversations[channel.Id] = openai.Chat.CreateConversation(new ChatRequest()
                 {
                     Model = cfgjson.OpenAI.Model,
-                    MaxTokens = 2048
+                    MaxTokens = 4096
                 });
                 response = "`[a potential history issue was detected so the history was reset! in future this will be handled in a cleaner way]`\n";
 
