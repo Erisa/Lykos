@@ -49,7 +49,7 @@
   },
   "openai": {
     "token": "env",
-    "endpoint": "https://gateway.ai.cloudflare.com/v1/ece1d09b06af2ced51407c97505ea0cc/lykos/workers-ai",
-    "model": "@cf/google/gemma-3-12b-it"
+    "endpoint": "https://api.cloudflare.com/client/v4/accounts/ece1d09b06af2ced51407c97505ea0cc/ai",
+    "model": "@cf/meta/llama-3.1-70b-instruct"
   }
 }
