@@ -1,5 +1,5 @@
-﻿using OpenAI_API;
-using OpenAI_API.Chat;
+﻿using OpenAI;
+using OpenAI.Chat;
 using Microsoft.Extensions.Logging;
 using Serilog.Configuration;
 using Serilog.Sinks.SystemConsole.Themes;
@@ -21,9 +21,9 @@ namespace Lykos
         internal static EventId EventID { get; } = new EventId(1000, "Bot");
         public static ConfigJson cfgjson;
 
-        public static OpenAIAPI openai;
+        public static ChatClient chatClient;
 
-        public static Dictionary<ulong, Conversation> conversations = new();
+        public static Dictionary<ulong, List<ChatMessage>> conversations = new();
 
         public static Dictionary<string, Command> registeredCommands = new();
 
@@ -122,12 +122,13 @@ namespace Lykos
                 }
             };
 
-            openai = new OpenAIAPI(cfgjson.OpenAI.Token);
-
+            var openaiOptions = new OpenAIClientOptions();
             if (cfgjson.OpenAI.Endpoint != "")
             {
-                openai.ApiUrlFormat = $"{cfgjson.OpenAI.Endpoint}/v1/{{1}}";
+                openaiOptions.Endpoint = new Uri(cfgjson.OpenAI.Endpoint);
             }
+
+            chatClient = new ChatClient(cfgjson.OpenAI.Model, new System.ClientModel.ApiKeyCredential(cfgjson.OpenAI.Token), openaiOptions);
 
             redis = ConnectionMultiplexer.Connect(redisConfigurationOptions);
 
@@ -367,32 +368,31 @@ namespace Lykos
 
             if (!conversations.ContainsKey(channel.Id))
             {
-                conversations[channel.Id] = openai.Chat.CreateConversation(new ChatRequest()
+                conversations[channel.Id] = new List<ChatMessage>
                 {
-                    Model = cfgjson.OpenAI.Model,
-                    MaxTokens = 4096
-                });
-
-                conversations[channel.Id].AppendSystemMessage(cfgjson.OpenAI.Prompt);
+                    new SystemChatMessage(cfgjson.OpenAI.Prompt)
+                };
             }
 
-            conversations[channel.Id].AppendUserInputWithName(name, $"{name}: " + input);
+            conversations[channel.Id].Add(new UserChatMessage($"{name}: " + input));
 
-            string response = await conversations[channel.Id].GetResponseFromChatbotAsync();
+            ChatCompletion result = await chatClient.CompleteChatAsync(conversations[channel.Id]);
+            string response = result.Content[0].Text;
 
             if (response is null || response.Length == 0)
             {
-                conversations[channel.Id] = openai.Chat.CreateConversation(new ChatRequest()
+                conversations[channel.Id] = new List<ChatMessage>
                 {
-                    Model = cfgjson.OpenAI.Model,
-                    MaxTokens = 4096
-                });
+                    new SystemChatMessage(cfgjson.OpenAI.Prompt)
+                };
                 response = "`[a potential history issue was detected so the history was reset! in future this will be handled in a cleaner way]`\n";
 
-                conversations[channel.Id].AppendSystemMessage(cfgjson.OpenAI.Prompt);
-                conversations[channel.Id].AppendUserInputWithName((await DisplayName(invoker)).ToLower(), $"{(await DisplayName(invoker)).ToLower()}: " + input);
-                response += await conversations[channel.Id].GetResponseFromChatbotAsync();
+                conversations[channel.Id].Add(new UserChatMessage($"{(await DisplayName(invoker)).ToLower()}: " + input));
+                ChatCompletion retryResult = await chatClient.CompleteChatAsync(conversations[channel.Id]);
+                response += retryResult.Content[0].Text;
             }
+
+            conversations[channel.Id].Add(new AssistantChatMessage(response));
 
             DiscordMessageBuilder msg;
 
