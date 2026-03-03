@@ -6,6 +6,7 @@
     <RootNamespace>Lykos</RootNamespace>
     <ApplicationIcon />
     <StartupObject />
+    <NoWarn>OPENAI001</NoWarn>
       <RestoreAdditionalProjectSources>
 		  	https://www.myget.org/F/erisa/api/v3/index.json
 		  </RestoreAdditionalProjectSources>
@@ -28,7 +29,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
     <PackageReference Include="Minio" Version="4.0.7" />
-    <PackageReference Include="OpenAI" Version="2.8.0" />
+    <PackageReference Include="OpenAI" Version="2.9.1" />
     <PackageReference Include="Serilog" Version="4.2.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />

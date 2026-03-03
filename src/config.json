@@ -50,6 +50,6 @@
   "openai": {
     "token": "env",
     "endpoint": "http://100.120.214.32:11434/v1",
-    "model": "qwen3:14b"
+    "model": "qwen3.5:9b"
   }
 }

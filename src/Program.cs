@@ -376,7 +376,9 @@ namespace Lykos
 
             conversations[channel.Id].Add(new UserChatMessage($"{name}: " + input));
 
-            ChatCompletion result = await chatClient.CompleteChatAsync(conversations[channel.Id]);
+            var chatOptions = new ChatCompletionOptions { ReasoningEffortLevel = ChatReasoningEffortLevel.None };
+
+            ChatCompletion result = await chatClient.CompleteChatAsync(conversations[channel.Id], chatOptions);
             string response = result.Content[0].Text;
 
             if (response is null || response.Length == 0)
@@ -388,7 +390,7 @@ namespace Lykos
                 response = "`[a potential history issue was detected so the history was reset! in future this will be handled in a cleaner way]`\n";
 
                 conversations[channel.Id].Add(new UserChatMessage($"{(await DisplayName(invoker)).ToLower()}: " + input));
-                ChatCompletion retryResult = await chatClient.CompleteChatAsync(conversations[channel.Id]);
+                ChatCompletion retryResult = await chatClient.CompleteChatAsync(conversations[channel.Id], chatOptions);
                 response += retryResult.Content[0].Text;
             }
 
