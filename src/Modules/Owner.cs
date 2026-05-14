@@ -212,7 +212,7 @@
                             meta["x-amz-acl"] = "public-read";
                         }
 
-                        var putObject = new Minio.PutObjectArgs()
+                        var putObject = new Minio.DataModel.Args.PutObjectArgs()
                             .WithBucket(Program.cfgjson.S3.Bucket)
                             .WithObject(objectName)
                             .WithStreamData(memStream)

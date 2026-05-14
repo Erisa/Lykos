@@ -13,7 +13,6 @@
 
             if (text != null) response.WithContent(text);
             if (embed != null) response.AddEmbed(embed);
-            if (components.Length != 0) response.AddComponents(components);
 
             response.AddMentions(Mentions.All);
 
@@ -28,7 +27,6 @@
 
             if (text != null) response.WithContent(text);
             if (embed != null) response.AddEmbed(embed);
-            if (components.Length != 0) response.AddComponents(components);
 
             await ctx.EditResponseAsync(response);
         }
@@ -41,7 +39,6 @@
 
             if (text != null) response.WithContent(text);
             if (embed != null) response.AddEmbed(embed);
-            if (components.Length != 0) response.AddComponents(components);
 
             response.AsEphemeral(ephemeral);
 

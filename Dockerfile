@@ -1,5 +1,5 @@
 FROM --platform=${BUILDPLATFORM} \
-    mcr.microsoft.com/dotnet/sdk:9.0.307 AS build-env
+    mcr.microsoft.com/dotnet/sdk:10.0.300 AS build-env
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers
@@ -11,7 +11,7 @@ COPY src ./
 RUN dotnet publish Lykos.csproj -c Release --property:PublishDir=$PWD/out
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/runtime:9.0.11-alpine3.22
+FROM mcr.microsoft.com/dotnet/runtime:10.0.8-alpine3.23
 LABEL com.centurylinklabs.watchtower.enable=true
 WORKDIR /app
 COPY --from=build-env /app/out .

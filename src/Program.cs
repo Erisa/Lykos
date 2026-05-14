@@ -17,7 +17,7 @@ namespace Lykos
         public static ConnectionMultiplexer redis;
         public static IDatabase db;
         public static HasteBinClient hasteUploader;
-        public static MinioClient minio;
+        public static IMinioClient minio;
         internal static EventId EventID { get; } = new EventId(1000, "Bot");
         public static ConfigJson cfgjson;
 

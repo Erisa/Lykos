@@ -199,7 +199,7 @@
             public async Task ColourmeSet(CommandContext ctx, string colourString)
             {
                 DiscordColor newColour;
-                var pickedRole = ctx.Member.Roles.OrderByDescending(xr => xr.Position).FirstOrDefault(xr => xr.Color.Value != 0);
+                var pickedRole = ctx.Member.Roles.OrderByDescending(xr => xr.Position).FirstOrDefault(xr => xr.Colors != default);
                 var configuredRoleIDs = Program.db.ListRange($"colourRoles-{ctx.Guild.Id}", 0, -1);
 
                 if (pickedRole == null)
