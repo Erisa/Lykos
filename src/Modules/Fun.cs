@@ -85,6 +85,18 @@
             await ctx.Channel.SendMessageAsync("<@621929840710516736>");
         }
 
+        [Command("pinghazel")]
+        public async Task PingHazel(CommandContext ctx)
+        {
+            await ctx.Channel.SendMessageAsync("<@317728561106518019>");
+        }
+
+        [Command("pingchloe")]
+        public async Task PingChloe(CommandContext ctx)
+        {
+            await ctx.Channel.SendMessageAsync("<@312145496179474434>");
+        }
+
         [Command("pingtodd")]
         public async Task Pingtodd(CommandContext ctx)
         {
