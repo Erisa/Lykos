@@ -97,6 +97,12 @@
             await ctx.Channel.SendMessageAsync("<@312145496179474434>");
         }
 
+        [Command("pinglykos")]
+        public async Task PingLykos(CommandContext ctx)
+        {
+            await ctx.Channel.SendMessageAsync("<@279811031805591555>");
+        }
+
         [Command("pingtodd")]
         public async Task Pingtodd(CommandContext ctx)
         {
