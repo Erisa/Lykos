@@ -142,7 +142,7 @@ namespace Lykos
                 .WithRegion(cfgjson.S3.Region).WithSSL()
                 .WithHttpClient(new HttpClient());
 
-            DiscordClientBuilder discordBuilder = DiscordClientBuilder.CreateDefault(cfgjson.Token, DiscordIntents.All).SetLogLevel(LogLevel.Debug);
+            DiscordClientBuilder discordBuilder = DiscordClientBuilder.CreateDefault(cfgjson.Token, DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents).SetLogLevel(LogLevel.Debug);
 
             discordBuilder.ConfigureExtraFeatures(clientConfig =>
             {
@@ -205,9 +205,7 @@ namespace Lykos
                 .HandleThreadUpdated(Discord_ThreadUpdated)
                 .HandleThreadListSynced(Discord_ThreadListSynced)
                 .HandleThreadMemberUpdated(Discord_ThreadMemberUpdated)
-                .HandleThreadMembersUpdated(Discord_ThreadMembersUpdated)
-                .HandleGuildMemberAdded(MemberJoined)
-            );
+                .HandleThreadMembersUpdated(Discord_ThreadMembersUpdated)            );
 
             discord = discordBuilder.Build();
 
@@ -272,14 +270,6 @@ namespace Lykos
 
             }
 
-        }
-
-        public static async Task MemberJoined(DiscordClient client, GuildMemberAddedEventArgs e)
-        {
-            if (!e.Member.IsBot && e.Guild.Id == 228625269101953035)
-            {
-                await e.Member.GrantRoleAsync(await e.Guild.GetRoleAsync(956193735044124712));
-            }
         }
 
         // Gallery edit handling
