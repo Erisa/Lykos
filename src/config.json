@@ -43,7 +43,7 @@
   },
   "redis": {
     "host": "env",
-    "port": 35190,
+    "port": 6379,
     "password": "env",
     "tls": true
   },
